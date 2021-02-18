@@ -10,7 +10,7 @@ export default class {
 		const host = window.location.host.split(":");
 		// if (host.length > 1) host[host.length - 1] = parseInt(host[host.length - 1]) + 1;
 		// else host.push("81");
-		this.url = `${protocol === "https" ? "wss" : "ws"}://${host.join(":")}/sck/${_url}/`
+		this.url = `${protocol === "https:" ? "wss" : "ws"}://${host.join(":")}/sck/${_url}/`
 
 		this.on("close", () => setTimeout(() => this.reconnect(), this.sleep));
 		this.on("error", () => this.close());
