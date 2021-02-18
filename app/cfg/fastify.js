@@ -1,4 +1,4 @@
-import { selfsigned } from "./certificates.js"
+import { ordinary, selfsigned } from "./certificates.js"
 
 const fastify = {
 
