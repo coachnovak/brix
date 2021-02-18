@@ -14,7 +14,7 @@ if (process.env.production === "true") {
 		});
 
 		// Apply certificates.
-		fastify.https = { key: ordinaryCertificate, cert: ordinaryCertificate };
+		fastify.https = { key: ordinaryCertificate.privateKey, cert: ordinaryCertificate.certificate };
 	}
 } else {
 	if (process.env.usetls === "true") {
