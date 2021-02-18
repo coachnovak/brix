@@ -6,6 +6,7 @@ import { ui } from "./ui.js";
 import { sck } from "./sck.js";
 import { jwt } from "./jwt.js";
 import { stats } from "./stats.js";
+import { letsencrypt } from "./letsencrypt.js"
 
 export default {
 	fastify,
@@ -15,5 +16,6 @@ export default {
 	ui,
 	sck,
 	jwt,
-	stats
+	stats,
+	letsencrypt
 }
