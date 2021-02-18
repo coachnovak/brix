@@ -30,4 +30,4 @@ app.register(import("./api/events.js"), { prefix: "api/events" });
 app.register(import("./sck/room.js"), { prefix: "sck" });
 
 // Listen for requests.
-app.listen(process.env.port, "0.0.0.0");
+app.listen(process.env.webport, "0.0.0.0");
