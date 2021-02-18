@@ -1,12 +1,13 @@
 import fs from "fs";
 import os from "os";
+import path from "path";
 import crypto from "crypto";
 import forge from "node-forge";
 
 export class ordinary {
-	static load ({ path, key, cert }) {
-		const keyContent = fs.readFileSync(path.join(path, key));
-		const certContent = fs.readFileSync(path.join(path, cert));
+	static load ({ location, key, cert }) {
+		const keyContent = fs.readFileSync(path.join(location, key));
+		const certContent = fs.readFileSync(path.join(location, cert));
 
 		return {
 			privateKey: keyContent,
