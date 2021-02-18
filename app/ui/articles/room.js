@@ -54,7 +54,7 @@ export default {
 		globalThis.location.hash = room.alias;
 
 		// Connect to stream
-		const stream = new socket(`wss://${window.location.host}/sck/room/`);
+		const stream = new socket("room");
 		let scheduledHeartbeatTimer = -1;
 		let scheduledPokeTimer = -1;
 
