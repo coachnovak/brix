@@ -1,0 +1,54 @@
+<!doctype html>
+
+<html>
+	<head>
+		<title>brix</title>
+
+		<meta charset="UTF-8">
+		<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
+
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://kit.fontawesome.com">
+		<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+		<link rel="preconnect" href="https://csshake.surge.sh">
+
+		<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;700&display=swap" rel="stylesheet">
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/vis-timeline/7.4.6/vis-timeline-graph2d.css" rel="stylesheet" integrity="sha512-adR302xMIc7CbXibn+90QNtydOzidqlvt+kXM8fKz6CTJtDdrxAhrVho64pNTD2syGNVV0upUoowjYAhWeQLKg==" crossorigin="anonymous" />
+		<link type="text/css" href="https://csshake.surge.sh/csshake.min.css" rel="stylesheet">
+
+		<script src="https://kit.fontawesome.com/b127a6ea84.js" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/timeago.js/4.0.2/timeago.min.js" integrity="sha512-SVDh1zH5N9ChofSlNAK43lcNS7lWze6DTVx1JCXH1Tmno+0/1jMpdbR8YDgDUfcUrPp1xyE53G42GFrcM0CMVg==" crossorigin="anonymous"></script>
+		<script src="https://unpkg.com/vis-timeline/standalone/umd/vis-timeline-graph2d.min.js" crossorigin="anonymous"></script>
+
+		<link href="index.css" rel="stylesheet" />
+		<script src="index.js" type="module"></script>
+	</head>
+
+	<body>
+		<div id="cover"></div>
+
+		<article id="contents">
+
+		</article>
+
+		<header>
+			<h1>brix</h1>
+
+			<section>
+				<app-identity id="identity"></app-identity>
+
+				<app-button id="button.home" icon="home" size="large" composition="icon"></app-button>
+				<app-button id="button.signin" icon="sign-in" size="large" composition="icon"></app-button>
+				<app-button id="button.signout" icon="sign-out" size="large" composition="icon"></app-button>
+			</section>
+		</header>
+
+		<!-- <article id="windows">
+
+		</article> -->
+
+		<app-notifications id="notifications">
+
+		</app-notifications>
+	</body>
+</html>
