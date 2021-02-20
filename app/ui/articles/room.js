@@ -8,18 +8,16 @@ export default {
 		.room.container .profile { width: 100%; overflow: hidden; text-align: center; }
 		.room.container .profile .name { font-size: 18pt; font-weight: 100; margin: 0; margin-bottom: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%; }
 
-		.room.container .profile .copy,
-		.room.container .profile .alias,
 		.room.container .profile .status { display: inline-block; font-size: 8pt; margin: 0; text-transform: uppercase; }
 		.room.container .profile .status { opacity: 0.5; }
-		.room.container .profile .copy { margin-left: 5px; margin-right: 5px; padding: 5px 10px 5px 10px; }
+		.room.container .profile .status.connected { display: none; }
 	`,
 
 	markup: `
 		<div class="room container">
 			<div class="profile">
-				<div id="roomName" class="name">Room name</div>
-				<div id="roomAlias" class="alias"></div><app-button id="roomCopy" icon="copy" composition="icon" embedded="true" class="copy"></app-button><div id="roomStatus" class="status"></div>
+				<div id="roomName" class="name"></div>
+				<div id="roomStatus" class="status"></div>
 			</div>
 		</div>
 	`,
@@ -29,8 +27,6 @@ export default {
 		if (!localStorage.getItem("token")) return globalThis.article.close("room");
 
 		const nameElement = _component.use("roomName");
-		const copyElement = _component.use("roomCopy");
-		const aliasElement = _component.use("roomAlias");
 		const statusElement = _component.use("roomStatus");
 
 		// Get room
@@ -43,15 +39,7 @@ export default {
 
 		const room = await roomResponse.json();
 		nameElement.innerHTML = room.name;
-		aliasElement.innerHTML = room.alias;
 		statusElement.innerHTML = "Connecting";
-
-		// Enable room copy.
-		copyElement.on("activated", async () => 
-			await navigator.clipboard.writeText(room.alias.toUpperCase()) & globalThis.notify({ text: "Alias copied to clipboard." }));
-
-		// Set location hash
-		globalThis.location.hash = room.alias;
 
 		// Connect to stream
 		const stream = new socket("room");
@@ -107,16 +95,18 @@ export default {
 			scheduledPokeTimer = setTimeout(() => {
 				contentsElement.classList.remove("shake-hard", "shake-constant");
 				globalThis.notify({ icon: "hand-point-up", text: "Someone poked you - guess who! 😜" });
-			}, 2000);
+			}, 500);
 		}
 
 		stream.on("open", async () => {
 			stream.send("setup", { room: room._id });
 			statusElement.innerHTML = "Connected";
+			statusElement.classList.add("connected");
 		});
 
 		stream.on("close", async () => {
-			statusElement.innerHTML = "Disconnected";
+			statusElement.innerHTML = "Reconnecting";
+			statusElement.classList.remove("connected");
 			clearTimeout(scheduledHeartbeatTimer);
 		});
 
