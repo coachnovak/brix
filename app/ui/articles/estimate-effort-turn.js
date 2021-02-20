@@ -9,7 +9,7 @@ export default {
 	markup: `
 		<div id="estimate-effort-turn">
 			<div id="estimate-effort-turn-head">
-				<h2>Select an answer</h2>
+				<h3>Voting in session</h3>
 			</div>
 
 			<div id="estimate-effort-turn-author">Turn <span id="estimate-effort-turn-id"></span> was initiated by <span id="estimate-effort-turn-by"></span>, <span id="estimate-effort-turn-since"></span>.</div>

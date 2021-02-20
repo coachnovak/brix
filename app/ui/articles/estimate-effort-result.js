@@ -13,7 +13,7 @@ export default {
 	markup: `
 		<div id="estimate-effort-result">
 			<div id="estimate-effort-result-head">
-				<h2>Effort estimation result</h2>
+				<h3>Effort estimation result</h3>
 			</div>
 
 			<div id="estimate-effort-result-author">
@@ -29,7 +29,7 @@ export default {
 			</app-list>
 
 			<div id="estimate-effort-result-actions">
-				<app-button id="estimate-effort-result-actions-trash" icon="trash" text="Trash" composition="vertical icon text" embedded="true"></app-button>
+				<app-button id="estimate-effort-result-actions-trash" icon="trash" text="Trash results" composition="vertical icon text" embedded="true"></app-button>
 			</div>
 		</div>
 	`,

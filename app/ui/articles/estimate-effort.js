@@ -12,7 +12,7 @@ export default {
 	markup: `
 		<div id="estimate-effort">
 			<div id="estimate-effort-manage">
-				<app-button id="estimate-effort-manage-new" icon="dice" text="New turn" composition="vertical icon text" size="large" embedded="true"></app-button>
+				<app-button id="estimate-effort-manage-new" icon="dice" text="Start a new turn" composition="vertical icon text" size="large" embedded="true"></app-button>
 			</div>
 		</div>
 	`,
