@@ -81,7 +81,7 @@ header section app-button:hover { background: var(--paper-2); }
 
 h1 { font-size: 32pt; font-weight: 100; color: var(--pen-1); text-align: center; }
 h2 { font-size: 18pt; font-weight: 100; margin: 0; }
-h3 { font-size: 13pt; font-weight: 100; margin: 0; }
+h3 { font-size: 14pt; font-weight: 100; margin: 0; }
 h4 { font-size: 9pt; font-weight: 300; margin: 0; }
 
 .center { text-align: center; }

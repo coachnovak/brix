@@ -9,7 +9,7 @@ export default {
 	`,
 
 	markup: `
-		<h2 id="room-participants-head">Participants in the room</h2>
+		<h3 id="room-participants-head">Participants</h3>
 		<app-list id="participants.list"></app-list>
 	`,
 
