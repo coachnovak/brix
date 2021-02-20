@@ -79,8 +79,9 @@ export default {
 
 			switch (authResponse.status) {
 				case 201:
-					const token = await authResponse.text();
-					localStorage.setItem("token", token);
+					const authDetails = await authResponse.json();
+					localStorage.setItem("token", authDetails.token);
+					localStorage.setItem("expires", authDetails.expires);
 					globalThis.emit("security.signedin");
 
 					document.getElementById("button.signin").visible = false;

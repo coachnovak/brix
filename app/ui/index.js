@@ -109,22 +109,39 @@ document.addEventListener("DOMContentLoaded", () => {
 	globalThis.on = (_name, _function) => document.addEventListener(_name, _function);
 	globalThis.off = (_name, _function) => document.removeEventListener(_name, _function);
 
+	const signOut = () => {
+		localStorage.removeItem("token");
+		localStorage.removeItem("expires");
+
+		globalThis.emit("security.signedout");
+		globalThis.article.open([{ name: "doormat" }], { reset: true });
+	};
+
+	const verifySessionExpiration = () => {
+		const expiresInStore = localStorage.getItem("expires");
+		const tokenInStore = localStorage.getItem("token");
+		
+		if (expiresInStore) {
+			const expires = new Date(expiresInStore);
+			const now = new Date();
+			if (expires < now) signOut();
+		} else if (tokenInStore) {
+			// No session, yet token exists.
+			localStorage.removeItem("token");
+		}
+	};
+
+	verifySessionExpiration();
+	setInterval(verifySessionExpiration, 3000);
+
 	document.getElementById("button.home").on("activated", () => {
-		const token = localStorage.getItem("token");
-		if (token) globalThis.article.open([{ name: "rooms" }], { reset: true });
+		let tokenInStore = localStorage.getItem("token");
+		if (tokenInStore) globalThis.article.open([{ name: "rooms" }], { reset: true });
 		else globalThis.article.open([{ name: "doormat" }], { reset: true });
 	});
 
-	document.getElementById("button.signin").on("activated", () => {
-		globalThis.article.open([{ name: "signin" }], { reset: true });
-	});
-
-	document.getElementById("button.signout").on("activated", () => {
-		localStorage.removeItem("token");
-		globalThis.emit("security.signedout");
-
-		globalThis.article.open([{ name: "doormat" }], { reset: true });
-	});
+	document.getElementById("button.signin").on("activated", () => globalThis.article.open([{ name: "signin" }], { reset: true }));
+	document.getElementById("button.signout").on("activated", () => signOut);
 
 	// Handle signed in and signed out.
 	globalThis.on("security.signedin", _info => {
@@ -139,31 +156,11 @@ document.addEventListener("DOMContentLoaded", () => {
 		document.getElementById("identity").refresh();
 	});
 
-	// // Connect to event stream
-	// const eventStream = new socket(`ws://${window.location.host}/sck/events/`);
-
-	// eventStream.on("open", async () => {
-
-	// });
-
-	// eventStream.on("close", async _info => {
-
-	// });
-
-	// eventStream.on("message", async _message => {
-	// 	const message = JSON.parse(_message.data);
-	// 	globalThis.emit(message.name, { detail: message.info });
-
-	// 	console.info(message);
-	// });
-
-	// eventStream.connect();
-
 	// Emit initial session state.
-	globalThis.emit(localStorage.getItem("token") ? "security.signedin" : "security.signedout");
+	let tokenInStore = localStorage.getItem("token");
+	globalThis.emit(tokenInStore ? "security.signedin" : "security.signedout");
 
 	// Open first article.
-	const token = localStorage.getItem("token");
-	if (token) globalThis.article.open([{ name: "rooms" }]);
+	if (tokenInStore) globalThis.article.open([{ name: "rooms" }]);
 	else globalThis.article.open([{ name: "doormat" }]);
 });

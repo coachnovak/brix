@@ -37,6 +37,9 @@ export default async (_app, _options) => {
 			if (user.password !== result.hash) return _response.status(401).send({ message: "Authentication failed, invalid credentials." });
 
 			const expiresInSeconds = 86400;
+			const expires = new Date();
+			expires.setSeconds(expires.getSeconds() + (expiresInSeconds - 6));
+
 			const salt = crypto.randomBytes(128).toString("hex");
 			const token = _app.jwt.sign({
 				user: user._id.toString(),
@@ -48,7 +51,7 @@ export default async (_app, _options) => {
 			const response = await _app.mongo.db.collection("sessions").insertOne({ user: user._id, token, salt });
 			if (response?.result?.ok !== 1) return _response.status(500).send("Failed to store session");
 
-			return _response.status(201).send(token);
+			 _response.status(201).send({ token, expires });
 		}
 	});
 
