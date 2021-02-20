@@ -19,7 +19,7 @@ export default {
 
 	script: async _component => {
 		// Close article if user isn't signed in.
-		if (!localStorage.getItem("token")) return globalThis.article.close("estimate-effort-turn");
+		if (!localStorage.getItem("token")) return globalThis.content.close("estimate-effort-turn");
 
 		const turnidElement = _component.use("estimate-effort-turn-id");
 		const byElement = _component.use("estimate-effort-turn-by");
@@ -47,7 +47,7 @@ export default {
 					voteid: option.id
 				});
 
-				globalThis.article.close("estimate-effort-turn");
+				globalThis.content.close("estimate-effort-turn");
 			});
 		}
 

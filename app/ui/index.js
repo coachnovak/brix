@@ -30,12 +30,12 @@ globalThis.fetcher = async (_url, _options = {}) => {
 	return response;
 };
 
-globalThis.article = {
+globalThis.content = {
 	open: (_article, _options = {}) => {
 		if (!(_article instanceof Array))
 			_article = [_article];
 
-		if (_options.reset) globalThis.article.close();
+		if (_options.reset) globalThis.content.close();
 		const contents = document.getElementById("contents");
 		const oldarticles = Array.from(contents.children).reverse();
 
@@ -111,7 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		localStorage.removeItem("expires");
 
 		globalThis.emit("security.signedout");
-		globalThis.article.open([{ name: "doormat" }], { reset: true });
+		globalThis.content.open([{ name: "doormat" }], { reset: true });
 	};
 
 	const verifySessionExpiration = () => {
@@ -133,11 +133,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	document.getElementById("button.home").on("activated", () => {
 		let tokenInStore = localStorage.getItem("token");
-		if (tokenInStore) globalThis.article.open([{ name: "rooms" }], { reset: true });
-		else globalThis.article.open([{ name: "doormat" }], { reset: true });
+		if (tokenInStore) globalThis.content.open([{ name: "rooms" }], { reset: true });
+		else globalThis.content.open([{ name: "doormat" }], { reset: true });
 	});
 
-	document.getElementById("button.signin").on("activated", () => globalThis.article.open([{ name: "signin" }], { reset: true }));
+	document.getElementById("button.signin").on("activated", () => globalThis.content.open([{ name: "signin" }], { reset: true }));
 	document.getElementById("button.signout").on("activated", () => signOut);
 
 	// Handle signed in and signed out.
@@ -158,6 +158,6 @@ document.addEventListener("DOMContentLoaded", () => {
 	globalThis.emit(tokenInStore ? "security.signedin" : "security.signedout");
 
 	// Open first article.
-	if (tokenInStore) globalThis.article.open([{ name: "rooms" }]);
-	else globalThis.article.open([{ name: "doormat" }]);
+	if (tokenInStore) globalThis.content.open([{ name: "rooms" }]);
+	else globalThis.content.open([{ name: "doormat" }]);
 });

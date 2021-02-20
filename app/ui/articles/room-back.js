@@ -20,9 +20,9 @@ export default {
 		});
 
 		gobackElement.on("activated", _event => {
-			if (_component.parameters.cut) globalThis.article.cut(_component.parameters.cut);
-			if (_component.parameters.close) globalThis.article.open(_component.parameters.close);
-			if (_component.parameters.open) globalThis.article.open(_component.parameters.open);
+			if (_component.parameters.cut) globalThis.content.cut(_component.parameters.cut);
+			if (_component.parameters.close) globalThis.content.open(_component.parameters.close);
+			if (_component.parameters.open) globalThis.content.open(_component.parameters.open);
 		});
 	}
 };

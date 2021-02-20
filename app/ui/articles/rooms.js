@@ -52,11 +52,11 @@ export default {
 
 		const updateMyRooms = async () => {
 			// Close article if user isn't signed in.
-			if (!localStorage.getItem("token")) return globalThis.article.close("rooms");
+			if (!localStorage.getItem("token")) return globalThis.content.close("rooms");
 
 			const roomsElement = _component.use("rooms-list");
 			const roomsResponse = await globalThis.fetcher(`/api/rooms/`, { method: "get" });
-			if (roomsResponse.status !== 200) return globalThis.article.close("rooms");
+			if (roomsResponse.status !== 200) return globalThis.content.close("rooms");
 
 			const rooms = await roomsResponse.json();
 			for (let roomIndex = 0; roomIndex < rooms.length; roomIndex++) {
@@ -81,7 +81,7 @@ export default {
 					});
 
 					roomElement.on("activated", _event => {
-						globalThis.article.open([{ name: "room", parameters: { alias: _event.detail.alias } }], { reset: true });
+						globalThis.content.open([{ name: "room", parameters: { alias: _event.detail.alias } }], { reset: true });
 					});
 				}
 			}
@@ -104,9 +104,9 @@ export default {
 			if (!aliasValid) return;
 
 			if (localStorage.getItem("token")) {
-				globalThis.article.open([{ name: "room", parameters: { alias: joinAliasElement.value() } }], { reset: true });
+				globalThis.content.open([{ name: "room", parameters: { alias: joinAliasElement.value() } }], { reset: true });
 			} else {
-				globalThis.article.open([{ name: "signin" }], { reset: true });
+				globalThis.content.open([{ name: "signin" }], { reset: true });
 			}
 		});
 
@@ -135,7 +135,7 @@ export default {
 
 			if (roomResponse.status === 201) {
 				const room = await roomResponse.json();
-				globalThis.article.open([{ name: "room", parameters: { alias: room.alias } }], { reset: true });
+				globalThis.content.open([{ name: "room", parameters: { alias: room.alias } }], { reset: true });
 			}
 		});
 

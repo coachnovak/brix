@@ -36,7 +36,7 @@ export default {
 	script: async _component => {
 		const registerElement = _component.use("doormat-register");
 		registerElement.on("activated", async () => {
-			globalThis.article.open([{ name: "register" }], { reset: true });
+			globalThis.content.open([{ name: "register" }], { reset: true });
 		});
 	}
 };

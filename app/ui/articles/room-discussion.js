@@ -27,7 +27,7 @@ export default {
 
 	script: async _component => {
 		// Close article if user isn't signed in.
-		if (!localStorage.getItem("token")) return globalThis.article.close("comments");
+		if (!localStorage.getItem("token")) return globalThis.content.close("comments");
 
 		const containerElement = _component.use("discussion-list-container");
 		const newComment = (_event, _skipanimation = false) => {
@@ -44,13 +44,13 @@ export default {
 
 		globalThis.on("comment", newComment);
 
-		globalThis.article.open([{
+		globalThis.content.open([{
 			name: "room-discussion-new",
 			parameters: { room: _component.parameters.room, stream: _component.parameters.stream }
 		}]);
 
 		_component.on("disposing", () => {
-			globalThis.article.close("room-discussion-new");
+			globalThis.content.close("room-discussion-new");
 			globalThis.off("comment", newComment);
 		});
 

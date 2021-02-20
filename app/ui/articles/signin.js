@@ -51,7 +51,7 @@ export default {
 		const passwordElement = _component.use("signin.password");
 
 		_component.use("signin.register").on("activated", async () => {
-			globalThis.article.open([{ name: "register" }], { reset: true });
+			globalThis.content.open([{ name: "register" }], { reset: true });
 		});
 
 		_component.use("signin.email").on("activated", async () => {
@@ -88,7 +88,7 @@ export default {
 					document.getElementById("button.signout").visible = true;
 					document.getElementById("identity").refresh();
 
-					globalThis.article.open([{ name: "rooms" }], { reset: true });
+					globalThis.content.open([{ name: "rooms" }], { reset: true });
 
 					break;
 

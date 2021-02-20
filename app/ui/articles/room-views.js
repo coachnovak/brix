@@ -13,8 +13,8 @@ export default {
 		const tabsElement = _component.use("room-views-tabs");
 
 		tabsElement.on("selected", () => {
-			globalThis.article.cut("room-views");
-			globalThis.article.open([{ name: tabsElement.selected, parameters: _component.parameters }]);
+			globalThis.content.cut("room-views");
+			globalThis.content.open([{ name: tabsElement.selected, parameters: _component.parameters }]);
 		});
 
 		tabsElement.on("ready", () => {
