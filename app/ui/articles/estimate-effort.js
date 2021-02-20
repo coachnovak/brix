@@ -27,10 +27,10 @@ export default {
 			const options = [
 				{ id: "skip", icon: "vote-nay", text: "Skip this turn" },
 				{ id: "req", icon: "page-break", text: "Requires refinement" },
-				{ id: "sp1", icon: "vote-yea", text: "Vote 1 story point" },
-				{ id: "sp2", icon: "vote-yea", text: "Vote 2 story points" },
-				{ id: "sp4", icon: "vote-yea", text: "Vote 4 story points" },
-				{ id: "sp8", icon: "vote-yea", text: "Vote 8 story points" }
+				{ id: "sp1", icon: "vote-yea", text: "1 story point" },
+				{ id: "sp2", icon: "vote-yea", text: "2 story points" },
+				{ id: "sp4", icon: "vote-yea", text: "4 story points" },
+				{ id: "sp8", icon: "vote-yea", text: "8 story points" }
 			];
 
 			globalThis.article.close("estimate-effort");

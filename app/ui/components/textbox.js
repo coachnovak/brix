@@ -12,8 +12,8 @@ export class textbox extends base {
 			.property("center", _properties.center ? _properties.center : null);
 
         this.styles.push(`
-			#input { display: inline-block; background: var(--paper-1); border: 1px solid var(--paper-2); color: var(--pen-1); padding: 15px; border-radius: 3px; width: 100%; }
-			#input { font-size: 9pt; font-weight: 400; }
+			#input { display: inline-block; background: var(--paper-2); border: 0px; color: var(--pen-1); padding: 15px; border-radius: 3px; width: 100%; }
+			#input { font-size: 8pt; font-weight: 400; }
 			#input:focus { outline: 0; }
 			:host([center="true"]) #input { text-align: center; }
 		`);

@@ -38,9 +38,11 @@
 
 html,
 body { margin: 0; padding: 0; background: black; }
-body { font-family: 'Roboto', sans-serif; font-size: 9pt; font-weight: 400; }
+body { font-family: 'Roboto', sans-serif; font-size: 8pt; font-weight: 300; line-height: 100%; }
 
 #cover { position: fixed; left: 0; top: 0; right: 0; bottom: 0; background: center url(/assets/cover.jpg); background-size: cover; }
+
+/* ------------------ Header */
 
 header { position: fixed; left: 0; top: 0; right: 0; height: 60px; background: var(--header-b); color: var(--header-f); }
 header h1 { position: absolute; left: 0; top: 0; margin: 0; padding: 15px; }
@@ -49,12 +51,10 @@ header section { position: absolute; top: 0; right: 0; bottom: 0; display: grid;
 header section app-button { background: transparent; }
 header section app-button:hover { background: var(--paper-2); }
 
-#contents { display: flex; flex-direction: column; position: absolute; left: 50%; top: 59px; width: 100%; min-height: calc(100% - 59px); transform: translateX(-50%); padding: 20px; }
-#contents { background: var(--paper-1); color: var(--pen-1); }
+/* ------------------ Contents */
 
-@media all and (min-height: 600px) and (min-width: 576px) {
-	#contents { top: 90px; min-height: unset; border-radius: 3px; }
-}
+#contents { display: flex; flex-direction: column; position: absolute; left: 50%; top: 60px; width: 100%; min-height: calc(100% - 60px); transform: translateX(-50%); padding: 20px; }
+#contents { background: var(--paper-1); color: var(--pen-1); }
 
 @media all and (min-width: 576px) {
 	#contents { max-width: 576px; }
@@ -79,12 +79,25 @@ header section app-button:hover { background: var(--paper-2); }
 	100% { transform: translateY(0%); opacity: 1; }
 }
 
-h1 { font-size: 32pt; font-weight: 100; color: var(--pen-1); text-align: center; }
-h2 { font-size: 18pt; font-weight: 100; margin: 0; }
-h3 { font-size: 14pt; font-weight: 100; margin: 0; }
-h4 { font-size: 9pt; font-weight: 300; margin: 0; }
+/* ------------------ Windows */
+
+#windows { position: fixed; left: 0; top: 0; right: 0; bottom: 0; }
+#windows:empty { display: none; }
+#windows > .shadow { position: fixed; left: 0; top: 0; right: 0; bottom: 0; opacity: 0.5; }
+
+/*#windows > app-article { position: fixed; left: 0; top: 0; right: 0; bottom: 0; display: flex; flex-direction: column; position: absolute; padding: 20px; }
+#windows > app-article {  position: absolute;  }*/
+
+/* ------------------ Headers */
+
+h1 { font-size: 32pt; font-weight: 100; color: var(--pen-1); text-align: center; line-height: 110%; }
+h2 { font-size: 18pt; font-weight: 100; margin: 0; line-height: 110%; }
+h3 { font-size: 14pt; font-weight: 100; margin: 0; line-height: 110%; }
+h4 { font-size: 9pt; font-weight: 300; margin: 0; line-height: 110%; }
 
 .center { text-align: center; }
+
+/* ------------------ Divider */
 
 .divider { position: relative; text-align: center; }
 .divider:before { display: block; position: absolute; left: 0; top: 50%; width: 100%; height: 1px; background: var(--paper-2); content: ""; }

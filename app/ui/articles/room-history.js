@@ -4,7 +4,7 @@ export default {
 	},
 
 	styles: `
-		#room-timeline-visualization { position: absolute !important; left: 0; top: 0; right: 0; height: 100%;  }
+		#room-history-visualization { position: absolute !important; left: 0; top: 0; right: 0; height: 100%;  }
 
 		.vis-timeline { border: 0; }
 		.vis-item { font-size: 8pt; background-color: var(--paper-3); color: var(--pen-3); border: 0; }
@@ -21,7 +21,7 @@ export default {
 	`,
 
 	markup: `
-		<div id="room-timeline-visualization"></div>
+		<div id="room-history-visualization"></div>
 	`,
 
 	script: async _component => {
@@ -31,7 +31,7 @@ export default {
 		const end = new Date();
 		end.setHours(end.getHours() + 2);
 
-		const roomTimelineVisualizationElement = _component.use("room-timeline-visualization");
+		const roomTimelineVisualizationElement = _component.use("room-history-visualization");
 		const timeline = new vis.Timeline(roomTimelineVisualizationElement, [], {
 			start: start,
 			end: end,
@@ -44,7 +44,7 @@ export default {
 
 		const eventsResponse = await globalThis.fetcher(`/api/events/${_component.parameters.room._id}`, { method: "get" });
 
-		if (eventsResponse.status === 200) {
+		if (eventsResponse.status >= 200 && eventsResponse.status <= 399) {
 			const events = await eventsResponse.json();
 			timeline.setItems(events);
 		}

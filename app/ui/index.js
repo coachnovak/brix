@@ -55,10 +55,7 @@ globalThis.article = {
 				parameters: _newarticle.parameters ? _newarticle.parameters : {}
 			});
 
-			if (_options.priority)
-				contents.prepend(newarticle);
-			else
-				contents.appendChild(newarticle);
+			contents.appendChild(newarticle);
 		});
 	},
 

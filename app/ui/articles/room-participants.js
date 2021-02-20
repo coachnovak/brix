@@ -2,15 +2,12 @@ import { list } from "/components/list.js";
 
 export default {
 	styles: `
-		.participants.container app-list { display: block; }
-		.participants.container app-list .empty { padding: 20px; text-align: center; }
-
-		#room-participants-head { margin-bottom: 20px; text-align: center; }
+		#room-participants-list { display: block; }
+		#room-participants-list .empty { padding: 20px; text-align: center; }
 	`,
 
 	markup: `
-		<h3 id="room-participants-head">Participants</h3>
-		<app-list id="participants.list"></app-list>
+		<app-list id="room-participants-list"></app-list>
 	`,
 
 	script: async _component => {
@@ -18,7 +15,7 @@ export default {
 		if (!localStorage.getItem("token")) return globalThis.article.close("participants");
 
 		let scheduledUpdateTimer = null;
-		const participantsElement = _component.use("participants.list");
+		const participantsElement = _component.use("room-participants-list");
 
 		const update = async () => {
 			if (!localStorage.getItem("token")) return globalThis.article.close("participants");

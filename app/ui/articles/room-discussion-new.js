@@ -21,7 +21,7 @@ export default {
 			const value = newTextboxElement.value();
 			newTextboxElement.clear();
 
-			_component.parameters.stream.send("comment", value);
+			if (value) _component.parameters.stream.send("comment", value);
 		}
 
 		newTextboxElement.on("activated", () => publish());

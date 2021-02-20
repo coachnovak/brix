@@ -3,33 +3,23 @@ import socket from "/components/socket.js";
 
 export default {
 	styles: `
-		.room.container { display: grid; grid-template-columns: auto; grid-gap: 20px; }
-
-		.room.container .profile { width: 100%; overflow: hidden; text-align: center; }
-		.room.container .profile .name { font-size: 18pt; font-weight: 100; margin: 0; margin-bottom: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%; }
-
-		.room.container .profile .status { display: inline-block; font-size: 8pt; margin: 0; text-transform: uppercase; }
-		.room.container .profile .status { opacity: 0.5; }
-		.room.container .profile .status.connected { display: none; }
+		#room-profile-name { font-size: 18pt; font-weight: 100; line-height: 110%; margin: 0; margin-bottom: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%; }
+		#room-profile-status { font-size: 8pt; margin: 0; text-transform: uppercase; opacity: 0.5; }
+		#room-profile-status.connected { display: none; }
 	`,
 
 	markup: `
-		<div class="room container">
-			<div class="profile">
-				<div id="roomName" class="name"></div>
-				<div id="roomStatus" class="status"></div>
-			</div>
-		</div>
+		<div id="room-profile-name" class="center"></div>
+		<div id="room-profile-status" class="center"></div>
 	`,
 
 	script: async _component => {
 		// Close article if user isn't signed in.
 		if (!localStorage.getItem("token")) return globalThis.article.close("room");
 
-		const nameElement = _component.use("roomName");
-		const statusElement = _component.use("roomStatus");
+		const nameElement = _component.use("room-profile-name");
+		const statusElement = _component.use("room-profile-status");
 
-		// Get room
 		const roomResponse = await globalThis.fetcher(`/api/room/${_component.parameters.alias}`, { method: "get" });
 
 		if (roomResponse.status !== 200) {
@@ -49,41 +39,6 @@ export default {
 		const heartbeat = async () => {
 			stream.send("heartbeat");
 			scheduledHeartbeatTimer = setTimeout(() => heartbeat(), 2000);
-		}
-
-		const newEstimateWork = _event => {
-			globalThis.article.cut("reactions");
-
-			globalThis.article.open([
-				{
-					name: "room-back",
-					parameters: {
-						cut: "reactions",
-						open: { name: "collaboration", parameters: { room, stream } }
-					}
-				},
-				{
-					name: "estimate-effort-turn",
-					parameters: {
-						room,
-						stream,
-						by: `${_event.detail.user.firstName} ${_event.detail.user.lastName}`,
-						when: _event.detail.when,
-						options: _event.detail.data.options,
-						turnid: _event.detail.data.turnid
-					}
-				}, {
-					name: "estimate-effort-result",
-					parameters: {
-						room,
-						stream,
-						by: `${_event.detail.user.firstName} ${_event.detail.user.lastName}`,
-						when: _event.detail.when,
-						options: _event.detail.data.options,
-						turnid: _event.detail.data.turnid
-					}
-				}
-			]);
 		}
 
 		const poke = async _event => {
@@ -121,17 +76,20 @@ export default {
 			stream.close(true);
 
 			globalThis.off("ready", heartbeat);
-			globalThis.off("new-estimate-work", newEstimateWork);
+			//globalThis.off("new-estimate-work", newEstimateWork);
 			globalThis.off("poke", poke);
 		});
 
+		// globalThis.article.open([
+		// 	{ name: "reactions", parameters: { room, stream } },
+		// 	{ name: "collaboration", parameters: { room, stream } }
+		// ]);
+
 		globalThis.article.open([
-			{ name: "reactions", parameters: { room, stream } },
-			{ name: "collaboration", parameters: { room, stream } }
+			{ name: "room-views", parameters: { room, stream } }
 		]);
 
 		globalThis.on("ready", heartbeat);
-		globalThis.on("new-estimate-work", newEstimateWork);
 		globalThis.on("poke", poke);
 	}
 };

@@ -98,7 +98,7 @@ export default {
 		canvasElement.setAttribute("id", "reactions");
 
 		const canvasContext = canvasElement.getContext("2d");
-		const articleElement = document.querySelector("article");
+		const articleElement = document.getElementById("contents");
 		articleElement.insertBefore(canvasElement, articleElement.firstChild);
 		articleElement.insertBefore(styleElement, articleElement.firstChild);
 
