@@ -1,8 +1,3 @@
 export const redis = {
-	redis: {
-		url: process.env.redisurl,
-		options: {
-			enableOfflineQueue: true
-		}
-	}
+	url: process.env.redis
 };

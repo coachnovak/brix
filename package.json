@@ -14,6 +14,7 @@
     "fastify-metrics": "^6.0.3",
     "fastify-mongodb": "^2.0.1",
     "fastify-plugin": "^3.0.0",
+    "fastify-redis": "^4.2.0",
     "fastify-redis-channels": "^1.2.0",
     "fastify-static": "^4.0.0",
     "fastify-swagger": "^4.3.1",

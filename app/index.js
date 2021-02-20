@@ -8,7 +8,8 @@ app.ready(() => console.log("Server is up and running."));
 // Register modules.
 app.register(import("fastify-swagger"), config.docs);
 app.register(import("fastify-mongodb"), config.mongodb);
-app.register(import("fastify-redis-channels"), config.redis);
+app.register(import("fastify-redis-channels"), config.pubsub);
+app.register(import("fastify-redis"), config.redis);
 app.register(import("fastify-static"), config.ui);
 app.register(import("fastify-static"), config.letsencrypt);
 app.register(import("fastify-websocket"), config.sck);

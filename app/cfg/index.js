@@ -1,6 +1,7 @@
 import { fastify } from "./fastify.js";
 import { docs } from "./docs.js";
 import { mongodb } from "./mongodb.js";
+import { pubsub } from "./pubsub.js";
 import { redis } from "./redis.js";
 import { ui } from "./ui.js";
 import { sck } from "./sck.js";
@@ -12,6 +13,7 @@ export default {
 	fastify,
 	docs,
 	mongodb,
+	pubsub,
 	redis,
 	ui,
 	sck,
