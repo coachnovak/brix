@@ -64,7 +64,7 @@ export default {
 			});
 
 			if (authResponse.status === 201) {
-				globalThis.content.open([{
+				globalThis.contents.open([{
 					name: "success",
 					parameters: {
 						title: "Congratulations!",

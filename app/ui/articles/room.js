@@ -15,7 +15,7 @@ export default {
 
 	script: async _component => {
 		// Close article if user isn't signed in.
-		if (!localStorage.getItem("token")) return globalThis.content.close("room");
+		if (!localStorage.getItem("token")) return globalThis.contents.close("room");
 
 		const nameElement = _component.use("room-profile-name");
 		const statusElement = _component.use("room-profile-status");
@@ -24,7 +24,7 @@ export default {
 
 		if (roomResponse.status !== 200) {
 			globalThis.notify({ text: "We can't find the room you're trying to enter." })
-			return globalThis.content.open([{ name: "rooms" }], { reset: true });
+			return globalThis.contents.open([{ name: "rooms" }], { reset: true });
 		}
 
 		const room = await roomResponse.json();
@@ -80,12 +80,12 @@ export default {
 			globalThis.off("poke", poke);
 		});
 
-		// globalThis.content.open([
+		// globalThis.contents.open([
 		// 	{ name: "reactions", parameters: { room, stream } },
 		// 	{ name: "collaboration", parameters: { room, stream } }
 		// ]);
 
-		globalThis.content.open([
+		globalThis.contents.open([
 			{ name: "room-views", parameters: { room, stream } }
 		]);
 

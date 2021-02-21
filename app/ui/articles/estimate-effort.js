@@ -19,7 +19,7 @@ export default {
 
 	script: async _component => {
 		// Close article if user isn't signed in.
-		if (!localStorage.getItem("token")) return globalThis.content.close("estimate-effort");
+		if (!localStorage.getItem("token")) return globalThis.contents.close("estimate-effort");
 
 		const manageNewElement = _component.use("estimate-effort-manage-new");
 		manageNewElement.on("activated", () => {
@@ -33,7 +33,7 @@ export default {
 				{ id: "sp8", icon: "vote-yea", text: "8 story points" }
 			];
 
-			globalThis.content.close("estimate-effort");
+			globalThis.contents.close("estimate-effort");
 			_component.parameters.stream.send("new-estimate-work", { turnid, options });
 		});
 

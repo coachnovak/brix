@@ -41,7 +41,7 @@ export class tabs extends base {
 	}
 
 	activate (_id) {
-		const oldButtonElement = this.use(`tab_${this.selected ?? ""}`);
+		const oldButtonElement = this.use(`tab_${this.selected}`);
 		if (oldButtonElement) oldButtonElement.classList.remove("selected");
 
 		const newButtonElement = this.use(`tab_${_id}`);

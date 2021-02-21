@@ -39,7 +39,7 @@ export default {
 
 	script: async _component => {
 		// Close article if user isn't signed in.
-		if (!localStorage.getItem("token")) return globalThis.content.close("reactions");
+		if (!localStorage.getItem("token")) return globalThis.contents.close("reactions");
 
 		const stream = _component.parameters.stream;
 

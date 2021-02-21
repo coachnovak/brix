@@ -36,7 +36,7 @@ export default {
 
 	script: async _component => {
 		// Close article if user isn't signed in.
-		if (!localStorage.getItem("token")) return globalThis.content.close("estimate-effort-result");
+		if (!localStorage.getItem("token")) return globalThis.contents.close("estimate-effort-result");
 
 		const turnidElement = _component.use("estimate-effort-result-id");
 		const byElement = _component.use("estimate-effort-result-by");
@@ -95,13 +95,13 @@ export default {
 		}
 
 		_component.use("estimate-effort-result-actions-trash").on("activated", () => {
-			globalThis.content.close([
+			globalThis.contents.close([
 				"estimate-effort",
 				"estimate-effort-turn",
 				"estimate-effort-result"
 			]);
 
-			globalThis.content.open([
+			globalThis.contents.open([
 				{
 					name: "estimate-effort",
 					parameters: {

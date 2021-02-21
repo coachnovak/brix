@@ -12,13 +12,13 @@ export default {
 
 	script: async _component => {
 		// Close article if user isn't signed in.
-		if (!localStorage.getItem("token")) return globalThis.content.close("participants");
+		if (!localStorage.getItem("token")) return globalThis.contents.close("participants");
 
 		let scheduledUpdateTimer = null;
 		const participantsElement = _component.use("room-participants-list");
 
 		const update = async () => {
-			if (!localStorage.getItem("token")) return globalThis.content.close("participants");
+			if (!localStorage.getItem("token")) return globalThis.contents.close("participants");
 
 			const participantsResponse = await globalThis.fetcher(`/api/participants/${_component.parameters.room._id}`, { method: "get" });
 			if (participantsResponse.status !== 200) return;

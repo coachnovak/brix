@@ -30,12 +30,12 @@ globalThis.fetcher = async (_url, _options = {}) => {
 	return response;
 };
 
-globalThis.content = {
+globalThis.contents = {
 	open: (_article, _options = {}) => {
 		if (!(_article instanceof Array))
 			_article = [_article];
 
-		if (_options.reset) globalThis.content.close();
+		if (_options.reset) globalThis.contents.close();
 		const contents = document.getElementById("contents");
 		const oldarticles = Array.from(contents.children).reverse();
 
@@ -95,6 +95,38 @@ globalThis.content = {
 	}
 };
 
+globalThis.windows = {
+	open: (_article, _options = {}) => {
+		const windows = document.getElementById("windows");
+		const id = Math.random().toString(36).substr(2, 12).toUpperCase();
+
+		// Create shadow if no previous window existed.
+		if (windows.children.length === 0) {
+
+		}
+
+		windows.appendChild(new article({
+			id,
+			name: _article.name,
+			parameters: _article.parameters ? _article.parameters : {}
+		}));
+
+		return id;
+	},
+
+	close: (_id) => {
+		const windows = document.getElementById("windows");
+		Array.from(windows.children).forEach(_article => {
+			if (_article.id === _id) _article.close({ action: "closed" });
+		});
+
+		// Delete shadow if no window exists anymore.
+		if (windows.children.length === 0) {
+
+		}
+	}
+};
+
 globalThis.notify = ({ text, icon = "info-circle" }) => {
 	document.getElementById("notifications").push({ text, icon });
 	window.scrollTo(0, document.body.scrollHeight);
@@ -111,7 +143,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		localStorage.removeItem("expires");
 
 		globalThis.emit("security.signedout");
-		globalThis.content.open([{ name: "doormat" }], { reset: true });
+		globalThis.contents.open([{ name: "doormat" }], { reset: true });
 	};
 
 	const verifySessionExpiration = () => {
@@ -133,11 +165,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	document.getElementById("button.home").on("activated", () => {
 		let tokenInStore = localStorage.getItem("token");
-		if (tokenInStore) globalThis.content.open([{ name: "rooms" }], { reset: true });
-		else globalThis.content.open([{ name: "doormat" }], { reset: true });
+		if (tokenInStore) globalThis.contents.open([{ name: "rooms" }], { reset: true });
+		else globalThis.contents.open([{ name: "doormat" }], { reset: true });
 	});
 
-	document.getElementById("button.signin").on("activated", () => globalThis.content.open([{ name: "signin" }], { reset: true }));
+	document.getElementById("button.signin").on("activated", () => globalThis.contents.open([{ name: "signin" }], { reset: true }));
 	document.getElementById("button.signout").on("activated", () => signOut);
 
 	// Handle signed in and signed out.
@@ -158,6 +190,6 @@ document.addEventListener("DOMContentLoaded", () => {
 	globalThis.emit(tokenInStore ? "security.signedin" : "security.signedout");
 
 	// Open first article.
-	if (tokenInStore) globalThis.content.open([{ name: "rooms" }]);
-	else globalThis.content.open([{ name: "doormat" }]);
+	if (tokenInStore) globalThis.contents.open([{ name: "rooms" }]);
+	else globalThis.contents.open([{ name: "doormat" }]);
 });

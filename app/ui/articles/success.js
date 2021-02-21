@@ -45,7 +45,7 @@ export default {
 		if (_component.parameters && _component.parameters.action) {
 			const actionElement = actionsElement.appendChild(new button(_component.parameters.action.options ? _component.parameters.action.options : {}));
 			actionElement.on("activated", () => {
-				globalThis.content.open([_component.parameters.action.article], { reset: true });
+				globalThis.contents.open([_component.parameters.action.article], { reset: true });
 			});
 		}
 

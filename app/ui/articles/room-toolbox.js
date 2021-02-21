@@ -9,7 +9,7 @@ export default {
 
 	script: async _component => {
 		// Close article if user isn't signed in.
-		if (!localStorage.getItem("token")) return globalThis.content.close("tools");
+		if (!localStorage.getItem("token")) return globalThis.contents.close("tools");
 
 		const utilitiesElement = _component.use("room-toolbox-list");
 
@@ -23,13 +23,13 @@ export default {
 		});
 
 		estimateEffortElement.on("activated", _event => {
-			// globalThis.content.open([
+			// globalThis.contents.open([
 			// 	{ name: "estimate-effort", parameters: _component.parameters }
 			// ]);
 		});
 
 		_component.on("disposing", () => {
-			globalThis.content.close("room-participants");
+			globalThis.contents.close("room-participants");
 		});
 	}
 };
