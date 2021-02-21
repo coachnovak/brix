@@ -12,9 +12,9 @@ export class tabs extends base {
 
 		this.styles.push(`
 			#buttons { text-align: center; }
-			#buttons > app-button { display: inline-grid; margin-right: 5px; }
+			#buttons > app-button { display: inline-grid; margin-right: 20px; }
 			#buttons > app-button:last-child { margin-right: 0; }
-			#buttons > app-button.selected { border-bottom-color: var(--paper-3); }
+			#buttons > app-button.selected { border-bottom-color: var(--paper-4); }
 		`);
 	}
 
