@@ -16,7 +16,6 @@ export class article extends base {
 
 	async connectedCallback () {
 		await super.connectedCallback();
-		await super.readInIcons();
 
 		if (this.article !== "") {
 			const articleInstance = (await import(`/articles/${this.name}.js`)).default;

@@ -1,6 +1,7 @@
 import socket from "/components/socket.js";
 
 import { article } from "/components/article.js";
+import { shadow } from "/components/shadow.js";
 import { identity } from "/components/identity.js";
 import { button } from "/components/button.js";
 import { notifications } from "/components/notifications.js";
@@ -36,7 +37,7 @@ globalThis.contents = {
 		const contents = document.getElementById("contents");
 		const newarticle = new article({
 			id, name: _article.name,
-			parameters: _article.parameters ? _article.parameters : {}
+			parameters: _article.parameters || {}
 		});
 
 		contents.appendChild(newarticle);
@@ -82,14 +83,12 @@ globalThis.windows = {
 		const id = Math.random().toString(36).substr(2, 12).toUpperCase();
 
 		// Create shadow if no previous window existed.
-		if (windows.children.length === 0) {
-
-		}
+		if (windows.children.length === 0) windows.appendChild(new shadow({ id: "shadow" }));
 
 		windows.appendChild(new article({
 			id,
 			name: _article.name,
-			parameters: _article.parameters ? _article.parameters : {}
+			parameters: _article.parameters || {}
 		}));
 
 		return id;
@@ -102,9 +101,7 @@ globalThis.windows = {
 		});
 
 		// Delete shadow if no window exists anymore.
-		if (windows.children.length === 0) {
-
-		}
+		if (windows.children.length === 0) document.getElementById("shadow").close();
 	}
 };
 
