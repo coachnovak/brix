@@ -70,10 +70,8 @@ globalThis.contents = {
 
 		let close = false;
 		articles.forEach(_article => {
-			if (_article.name === _name)
-				close = true;
-			else if (close === true)
-				_article.close();
+			if (_article.name === _name) close = true;
+			else if (close === true) _article.close();
 		});
 	}
 };
