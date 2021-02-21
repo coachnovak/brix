@@ -81,7 +81,8 @@ export default {
 					});
 
 					roomElement.on("activated", _event => {
-						globalThis.contents.open([{ name: "room", parameters: { alias: _event.detail.alias } }], { reset: true });
+						globalThis.contents.close();
+						globalThis.contents.open({ name: "room", parameters: { alias: _event.detail.alias } });
 					});
 				}
 			}
@@ -103,11 +104,9 @@ export default {
 			const aliasValid = /^[a-zA-Z0-9]{10}$/.test(joinAliasElement.value());
 			if (!aliasValid) return;
 
-			if (localStorage.getItem("token")) {
-				globalThis.contents.open([{ name: "room", parameters: { alias: joinAliasElement.value() } }], { reset: true });
-			} else {
-				globalThis.contents.open([{ name: "signin" }], { reset: true });
-			}
+			globalThis.contents.close();
+			if (localStorage.getItem("token")) globalThis.contents.open({ name: "room", parameters: { alias: joinAliasElement.value() } });
+			else globalThis.contents.open({ name: "signin" });
 		});
 
 		const prefillAlias = () => {
@@ -135,7 +134,8 @@ export default {
 
 			if (roomResponse.status === 201) {
 				const room = await roomResponse.json();
-				globalThis.contents.open([{ name: "room", parameters: { alias: room.alias } }], { reset: true });
+				globalThis.contents.close();
+				globalThis.contents.open({ name: "room", parameters: { alias: room.alias } });
 			}
 		});
 

@@ -101,15 +101,13 @@ export default {
 				"estimate-effort-result"
 			]);
 
-			globalThis.contents.open([
-				{
-					name: "estimate-effort",
-					parameters: {
-						room: _component.parameters.room,
-						stream: _component.parameters.stream
-					}
+			globalThis.contents.open({
+				name: "estimate-effort",
+				parameters: {
+					room: _component.parameters.room,
+					stream: _component.parameters.stream
 				}
-			]);
+			});
 		});
 
 		globalThis.on("vote-estimate-work", voteEstimateWork);

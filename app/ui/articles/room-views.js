@@ -14,7 +14,7 @@ export default {
 
 		tabsElement.on("selected", () => {
 			globalThis.contents.cut("room-views");
-			globalThis.contents.open([{ name: tabsElement.selected, parameters: _component.parameters }]);
+			globalThis.contents.open({ name: tabsElement.selected, parameters: _component.parameters });
 		});
 
 		tabsElement.on("ready", () => {

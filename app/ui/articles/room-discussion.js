@@ -44,10 +44,10 @@ export default {
 
 		globalThis.on("comment", newComment);
 
-		globalThis.contents.open([{
+		globalThis.contents.open({
 			name: "room-discussion-new",
 			parameters: { room: _component.parameters.room, stream: _component.parameters.stream }
-		}]);
+		});
 
 		_component.on("disposing", () => {
 			globalThis.contents.close("room-discussion-new");

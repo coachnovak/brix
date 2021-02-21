@@ -64,15 +64,14 @@ export default {
 			});
 
 			if (authResponse.status === 201) {
-				globalThis.contents.open([{
+				lobalThis.contents.reset();
+				globalThis.contents.open({
 					name: "success",
 					parameters: {
 						title: "Congratulations!",
 						description: "Your account has been created.",
 						action: { options: { icon: "sign-in", text: "Sign in", composition: "text icon" }, article: { name: "signin" } }
 					}
-				}], {
-					reset: true
 				});
 			}
 		});

@@ -38,7 +38,7 @@
 
 html,
 body { margin: 0; padding: 0; background: black; }
-body { font-family: 'Roboto', sans-serif; font-size: 8pt; font-weight: 300; line-height: 100%; }
+body { font-family: 'Roboto', sans-serif; font-size: 8pt; font-weight: 300; line-height: 100%; overflow: hidden; }
 
 #cover { position: fixed; left: 0; top: 0; right: 0; bottom: 0; background: center url(/assets/cover.jpg); background-size: cover; }
 

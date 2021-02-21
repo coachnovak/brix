@@ -24,7 +24,8 @@ export default {
 
 		if (roomResponse.status !== 200) {
 			globalThis.notify({ text: "We can't find the room you're trying to enter." })
-			return globalThis.contents.open([{ name: "rooms" }], { reset: true });
+			globalThis.contents.close();
+			return globalThis.contents.open({ name: "rooms" });
 		}
 
 		const room = await roomResponse.json();
@@ -80,14 +81,9 @@ export default {
 			globalThis.off("poke", poke);
 		});
 
-		// globalThis.contents.open([
-		// 	{ name: "reactions", parameters: { room, stream } },
-		// 	{ name: "collaboration", parameters: { room, stream } }
-		// ]);
-
-		globalThis.contents.open([
-			{ name: "room-views", parameters: { room, stream } }
-		]);
+		// globalThis.contents.open({ name: "reactions", parameters: { room, stream } });
+		// globalThis.contents.open({ name: "collaboration", parameters: { room, stream } });
+		globalThis.contents.open({ name: "room-views", parameters: { room, stream } });
 
 		globalThis.on("ready", heartbeat);
 		globalThis.on("poke", poke);
