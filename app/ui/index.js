@@ -80,28 +80,13 @@ globalThis.contents = {
 globalThis.windows = {
 	open: (_article, _options = {}) => {
 		const windows = document.getElementById("windows");
-		const id = Math.random().toString(36).substr(2, 12).toUpperCase();
+		const shadowElement = windows.appendChild(new shadow());
 
-		// Create shadow if no previous window existed.
-		if (windows.children.length === 0) windows.appendChild(new shadow({ id: "shadow" }));
-
-		windows.appendChild(new article({
-			id,
+		return windows.appendChild(new article({
 			name: _article.name,
-			parameters: _article.parameters || {}
+			parameters: _article.parameters || {},
+			shadow: shadowElement
 		}));
-
-		return id;
-	},
-
-	close: (_id) => {
-		const windows = document.getElementById("windows");
-		Array.from(windows.children).forEach(_article => {
-			if (_article.id === _id) _article.close({ action: "closed" });
-		});
-
-		// Delete shadow if no window exists anymore.
-		if (windows.children.length === 0) document.getElementById("shadow").close();
 	}
 };
 
@@ -114,6 +99,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	// Setup event quick access
 	globalThis.emit = (_name, _data) => document.dispatchEvent(new CustomEvent(_name, { detail: _data }));
 	globalThis.on = (_name, _function) => document.addEventListener(_name, _function);
+	globalThis.once = (_name, _function) => document.addEventListener(_name, _function, { once: true });
 	globalThis.off = (_name, _function) => document.removeEventListener(_name, _function);
 
 	const signOut = () => {
