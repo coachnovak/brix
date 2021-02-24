@@ -22,6 +22,7 @@ export class listItem extends base {
 
 			#text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 			#since { white-space: nowrap; }
+			#until { white-space: nowrap; }
 			#count { white-space: nowrap; opacity: 0.5; }
 		`);
 	}
@@ -35,22 +36,26 @@ export class listItem extends base {
 		let elements = [];
 
 		this.contents.forEach(_content => {
-			if (_content.avatar) {
+			if (_content.avatar !== undefined) {
 				composition.push("min-content");
 				elements.push(`<div id="avatar"><i class="fad fa-${_content.avatar}"></i></div>`);
-			} else if (_content.text) {
+			} else if (_content.text !== undefined) {
 				composition.push("auto");
 				elements.push(`<div id="text">${_content.text}</div>`);
-			} else if (_content.since) {
+			} else if (_content.since !== undefined) {
 				composition.push("min-content");
 				elements.push(`<div id="since" datetime="${_content.since}"></div>`);
-			} else if (_content.count) {
+			} else if (_content.until !== undefined) {
+				composition.push("min-content");
+				if (_content.until) elements.push(`<div id="until">expires <span datetime="${_content.until}"></span></div>`);
+				else elements.push(`<div id="until">won't expire</div>`);
+			} else if (_content.count !== undefined) {
 				composition.push("min-content");
 				elements.push(`<div id="count">${_content.count}</div>`);
-			} else if (_content.icon) {
+			} else if (_content.icon !== undefined) {
 				composition.push("min-content");
 				elements.push(`<i class="fad fa-${_content.icon}"></i>`);
-			} else if (_content.arrow) {
+			} else if (_content.arrow !== undefined) {
 				composition.push("min-content");
 				elements.push(`<i class="fad fa-arrow-right"></i>`);
 			}
@@ -72,8 +77,12 @@ export class listItem extends base {
 		const since = this.use("since");
 		if (since) timeago.render(since);
 
+		const until = this.use("#until > span", { query: true });
+		if (until) timeago.render(until);
+
 		this.on("disposing", () => {
 			if (since) timeago.cancel(since);
+			if (until) timeago.cancel(until);
 		});
 	}
 }

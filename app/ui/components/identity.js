@@ -7,7 +7,8 @@ export class identity extends base {
         }));
 
 		this
-			.property("display", _properties.display ? _properties.display : null);
+			.property("display", _properties.display ? _properties.display : null)
+			.property("user", _properties.user ? _properties.user : null, { attribute: false });
 
         this.styles.push(`
 			:host { position: relative; }
@@ -44,6 +45,7 @@ export class identity extends base {
 				this.use("display").innerHTML = `${this.user.firstName} ${this.user.lastName}`;
 			}
 		} else {
+			this.user = null;
 			this.use("display").innerHTML = "";
 		}
 	}

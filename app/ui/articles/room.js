@@ -15,12 +15,11 @@ export default {
 
 	script: async _component => {
 		// Close article if user isn't signed in.
-		if (!localStorage.getItem("token")) return globalThis.contents.close("room");
+		if (!localStorage.getItem("token")) return _component.close();
 
 		const nameElement = _component.use("room-profile-name");
 		const statusElement = _component.use("room-profile-status");
-
-		const roomResponse = await globalThis.fetcher(`/api/room/${_component.parameters.alias}`, { method: "get" });
+		const roomResponse = await globalThis.fetcher(`/api/room/${_component.parameters.id || _component.parameters.alias}`, { method: "get" });
 
 		if (roomResponse.status !== 200) {
 			globalThis.notify({ text: "We can't find the room you're trying to enter." })
@@ -36,6 +35,10 @@ export default {
 		const stream = new socket("room");
 		let scheduledHeartbeatTimer = -1;
 		let scheduledPokeTimer = -1;
+
+		const renamed = async _event => {
+			nameElement.innerHTML = _event.detail.name;
+		}
 
 		const heartbeat = async () => {
 			stream.send("heartbeat");
@@ -85,6 +88,7 @@ export default {
 		// globalThis.contents.open({ name: "collaboration", parameters: { room, stream } });
 		globalThis.contents.open({ name: "room-views", parameters: { room, stream } });
 
+		globalThis.on(`${room._id} renamed`, renamed);
 		globalThis.on("ready", heartbeat);
 		globalThis.on("poke", poke);
 	}

@@ -27,7 +27,7 @@ export default {
 
 	script: async _component => {
 		// Close article if user isn't signed in.
-		if (!localStorage.getItem("token")) return globalThis.contents.close("comments");
+		if (!localStorage.getItem("token")) return _component.close();
 
 		const containerElement = _component.use("discussion-list-container");
 		const newComment = (_event, _skipanimation = false) => {

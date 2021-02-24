@@ -45,8 +45,15 @@ export default {
 		if (_component.parameters && _component.parameters.action) {
 			const actionElement = actionsElement.appendChild(new button(_component.parameters.action.options ? _component.parameters.action.options : {}));
 			actionElement.on("activated", () => {
-				globalThis.contents.close();
-				globalThis.contents.open(_component.parameters.action.article);
+				_component.close("closed");
+
+				if (_component.parameters.action.contents)
+					globalThis.contents.open(_component.parameters.action.contents);
+				else if (_component.parameters.action.windows)
+					if (_component.parameters.action.windows.name)
+						globalThis.contents.open(_component.parameters.action.windows);
+					else if (_component.parameters.action.windows.close)
+						_component.close("closed");
 			});
 		}
 

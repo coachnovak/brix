@@ -3,55 +3,65 @@ import { button } from "/components/button.js";
 
 export default {
 	styles: `
-		.register.container { display: grid; grid-gap: 20px; width: 100%; grid-template-columns: repeat(auto-fill, 100%); }
-		.register.container .head { grid-column: 1 / -1; }
-		.register.container .buttons { display: grid; grid-gap: 20px; grid-template-columns: repeat(auto-fill, 100%); grid-column: 1 / -1; }
+		#register { display: grid; grid-gap: 20px; width: 100%; grid-template-columns: repeat(auto-fill, 100%); }
+		#register-head { grid-column: 1 / -1; }
+		#register-buttons { display: grid; grid-gap: 20px; grid-template-columns: repeat(auto-fill, 100%); grid-column: 1 / -1; }
+		#register-buttons app-button { width: 100%; }
 
 		@media all and (min-width: 256px) {
-			.register.container .buttons { grid-template-columns: repeat(auto-fill, 50%); }
+			#register-buttons { grid-template-columns: repeat(auto-fill, calc(50% - 10px)); }
 		}
 
 		@media all and (min-width: 456px) {
-			.register.container { grid-template-columns: repeat(auto-fill, calc(50% - 10px)); }
-			.register.container .buttons { grid-template-columns: repeat(auto-fill, 25%); }
+			#register { grid-template-columns: repeat(auto-fill, calc(50% - 10px)); }
+			#register-buttons { grid-template-columns: repeat(auto-fill, 25%); }
 		}
 	`,
 
 	markup: `
-		<div class="register container">
-			<div class="head">
+		<div id="register">
+			<div id="register-head">
 				<h2>User registration</h2>
 			</div>
 
-			<app-textbox type="textbox" id="register.email" placeholder="Whats your e-mail"></app-textbox>
-			<app-textbox type="password" id="register.password" placeholder="Whats your password"></app-textbox>
-			<app-textbox type="textbox" id="register.firstname" placeholder="Whats your first name"></app-textbox>
-			<app-textbox type="textbox" id="register.lastname" placeholder="Whats your last name"></app-textbox>
+			<app-textbox type="textbox" id="register-email" placeholder="Whats your e-mail"></app-textbox>
+			<app-textbox type="password" id="register-password" placeholder="Whats your password"></app-textbox>
+			<app-textbox type="textbox" id="register-firstname" placeholder="Whats your first name"></app-textbox>
+			<app-textbox type="textbox" id="register-lastname" placeholder="Whats your last name"></app-textbox>
 
-			<div class="buttons">
-				<app-button id="register.continue" text="Register" icon="check" composition="text icon"></app-button>
+			<div id="register-buttons">
+				<app-button id="register-continue" text="Register" icon="check" composition="text icon"></app-button>
+				<app-button id="register-cancel" text="Cancel" composition="text" embedded="true"></app-button>
 			</div>
 		</div>
 	`,
 
 	script: async _component => {
-		const emailElement = _component.use("register.email");
+		const emailElement = _component.use("register-email");
 		emailElement.on("ready", () => emailElement.focus());
 
-		const passwordElement = _component.use("register.password");
-		const firstnameElement = _component.use("register.firstname");
-		const lastnameElement = _component.use("register.lastname");
+		const passwordElement = _component.use("register-password");
+		const firstnameElement = _component.use("register-firstname");
+		const lastnameElement = _component.use("register-lastname");
 
-		_component.use("register.continue").on("activated", async () => {
+		_component.shadow.once("activated", async () => {
+			_component.close("cancelled");
+		});
+
+		_component.use("register-cancel").once("activated", async () => {
+			_component.close("cancelled");
+		});
+
+		_component.use("register-continue").on("activated", async () => {
 			const emailValid = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(emailElement.value());
 			const passwordValid = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{7,15}$/.test(passwordElement.value());
 			const firstnameValid = /^[a-zA-Z\u00C0-\u00ff]+$/i.test(firstnameElement.value());
 			const lastnameValid = /^[a-zA-Z\u00C0-\u00ff]+$/.test(lastnameElement.value());
 
-			if (!emailValid) return;
-			if (!passwordValid) return;
-			if (!firstnameValid) return;
-			if (!lastnameValid) return;
+			if (!emailValid) return globalThis.notify({ icon: "exclamation-circle", text: "Invalid e-mail provided." });
+			if (!passwordValid) return globalThis.notify({ icon: "exclamation-circle", text: "Invalid password provided." });
+			if (!firstnameValid) return globalThis.notify({ icon: "exclamation-circle", text: "Invalid first name provided." });
+			if (!lastnameValid) return globalThis.notify({ icon: "exclamation-circle", text: "Invalid last name provided." });
 
 			const authResponse = await globalThis.fetcher(`/api/security/register/`, {
 				method: "post",
@@ -64,13 +74,15 @@ export default {
 			});
 
 			if (authResponse.status === 201) {
-				lobalThis.contents.reset();
+				_component.close("registered");
+
+				globalThis.contents.close();
 				globalThis.contents.open({
 					name: "success",
 					parameters: {
 						title: "Congratulations!",
 						description: "Your account has been created.",
-						action: { options: { icon: "sign-in", text: "Sign in", composition: "text icon" }, article: { name: "signin" } }
+						action: { options: { icon: "sign-in", text: "Sign in", composition: "text icon" }, windows: { name: "signin" } }
 					}
 				});
 			}

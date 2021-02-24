@@ -9,7 +9,7 @@ export default {
 
 	script: async _component => {
 		// Close article if user isn't signed in.
-		if (!localStorage.getItem("token")) return globalThis.contents.close("tools");
+		if (!localStorage.getItem("token")) return _component.close();
 
 		const utilitiesElement = _component.use("room-toolbox-list");
 

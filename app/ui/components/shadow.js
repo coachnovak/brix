@@ -9,6 +9,8 @@ export class shadow extends base {
 
 	async connectedCallback () {
 		await super.connectedCallback();
+
+		this.on("click", () => this.emit("activated"));
 	}
 
 	async close () {

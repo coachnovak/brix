@@ -22,6 +22,11 @@ export default {
 			tabsElement.add("room-participants", { icon: "users", composition: "icon" });
 			tabsElement.add("room-toolbox", { icon: "toolbox", composition: "icon" });
 			tabsElement.add("room-history", { icon: "history", composition: "icon" });
+
+			// Show admin tabs if user owns the room.
+			const currentUserId = document.getElementById("identity").user._id;
+			if (_component.parameters.room.owner === currentUserId)
+				tabsElement.add("room-configurations", { icon: "cog", composition: "icon" });
 		});
 	}
 };

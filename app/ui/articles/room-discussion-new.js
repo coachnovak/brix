@@ -12,7 +12,7 @@ export default {
 
 	script: async _component => {
 		// Close article if user isn't signed in.
-		if (!localStorage.getItem("token")) return globalThis.contents.close("comments");
+		if (!localStorage.getItem("token")) return _component.close();
 
 		const newTextboxElement = _component.use("discussion-new-comment");
 		const newButtonElement = _component.use("discussion-new-publish");

@@ -12,7 +12,7 @@ export default {
 
 	script: async _component => {
 		// Close article if user isn't signed in.
-		if (!localStorage.getItem("token")) return globalThis.contents.close("participants");
+		if (!localStorage.getItem("token")) return _component.close();
 
 		let scheduledUpdateTimer = null;
 		const participantsElement = _component.use("room-participants-list");
@@ -21,7 +21,7 @@ export default {
 			if (!localStorage.getItem("token")) return globalThis.contents.close("participants");
 
 			const participantsResponse = await globalThis.fetcher(`/api/participants/${_component.parameters.room._id}`, { method: "get" });
-			if (participantsResponse.status !== 200) return;
+			if (participantsResponse.status !== 200) return globalThis.notify({ icon: "exclamation-circle", text: "Failed to retrieve participants." });
 
 			const participants = await participantsResponse.json();
 			const participantsChildren = Array.from(participantsElement.children());
@@ -60,8 +60,13 @@ export default {
 		}
 
 		_component.on("disposing", () => {
+			globalThis.contents.close("room-invites");
 			clearTimeout(scheduledUpdateTimer);
 		});
+
+		const user = document.getElementById("identity").user;
+		if (user && user._id === _component.parameters.room.owner)
+			globalThis.contents.open({ name: "room-invites", parameters: _component.parameters });
 
 		await update();
 	}

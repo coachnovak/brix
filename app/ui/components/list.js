@@ -11,7 +11,7 @@ export class list extends base {
 			.property("count", _properties.count ? _properties.count : 0);
 
 		this.styles.push(`
-			:host { display: grid; grid-template-columns: auto; }
+			:host { display: grid; grid-template-columns: auto; line-height: 100%; }
 
 			/* @media all and (min-width: 276px) {
 				:host([break="2"]),

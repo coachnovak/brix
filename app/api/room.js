@@ -6,7 +6,7 @@ export default async (_app, _options) => {
 	}, async (_request, _response) => {
 		const isObjectId = /^[a-f\d]{24}$/i.test(_request.params.id);
 		const isAlias = /^[a-zA-Z0-9]{10}$/.test(_request.params.id);
-		if (!isObjectId && !isAlias) return _response.status(400).send("Provided id or alias is invalid.");
+		if (!isObjectId && !isAlias) return _response.status(400).send({ message: "Provided id or alias is invalid." });
 
 		const room = await _app.mongo.db.collection("rooms").findOne(
 			isObjectId ? { _id: new _app.mongo.ObjectId(_request.params.id) } : { alias: _request.params.id.toLowerCase() }
@@ -52,22 +52,27 @@ export default async (_app, _options) => {
 		}
 
 		const response = await _app.mongo.db.collection("rooms").insertOne(room);
-		if (response.result?.ok !== 1) return _response.status(500).send("Failed to create a new room.");
+		if (response.result?.ok !== 1) return _response.status(500).send({ message: "Failed to create a new room." });
 
 		room._id = response?.insertedId;
 		return _response.status(201).send(room);
 	});
 
-	_app.put("/:id", {
+	_app.put("/rename/:id", {
 		preValidation: [_app.authentication]
 	}, async (_request, _response) => {
 		const isObjectId = /^[a-f\d]{24}$/i.test(_request.params.id);
-		if (!isObjectId) return _response.status(400).send("Provided id is invalid.");
+		if (!isObjectId) return _response.status(400).send({ message: "Provided id is invalid." });
 
-		const response = await _app.mongo.db.collection("rooms").updateOne({ _id: new _app.mongo.ObjectId(_request.params.id) }, { $set: _request.body });
-		if (response.result?.ok !== 1) return _response.status(500).send("Failed to update a room.");
+		const roomResult = await _app.mongo.db.collection("rooms").findOne({ _id: new _app.mongo.ObjectId(_request.params.id) });
+		if (!roomResult) return _response.status(404).send({ message: "Room couldn't be found." });
+		if (roomResult.owner.toString() !== _request.user.user) return _response.status(401).send({ message: "Room can only be renamed by the owner." });
+		roomResult.name = _request.body?.name ?? "Untitled";
 
-		return _response.status(200).send();
+		const response = await _app.mongo.db.collection("rooms").updateOne({ _id: roomResult._id }, { $set: { name: _request.body?.name } });
+		if (response.result?.ok !== 1) return _response.status(500).send({ message: "Failed to rename the room." });
+
+		return _response.status(200).send(roomResult);
 	});
 
 	_app.delete("/:id", {
@@ -76,8 +81,18 @@ export default async (_app, _options) => {
 		const isObjectId = /^[a-f\d]{24}$/i.test(_request.params.id);
 		if (!isObjectId) return _response.status(400).send({ message: "Provided id is invalid." });
 
-		const response = await _app.mongo.db.collection("rooms").deleteOne({ _id: new _app.mongo.ObjectId(_request.params.id) });
-		if (response.result?.ok !== 1) return _response.status(500).send("Failed to update a room.");
+		const roomResult = await _app.mongo.db.collection("rooms").findOne({ _id: new _app.mongo.ObjectId(_request.params.id) });
+		if (!roomResult) return _response.status(404).send({ message: "Room couldn't be found." });
+		if (roomResult.owner.toString() !== _request.user.user) return _response.status(401).send({ message: "Room can only be deleted by the owner." });
+
+		let response = await _app.mongo.db.collection("rooms").deleteOne({ _id: roomResult._id });
+		if (response.result?.ok !== 1) return _response.status(500).send({ message: "Failed to delete the room." });
+
+		response = await _app.mongo.db.collection("invites").deleteOne({ "room._id": roomResult._id });
+		if (response.result?.ok !== 1) return _response.status(500).send({ message: "Failed to delete room invites." });
+
+		response = await _app.mongo.db.collection("events").deleteOne({ "room": roomResult._id });
+		if (response.result?.ok !== 1) return _response.status(500).send({ message: "Failed to delete room events." });
 
 		return _response.status(200).send();
 	});

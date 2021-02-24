@@ -24,9 +24,11 @@ app.register(import("./api/security.js"), { prefix: "api/security" });
 app.register(import("./api/participant.js"), { prefix: "api/participant" });
 app.register(import("./api/participants.js"), { prefix: "api/participants" });
 app.register(import("./api/room.js"), { prefix: "api/room" });
+app.register(import("./api/room-invites.js"), { prefix: "api/room/invites" });
 app.register(import("./api/rooms.js"), { prefix: "api/rooms" });
 app.register(import("./api/comments.js"), { prefix: "api/comments" });
 app.register(import("./api/events.js"), { prefix: "api/events" });
+app.register(import("./api/my-invites.js"), { prefix: "api/my/invites" });
 
 // Register sck routes.
 app.register(import("./sck/room.js"), { prefix: "sck" });

@@ -17,9 +17,7 @@ globalThis.fetcher = async (_url, _options = {}) => {
 
 	switch (response.status) {
 		case 401:
-			localStorage.removeItem("token");
-			globalThis.emit("security.signedout");
-			globalThis.notify({ icon: "shield-alt", text: "Access to the requested information denied." });
+			globalThis.notify({ icon: "shield-alt", text: "Access to the requested operation denied." });
 			break;
 
 		case 500:
@@ -32,11 +30,10 @@ globalThis.fetcher = async (_url, _options = {}) => {
 };
 
 globalThis.contents = {
-	open: (_article, _options = {}) => {
-		const id = Math.random().toString(36).substr(2, 12).toUpperCase();
+	open: (_article) => {
 		const contents = document.getElementById("contents");
 		const newarticle = new article({
-			id, name: _article.name,
+			name: _article.name,
 			parameters: _article.parameters || {}
 		});
 
@@ -137,11 +134,10 @@ document.addEventListener("DOMContentLoaded", () => {
 	});
 
 	document.getElementById("button.signin").on("activated", () => {
-		globalThis.contents.close();
-		globalThis.contents.open({ name: "signin" }, { reset: true });
+		globalThis.windows.open({ name: "signin" });
 	});
 
-	document.getElementById("button.signout").on("activated", () => signOut);
+	document.getElementById("button.signout").on("activated", () => signOut());
 
 	// Handle signed in and signed out.
 	globalThis.on("security.signedin", _info => {

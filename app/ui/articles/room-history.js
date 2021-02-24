@@ -25,6 +25,9 @@ export default {
 	`,
 
 	script: async _component => {
+		// Close article if user isn't signed in.
+		if (!localStorage.getItem("token")) return _component.close();
+
 		const start = new Date();
 		start.setHours(start.getHours() - 2);
 
