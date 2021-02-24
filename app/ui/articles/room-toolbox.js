@@ -23,7 +23,7 @@ export default {
 		});
 
 		estimateEffortElement.on("activated", _event => {
-			// globalThis.contents.open({ name: "estimate-effort", parameters: _component.parameters });
+			globalThis.windows.open({ name: "estimate-effort", parameters: _component.parameters });
 		});
 
 		_component.on("disposing", () => {

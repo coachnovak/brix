@@ -78,8 +78,8 @@ export default async (_app, _options) => {
 				// These messages are broadcasted.
 				case "reaction":
 				case "comment":
-				case "new-estimate-work":
-				case "vote-estimate-work":
+				case "new-estimate-effort":
+				case "vote-estimate-effort":
 				case "poke":
 					// Ensure setup has completed before we allow broadcasting.
 					if (!tunnel) return _connection.socket.send(JSON.stringify({ name: "invalid.state", data: "Setup is not completed." }));

@@ -87,7 +87,7 @@ header section app-button:hover { background: var(--paper-2); }
 #windows:empty { display: none; }
 
 #windows app-shadow { display: block; position: fixed; left: 0; top: 0; right: 0; bottom: 0; opacity: 0.3; background: rgb(0, 0, 0); }
-#windows app-article { display: block; position: absolute; top: 0; right: 0; bottom: 0; min-width: 100%; max-width: calc(300px); background: var(--paper-1); color: var(--pen-1); padding: 20px; }
+#windows app-article { display: block; position: absolute; top: 0; right: 0; bottom: 0; min-width: 100%; max-width: calc(300px); max-height: 100vh; background: var(--paper-1); color: var(--pen-1); padding: 20px; overflow: auto; }
 #windows app-article { transform: translateX(100%); opacity: 0; }
 #windows app-article[show="true"] { transform: translateX(0%); opacity: 1; transition-property: transform, opacity; }
 #windows app-article[position="side"] { box-shadow: 0 1px 2px 1px rgba(0, 0, 0, 0.5); }

@@ -57,6 +57,27 @@ export default {
 			}, 500);
 		}
 
+		const newEffortEstimate = async _event => {
+			const parametersToUse = {
+				room,
+				stream,
+				by: _event.detail.data.by,
+				when: _event.detail.data.when,
+				options: _event.detail.data.options,
+				turnid: _event.detail.data.turnid
+			};
+
+			globalThis.windows.open({
+				name: "estimate-effort-result",
+				parameters: parametersToUse
+			});
+
+			globalThis.windows.open({
+				name: "estimate-effort-turn",
+				parameters: parametersToUse
+			});
+		}
+
 		stream.on("open", async () => {
 			stream.send("setup", { room: room._id });
 			statusElement.innerHTML = "Connected";
@@ -79,8 +100,9 @@ export default {
 		_component.on("disposing", () => {
 			stream.close(true);
 
+			globalThis.off(`new-estimate-effort`, newEffortEstimate);
+			globalThis.off(`${room._id} renamed`, renamed);
 			globalThis.off("ready", heartbeat);
-			//globalThis.off("new-estimate-work", newEstimateWork);
 			globalThis.off("poke", poke);
 		});
 
@@ -88,6 +110,7 @@ export default {
 		// globalThis.contents.open({ name: "collaboration", parameters: { room, stream } });
 		globalThis.contents.open({ name: "room-views", parameters: { room, stream } });
 
+		globalThis.on(`new-estimate-effort`, newEffortEstimate);
 		globalThis.on(`${room._id} renamed`, renamed);
 		globalThis.on("ready", heartbeat);
 		globalThis.on("poke", poke);

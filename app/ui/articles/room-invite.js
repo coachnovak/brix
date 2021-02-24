@@ -33,9 +33,9 @@ export default {
 
 	script: async _component => {
 		// Close article if user isn't signed in.
-		if (!localStorage.getItem("token")) return _component.close();
+		if (!localStorage.getItem("token")) return _component.close("cancelled");
 
-		_component.shadow.once("activated", async () => {
+		if (_component.shadow) _component.shadow.once("activated", async () => {
 			_component.close("cancelled");
 		});
 

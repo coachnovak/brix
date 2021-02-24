@@ -1,25 +1,26 @@
 import { list } from "/components/list.js";
 
 export default {
+	options: {
+		position: "side"
+	},
+
 	styles: `
-		#estimate-effort-turn-head { margin-bottom: 10px; text-align: center; }
+		#estimate-effort-turn-head { margin-bottom: 10px; }
 		#estimate-effort-turn-author { font-size: 7pt; text-align: center; margin-bottom: 20px; }
 	`,
 
 	markup: `
 		<div id="estimate-effort-turn">
-			<div id="estimate-effort-turn-head">
-				<h3>Voting in session</h3>
-			</div>
-
+			<h3 id="estimate-effort-turn-head" class="center">Voting in session</h3>
 			<div id="estimate-effort-turn-author">Turn <span id="estimate-effort-turn-id"></span> was initiated by <span id="estimate-effort-turn-by"></span>, <span id="estimate-effort-turn-since"></span>.</div>
-			<app-list id="estimate-effort-turn-options" break="2"></app-list>
+			<app-list id="estimate-effort-turn-options"></app-list>
 		</div>
 	`,
 
 	script: async _component => {
 		// Close article if user isn't signed in.
-		if (!localStorage.getItem("token")) return globalThis.contents.close("estimate-effort-turn");
+		if (!localStorage.getItem("token")) return _component.close("cancelled");
 
 		const turnidElement = _component.use("estimate-effort-turn-id");
 		const byElement = _component.use("estimate-effort-turn-by");
@@ -42,12 +43,12 @@ export default {
 			});
 
 			optionElement.on("activated", () => {
-				_component.parameters.stream.send("vote-estimate-work", {
+				_component.parameters.stream.send("vote-estimate-effort", {
 					turnid: _component.parameters.turnid,
 					voteid: option.id
 				});
 
-				globalThis.contents.close("estimate-effort-turn");
+				_component.close("voted");
 			});
 		}
 

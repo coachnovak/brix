@@ -36,7 +36,7 @@ export default {
 
 	script: async _component => {
 		// Close article if user isn't signed in.
-		if (!localStorage.getItem("token")) return globalThis.contents.close("estimate-effort-result");
+		if (!localStorage.getItem("token")) return _component.close("cancelled");
 
 		const turnidElement = _component.use("estimate-effort-result-id");
 		const byElement = _component.use("estimate-effort-result-by");
@@ -49,7 +49,7 @@ export default {
 		timeago.render(sinceElement);
 
 		const voters = [], votes = [];
-		const voteEstimateWork = async _event => {
+		const voteEstimateEffort = async _event => {
 			if (_event.detail.data.turnid !== _component.parameters.turnid)
 				return;
 
@@ -95,25 +95,13 @@ export default {
 		}
 
 		_component.use("estimate-effort-result-actions-trash").on("activated", () => {
-			globalThis.contents.close([
-				"estimate-effort",
-				"estimate-effort-turn",
-				"estimate-effort-result"
-			]);
-
-			globalThis.contents.open({
-				name: "estimate-effort",
-				parameters: {
-					room: _component.parameters.room,
-					stream: _component.parameters.stream
-				}
-			});
+			_component.close("trashed");
 		});
 
-		globalThis.on("vote-estimate-work", voteEstimateWork);
+		globalThis.on("vote-estimate-effort", voteEstimateEffort);
 
 		_component.on("disposing", () => {
-			globalThis.off("vote-estimate-work", voteEstimateWork);
+			globalThis.off("vote-estimate-effort", voteEstimateEffort);
 		});
 	}
 };

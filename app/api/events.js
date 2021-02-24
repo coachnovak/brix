@@ -55,9 +55,9 @@ export default async (_app, _options) => {
 			};
 
 			switch (_event.name) {
-				case "new-estimate-work":
+				case "new-estimate-effort":
 				case "new-estimate-effort": event.content = `${_event.user.firstName} initiated an effort estimation`; break;
-				case "vote-estimate-work":
+				case "vote-estimate-effort":
 				case "vote-estimate-effort": event.content = `${_event.user.firstName} voted in an effort estimation`; break;
 				case "reaction": event.content = `${_event.user.firstName} reacted with ${reactions[_event.data.reactionType]}`; break;
 				case "comment": event.content = `${_event.user.firstName} contributed to discussion`; break;
