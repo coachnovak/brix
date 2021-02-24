@@ -2,6 +2,7 @@ import { button } from "/components/button.js";
 
 export default {
 	options: {
+		nooverflow: true,
 		full: true
 	},
 
