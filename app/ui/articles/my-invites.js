@@ -10,7 +10,7 @@ export default {
 	markup: `
 		<div id="my-invites" class="my-invites container">
 			<div id="my-invites-head" class="center">
-				<h2>Invitations</h2>
+				<h3>Invitations</h3>
 			</div>
 
 			<div id="my-invites-waiting" class="center">

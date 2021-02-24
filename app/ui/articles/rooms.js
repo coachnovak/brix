@@ -5,12 +5,13 @@ import { button } from "/components/button.js";
 export default {
 	styles: `
 		#rooms-head { margin-bottom: 20px; }
-		#rooms-select { margin-bottom: 20px; }
 	`,
 
 	markup: `
 		<div id="rooms">
 			<div id="rooms-head" class="center">
+				The floor is yours...<br />
+				<br />
 				<h2>What would you like to do?</h2>
 			</div>
 
