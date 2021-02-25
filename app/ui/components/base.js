@@ -146,7 +146,7 @@ export class base extends HTMLElement {
     }
 
 	property (_name, _default, _options = {}) {
-        let defaultValue = _default ? _default : null;
+        let defaultValue = _default !== undefined || _default !== null ? _default : null;
 
         if (defaultValue === null && this.hasAttribute(_name)) {
 			const attributeValue = this.getAttribute(_name);

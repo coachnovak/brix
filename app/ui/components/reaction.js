@@ -23,7 +23,7 @@ export class reaction extends base {
 
 		this.append(`
 			<div class="reaction">
-				<div class="sender">${this.sender} reacted <span class="when" datetime="${this.when}"></span> with <i class="fad fa-${reactions[this.reaction]}"></i>.</div>
+				<div class="sender">${this.sender} reacted <span class="when" datetime="${this.when}"></span> with <i class="fad fa-${reactions[this.reaction]}"></i></div>
 			</div>
 		`);
 
