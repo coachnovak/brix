@@ -19,7 +19,7 @@ export class reaction extends base {
 
 	async connectedCallback () {
 		await super.connectedCallback();
-		const reactions = ["like", "heart", "grin-squint", "surprise", "sad-tear", "angry"];
+		const reactions = ["thumbs-up", "heart", "grin-squint", "surprise", "sad-tear", "angry"];
 
 		this.append(`
 			<div class="reaction">
