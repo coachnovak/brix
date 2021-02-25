@@ -52,7 +52,7 @@ export default {
 
 		const passwordElement = _component.use("signin-password");
 
-		_component.shadow.once("activated", async () => {
+		if (_component.shadow) _component.shadow.once("activated", async () => {
 			_component.close("cancelled");
 		});
 

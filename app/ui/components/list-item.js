@@ -14,7 +14,7 @@ export class listItem extends base {
 			:host { overflow: hidden; }
 
 			#item { display: grid; grid-gap: 15px; padding: 15px; border-radius: 3px; cursor: pointer; transform: translateY(-100%); }
-			#item:hover { background: var(--paper-2); }
+			#item:hover { background: rgba(255, 255, 255, 0.05); }
 			#item[visible="true"] { transform: translateY(0%); }
 
 			#avatar { position: relative; width: 34px; height: 34px; border-radius: 50%; background: var(--paper-3); }

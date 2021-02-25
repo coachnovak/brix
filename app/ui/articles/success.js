@@ -49,13 +49,10 @@ export default {
 			actionElement.on("activated", () => {
 				_component.close("closed");
 
-				if (_component.parameters.action.contents)
+				if (_component.parameters.action.contents && _component.parameters.action.contents.name)
 					globalThis.contents.open(_component.parameters.action.contents);
-				else if (_component.parameters.action.windows)
-					if (_component.parameters.action.windows.name)
-						globalThis.contents.open(_component.parameters.action.windows);
-					else if (_component.parameters.action.windows.close)
-						_component.close("closed");
+				else if (_component.parameters.action.windows && _component.parameters.action.windows.name)
+					globalThis.windows.open(_component.parameters.action.windows);
 			});
 		}
 
