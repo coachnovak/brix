@@ -7,9 +7,9 @@ export class reaction extends base {
         }));
 
 		this
-			.property("sender", _properties.sender ? _properties.sender : null)
-			.property("reaction", _properties.reaction !== undefined ? _properties.reaction : null)
-			.property("when", _properties.when ? _properties.when : null);
+			.property("sender", _properties.sender)
+			.property("reaction", _properties.reaction)
+			.property("when", _properties.when);
 
 		this.styles.push(`
 
