@@ -65,6 +65,8 @@ header section app-button:hover { background: var(--paper-2); }
 #contents app-article[show="true"] { animation: contents-app-article-show forwards; }
 #contents app-article[full="true"] { position: absolute; left: 0; top: 0; right: 0; bottom: 0; }
 #contents app-article[grow="true"] { flex: 1 1 auto; overflow: auto; }
+#contents app-article[paddingless="true"] { padding: 0; }
+#contents app-article[nooverflow="true"] { overflow: hidden; }
 
 @media all and (min-height: 600px) and (min-width: 576px) {
 	#contents { top: 80px; min-height: calc(100% - 100px); border-radius: 4px; }
@@ -90,6 +92,7 @@ header section app-button:hover { background: var(--paper-2); }
 #windows app-article { display: block; position: absolute; top: 0; right: 0; bottom: 0; min-width: 100%; max-width: calc(300px); max-height: 100vh; background: var(--paper-1); color: var(--pen-1); padding: 20px; overflow: auto; }
 #windows app-article { transform: translateX(100%); opacity: 0; }
 #windows app-article[nooverflow="true"] { overflow: hidden; }
+#windows app-article[paddingless="true"] { padding: 0; }
 #windows app-article[show="true"] { transform: translateX(0%); opacity: 1; transition-property: transform, opacity; }
 #windows app-article[position="side"] { box-shadow: 0 1px 2px 1px rgba(0, 0, 0, 0.5); }
 #windows app-article[position="center"] { box-shadow: 1px 0 2px 1px rgba(0, 0, 0, 0.5); }
