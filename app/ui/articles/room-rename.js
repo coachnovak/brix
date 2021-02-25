@@ -22,7 +22,7 @@ export default {
 
 	markup: `
 		<div id="room-rename">
-			<h2>Create a room</h2>
+			<h2>Rename the room</h2>
 			<app-textbox type="textbox" id="room-rename-name" placeholder="Room name"></app-textbox>
 			<div id="room-rename-buttons">
 				<app-button id="room-rename-continue" text="Create" icon="check" composition="text icon"></app-button>
