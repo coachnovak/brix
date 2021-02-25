@@ -12,6 +12,7 @@ export class article extends base {
 			.property("position", _properties.position ? _properties.position : "center")
 			.property("paddingless", _properties.paddingless ? _properties.paddingless : false)
 			.property("nooverflow", _properties.nooverflow ? _properties.nooverflow : false)
+			.property("shelf", _properties.shelf ? _properties.shelf : false)
 			.property("show", _properties.show ? _properties.show : false)
 			.property("full", _properties.full ? _properties.full : false)
 			.property("grow", _properties.grow ? _properties.grow : false)
@@ -26,6 +27,7 @@ export class article extends base {
 
 			if (this.instance.options) {
 				this.nooverflow = this.instance.options.nooverflow ? this.instance.options.nooverflow : this.nooverflow;
+				this.shelf = this.instance.options.shelf ? this.instance.options.shelf : this.shelf;
 				this.paddingless = this.instance.options.paddingless ? this.instance.options.paddingless : this.paddingless;
 				this.position = this.instance.options.position ? this.instance.options.position : this.position;
 				this.full = this.instance.options.full ? this.instance.options.full : this.full;
