@@ -4,15 +4,18 @@ import { button } from "/components/button.js";
 export default {
 	styles: `
 		#register { display: grid; grid-gap: 20px; width: 100%; grid-template-columns: repeat(auto-fill, 100%); }
-		#register-head { grid-column: 1 / -1; }
+		#register-head { grid-column: 1 / -1; text-align: center; margin-bottom: 10px; }
+		#register-image { grid-column: 1 / -1; text-align: center; margin-bottom: 10px; }
 		#register-buttons { display: grid; grid-gap: 20px; grid-template-columns: repeat(auto-fill, 100%); grid-column: 1 / -1; }
 		#register-buttons app-button { width: 100%; }
 
 		@media all and (min-width: 256px) {
+			#register img { width: 80%; }
 			#register-buttons { grid-template-columns: repeat(auto-fill, calc(50% - 10px)); }
 		}
 
 		@media all and (min-width: 456px) {
+			#register img { width: 50%; }
 			#register { grid-template-columns: repeat(auto-fill, calc(50% - 10px)); }
 			#register-buttons { grid-template-columns: repeat(auto-fill, 25%); }
 		}
@@ -22,6 +25,10 @@ export default {
 		<div id="register">
 			<div id="register-head">
 				<h2>User registration</h2>
+			</div>
+
+			<div id="register-image">
+				<img src="/assets/register.svg" />
 			</div>
 
 			<app-textbox type="textbox" id="register-email" placeholder="Whats your e-mail"></app-textbox>
@@ -76,8 +83,7 @@ export default {
 			if (authResponse.status === 201) {
 				_component.close("registered");
 
-				globalThis.contents.close();
-				globalThis.contents.open({
+				globalThis.windows.open({
 					name: "success",
 					parameters: {
 						title: "Congratulations!",
