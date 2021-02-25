@@ -9,13 +9,6 @@ export default {
 
 		#reactions-container-wide > div { transform: translateY(-100%); transition-property: transform; transition-duration: 0.2s; transition-delay: 0.2s; }
 		#reactions-container-wide.reactable > div { display: grid; grid-template-columns: repeat(6, auto); background: var(--paper-2); border-radius: 3px; padding: 5px; transform: translateY(0%); }
-
-		@media all and (min-width: 476px) {
-			#reactions-container-narrow { display: none; }
-
-			#reactions-container-wide { visibility: visible; height: unset; }
-			#reactions-container-wide > div { display: grid; grid-template-columns: repeat(6, auto); transform: translateY(0%); }
-		}		
 	`,
 
 	markup: `
@@ -43,9 +36,7 @@ export default {
 
 		const stream = _component.parameters.stream;
 
-		const narrowElement = _component.use("reactions-container-narrow");
 		const narrowActionElement = _component.use("reactions-container-narrow-action");
-
 		const wideElement = _component.use("reactions-container-wide");
 		const wideLikeElement = _component.use("reactions-container-wide-like");
 		const wideHeartElement = _component.use("reactions-container-wide-heart");

@@ -26,6 +26,7 @@ export class textbox extends base {
 		this.on("placeholder updated", _event => { this.use("input").setAttribute("placeholder", _event.detail); });
 
 		this.use("input").addEventListener("keydown", _event => { if (_event.key ==="Enter") this.emit("activated") });
+		this.use("input").addEventListener("keydown", _event => this.emit("changed"));
 
 		this.emit("ready");
 	}

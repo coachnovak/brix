@@ -55,7 +55,19 @@ export default async (_app, _options) => {
 		}
 	});
 
-	_app.post("/register/", async (_request, _response) => {
+	_app.post("/register/", {
+		schema: {
+			body: {
+				type: "object",
+				properties: {
+					email: { type: "string", description: "An e-mail address to use for authentication." },
+					password: { type: "string", description: "A password to use when authenticating." },
+					firstName: { type: "string", description: "The first name or given name of the user." },
+					lastName: { type: "string", description: "The last name or surname of the user." }
+				}
+			}
+		}
+	}, async (_request, _response) => {
 		let { email, password, firstName, lastName } = _request.body;
 
 		if (!email || !password || !firstName || !lastName)
@@ -71,12 +83,14 @@ export default async (_app, _options) => {
 		if (!lastNameValid) { _response.status(400).send({ message: "Provided last name is invalid." }); return; }
 
 		email = email.toLowerCase();
+		const existingUser = await _app.mongo.db.collection("users").findOne({ email, deleted: null });
+		if (existingUser) return _response.status(400).send({ message: "Provided e-mail is already in use." });
 
 		const result = await hashPassword({ password });
 		const response = await _app.mongo.db.collection("users").insertOne({ email, password: result.hash, salt: result.salt, firstName, lastName, registered: new Date(), deleted: null });
-		if (response?.result?.ok !== 1) return _response.status(500).send("Failed to register user.");
+		if (response?.result?.ok !== 1) return _response.status(500).send({ message: "Failed to register user." });
 
-		return _response.status(201).send();
+		return _response.status(201).send({ message: "Success!" });
 	});
 
 	_app.get("/identify/", {
