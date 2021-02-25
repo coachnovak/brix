@@ -2,6 +2,10 @@ import { list } from "/components/list.js";
 import { textbox } from "/components/textbox.js";
 
 export default {
+	options: {
+		shelf: true
+	},
+
 	styles: `
 		#my-invites-head { margin-bottom: 20px; }
 		#my-invites-waiting.hide { display: none; }
