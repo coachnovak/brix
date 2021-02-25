@@ -22,7 +22,7 @@ export class comment extends base {
 		await super.connectedCallback();
 
 		this.append(`
-			<div class="item">
+			<div class="comment">
 				<div class="avatar"><i class="fad fa-user"></i></div>
 				<div class="publisher">${this.publisher}<span class="when" datetime="${this.when}"></span></div>
 				<div class="text">${this.text}</div>
