@@ -9,7 +9,8 @@ export default async (_app, _options) => {
 			{
 				"$match": {
 					"room": new _app.mongo.ObjectId(_request.params.room),
-					"name": "comment"
+					"name": "comment",
+					"deleted": null
 				}
 			}, {
 				"$sort": {

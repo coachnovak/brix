@@ -11,7 +11,7 @@ export default async (_app, _options) => {
 			return _response.status(400).send("Provided text is invalid.");
 
 		// Get current user.
-		const user = await _app.mongo.db.collection("users").findOne({ _id: new _app.mongo.ObjectId(_request.user.user) });
+		const user = await _app.mongo.db.collection("users").findOne({ _id: new _app.mongo.ObjectId(_request.user.user), deleted: null });
 
 		const comment = {
 			channel: _request.params.channel,

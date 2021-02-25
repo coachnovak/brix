@@ -31,7 +31,7 @@ export default async (_app, _options) => {
 					if (!message.data?.room) return _connection.socket.send(JSON.stringify({ name: "invalid.parameter", data: "Room is invalid." }));
 					room = message.data.room;
 
-					const foundUser = await _app.mongo.db.collection("users").findOne({ _id: new _app.mongo.ObjectId(session.user) });
+					const foundUser = await _app.mongo.db.collection("users").findOne({ _id: new _app.mongo.ObjectId(session.user), deleted: null });
 					if (!foundUser) return _connection.socket.send(JSON.stringify({ name: "invalid.state", message: "Session user couldn't be identified." }));
 
 					user = {
@@ -96,7 +96,8 @@ export default async (_app, _options) => {
 						user: new _app.mongo.ObjectId(message.user._id),
 						name: message.name,
 						data: message.data,
-						when: message.when
+						when: message.when,
+						deleted: null
 					});
 
 					// Delete from message.

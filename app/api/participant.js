@@ -6,11 +6,11 @@ export default async (_app, _options) => {
 		if (!isObjectId) return _response.status(400).send("Provided id is invalid.");
 
 		// Validate room existence.
-		const room = await _app.mongo.db.collection("rooms").findOne({ _id: new _app.mongo.ObjectId(_request.params.room) });
+		const room = await _app.mongo.db.collection("rooms").findOne({ _id: new _app.mongo.ObjectId(_request.params.room), deleted: null });
 		if (!room) return _response.status(400).send("Provided room doesn't exist.");
 
 		// Get current user.
-		const user = await _app.mongo.db.collection("users").findOne({ _id: new _app.mongo.ObjectId(_request.user.user) });
+		const user = await _app.mongo.db.collection("users").findOne({ _id: new _app.mongo.ObjectId(_request.user.user), deleted: null });
 
 		// Ensure user isn't in the room already.
 		const exists = await _app.mongo.db.collection("participants").findOne({ "user._id": user._id, room: room._id });

@@ -8,7 +8,7 @@ export default async (_app, _options) => {
 		const datetime = new Date();
 		datetime.setSeconds(datetime.getSeconds() - 10);
 
-		const response = await _app.mongo.db.collection("participants").find({ room: new _app.mongo.ObjectId(_request.params.room), heartbeat: { $gt: datetime } });
+		const response = await _app.mongo.db.collection("participants").find({ room: new _app.mongo.ObjectId(_request.params.room), heartbeat: { $gt: datetime }, deleted: null });
 		const list = await response.toArray();
 
 		return _response.status(200).send(list);

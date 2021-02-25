@@ -28,7 +28,7 @@ export default async (_app, _options) => {
 		if (!passwordValid) { _response.status(400).send({ message: "Provided password is invalid." }); return; }
 
 		email = email.toLowerCase();
-		const user = await _app.mongo.db.collection("users").findOne({ email });
+		const user = await _app.mongo.db.collection("users").findOne({ email, deleted: null });
 
 		if (!user) {
 			return _response.status(401).send({ message: "Authentication failed, user wasn't found." });
@@ -73,7 +73,7 @@ export default async (_app, _options) => {
 		email = email.toLowerCase();
 
 		const result = await hashPassword({ password });
-		const response = await _app.mongo.db.collection("users").insertOne({ email, password: result.hash, salt: result.salt, firstName, lastName });
+		const response = await _app.mongo.db.collection("users").insertOne({ email, password: result.hash, salt: result.salt, firstName, lastName, registered: new Date(), deleted: null });
 		if (response?.result?.ok !== 1) return _response.status(500).send("Failed to register user.");
 
 		return _response.status(201).send();
@@ -82,7 +82,7 @@ export default async (_app, _options) => {
 	_app.get("/identify/", {
 		preValidation: [_app.authentication]
 	}, async (_request, _response) => {
-		const user = await _app.mongo.db.collection("users").findOne({ _id: new _app.mongo.ObjectId(_request.user.user) });
+		const user = await _app.mongo.db.collection("users").findOne({ _id: new _app.mongo.ObjectId(_request.user.user), deleted: null });
 		return _response.status(200).send(user);
 	});
 };
