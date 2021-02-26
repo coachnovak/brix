@@ -9,7 +9,9 @@ $$$$$$$  |$$ |  $$ |$$$$$$\ $$ /  $$ |
 \_______/ \__|  \__|\______|\__|  \__|
 
 by coachnovak
-https://github.com/coachnovak/brix/
+
+Join us at: https://brix.party/
+Developers: https://github.com/coachnovak/brix/
 ```
 
 # Setup dev env
