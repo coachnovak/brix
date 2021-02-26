@@ -1,9 +1,14 @@
 import config from "./cfg/index.js";
 import fastify from "fastify";
+import fs from "fs";
+
+// Read definition.
+const definition = JSON.parse(fs.readFileSync("./package.json"));
 
 // Run app server.
 const app = fastify(config.fastify);
 app.ready(() => console.log("Server is up and running."));
+app.decorate("definition", definition);
 
 // Register modules.
 app.register(import("fastify-swagger"), config.docs);
@@ -20,6 +25,7 @@ app.register(import("fastify-metrics"), config.stats);
 app.register(import("./mid/authentication.js"));
 
 // Register api routes.
+app.register(import("./api/app.js"), { prefix: "api/app" });
 app.register(import("./api/security.js"), { prefix: "api/security" });
 app.register(import("./api/participant.js"), { prefix: "api/participant" });
 app.register(import("./api/participants.js"), { prefix: "api/participants" });
