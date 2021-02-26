@@ -1,0 +1,134 @@
+:root {
+	--header-b: rgba(5, 5, 20, 1);
+	--header-f: rgba(255, 255, 255, 1);
+
+	--paper-1: rgba(17, 17, 32, 1);
+	--paper-2: rgba(30, 30, 43, 1);
+	--paper-3: rgba(43, 43, 55, 1);
+	--paper-4: rgba(55, 55, 67, 1);
+
+	--pen-1: rgba(255, 255, 255, 1);
+	--pen-2: rgba(255, 255, 255, 1);
+	--pen-3: rgba(255, 255, 255, 1);
+	--pen-4: rgba(255, 255, 255, 1);
+
+	--button-p-b: rgba(60, 60, 120);
+	--button-p-h: rgba(70, 70, 130);
+	--button-p-a: rgba(80, 80, 140);
+	--button-p-f: rgba(255, 255, 255);
+
+	--button-s-b: rgba(68, 68, 79);
+	--button-s-h: rgba(80, 80, 91);
+	--button-s-a: rgba(82, 82, 103);
+	--button-s-f: rgba(255, 255, 255);
+
+	--button-e-b: rgba(255, 255, 255, 0);
+	--button-e-h: rgba(255, 255, 255, 0.05);
+	--button-e-a: rgba(255, 255, 255, 0.10);
+	--button-e-f: rgba(255, 255, 255);
+}
+
+* { transition-property: none; transition-duration: 0.3s; transition-timing-function: cubic-bezier(0.5,0.25,0,1); }
+* { animation-duration: 0.4s; animation-timing-function: cubic-bezier(0.5,0.25,0,1); }
+* { box-sizing: border-box; }
+
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background-color: rgba(255, 255,255, 0.05); }
+::-webkit-scrollbar-thumb { background-color: rgba(255, 255, 255, 0.1); }
+
+html,
+body { margin: 0; padding: 0; background: var(--paper-1); }
+body { font-family: 'Roboto', sans-serif; font-size: 9pt; font-weight: 300; }
+
+#cover { position: fixed; left: 0; top: 0; right: 0; bottom: 0; background: center url(/assets/cover.jpg); background-size: cover; }
+
+/* ------------------ Header */
+
+header { position: fixed; left: 0; top: 0; right: 0; height: 60px; background: var(--header-b); color: var(--header-f); }
+header h1 { position: absolute; left: 0; top: 0; margin: 0; padding: 15px; }
+header h1 { font-size: 20pt; font-weight: 100; color: var(--pen-1); text-transform: uppercase; }
+header section { position: absolute; top: 0; right: 0; bottom: 0; display: grid; grid-auto-flow: column; grid-gap: 10px; padding: 10px; }
+header section app-button { background: transparent; }
+header section app-button:hover { background: var(--paper-2); }
+
+/* ------------------ Contents */
+
+#contents { display: flex; flex-direction: column; position: absolute; left: 50%; top: 60px; width: 100%; min-height: calc(100% - 60px); transform: translateX(-50%); padding: 20px; }
+#contents { background: var(--paper-1); color: var(--pen-1); }
+#contents:empty { display: none; }
+
+@media all and (min-width: 576px) {
+	#contents { max-width: 576px; }
+}
+
+#contents app-article { display: block; flex: 0 1 auto; width: 100%; transform: translateY(10%); opacity: 0; position: relative; margin-bottom: 20px; }
+#contents app-article:last-child { margin-bottom: 0; }
+#contents app-article[show="true"] { animation: contents-app-article-show forwards; }
+#contents app-article[full="true"] { position: absolute; left: 0; top: 0; right: 0; bottom: 0; }
+#contents app-article[grow="true"] { flex: 1 1 auto; overflow: auto; }
+#contents app-article[paddingless="true"] { padding: 0; }
+#contents app-article[nooverflow="true"] { overflow: hidden; }
+#contents app-article[shelf="true"] { background-color: var(--paper-2); border-radius: 4px; padding: 20px; }
+
+@media all and (min-height: 600px) and (min-width: 576px) {
+	#contents { top: 80px; min-height: calc(100% - 100px); border-radius: 4px; }
+	#contents:after { content: ""; display: block; position: absolute; top: 100%; width: calc(100% - 40px); height: 20px; }
+	#contents app-article[grow="true"] { min-height: 300px; }
+}
+
+@media all and (min-width: 576px) {
+	#contents app-article[full="true"] { position: relative; left: unset; top: unset; right: unset; bottom: unset; }
+}
+
+@keyframes contents-app-article-show {
+	0% { transform: translateY(10%); opacity: 0; }
+	100% { transform: translateY(0%); opacity: 1; }
+}
+
+/* ------------------ Windows */
+
+#windows { position: fixed; left: 0; top: 0; right: 0; bottom: 0; }
+#windows:empty { display: none; }
+
+#windows app-shadow { display: block; position: fixed; left: 0; top: 0; right: 0; bottom: 0; opacity: 0.3; background: rgb(0, 0, 0); }
+#windows app-article { display: block; position: absolute; top: 0; right: 0; bottom: 0; min-width: 100%; max-width: calc(300px); max-height: 100vh; background: var(--paper-1); color: var(--pen-1); padding: 20px; overflow: auto; }
+#windows app-article { transform: translateX(100%); opacity: 0; }
+#windows app-article[nooverflow="true"] { overflow: hidden; }
+#windows app-article[paddingless="true"] { padding: 0; }
+#windows app-article[show="true"] { transform: translateX(0%); opacity: 1; transition-property: transform, opacity; }
+#windows app-article[position="side"] { box-shadow: 6px 0px 8px 0px rgb(0, 0, 0, 0.5); }
+#windows app-article[position="center"] { box-shadow: 0px 6px 8px 0px rgb(0, 0, 0, 0.5); }
+
+@media all and (min-width: 300px) {
+	#windows app-article[position="side"] { left: unset; min-width: unset; max-width: unset; width: 300px; }
+}
+
+@media all and (min-width: 536px) {
+	#windows app-article[position="center"] { left: 50%; top: 50%; right: unset; bottom: unset; max-width: calc(576px + 100px); min-width: calc(576px - 100px); transform: translate(-50%, -30%); border-radius: 2px; }
+	#windows app-article[position="center"][show="true"] { transform: translate(-50%, -50%); }
+}
+
+@keyframes windows-app-article-slidein {
+	0% { transform: translateY(10%); opacity: 0; }
+	100% { transform: translateY(0%); opacity: 1; }
+}
+
+/* ------------------ Headers */
+
+h1 { font-size: 32pt; font-weight: 100; color: var(--pen-1); text-align: center; line-height: 110%; }
+h2 { font-size: 18pt; font-weight: 100; margin: 0; line-height: 110%; }
+h3 { font-size: 14pt; font-weight: 100; margin: 0; line-height: 110%; }
+h4 { font-size: 9pt; font-weight: 300; margin: 0; line-height: 110%; }
+
+.center { text-align: center; }
+
+/* ------------------ Divider */
+
+.divider { position: relative; text-align: center; }
+.divider:before { display: block; position: absolute; left: 0; top: 50%; width: 100%; height: 1px; background: var(--paper-2); content: ""; }
+.divider span { position: relative; background: var(--paper-1); padding: 10px; }
+
+@media all and (min-width: 456px) {
+	.divider.vertical:before { display: block; position: absolute; left: 50%; top: 0; width: 1px; height: 100%; background: var(--paper-2); content: ""; }
+	.divider.vertical span { position: absolute; background: var(--paper-1); padding: 10px; top: 50%; transform: translate(-50%, -50%); }
+}
