@@ -94,6 +94,7 @@ export default async (_app, _options) => {
 			firstName,
 			lastName,
 			registered: new Date(),
+			confirmed: null,
 			deleted: null
 		});
 
