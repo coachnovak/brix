@@ -87,8 +87,18 @@ export default async (_app, _options) => {
 		if (existingUser) return _response.status(400).send({ message: "Provided e-mail is already in use." });
 
 		const result = await hashPassword({ password });
-		const response = await _app.mongo.db.collection("users").insertOne({ email, password: result.hash, salt: result.salt, firstName, lastName, registered: new Date(), deleted: null });
-		if (response?.result?.ok !== 1) return _response.status(500).send({ message: "Failed to register user." });
+		const response = await _app.mongo.db.collection("users").insertOne({
+			email,
+			password: result.hash,
+			salt: result.salt,
+			firstName,
+			lastName,
+			registered: new Date(),
+			deleted: null
+		});
+
+		if (response?.result?.ok !== 1)
+			return _response.status(500).send({ message: "Failed to register user." });
 
 		return _response.status(201).send({ message: "Success!" });
 	});
