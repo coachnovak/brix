@@ -10,7 +10,7 @@ const app = fastify(config.fastify);
 app.ready(() => console.log("Server is up and running."));
 app.decorate("definition", definition);
 
-// Register modules.
+// Register node modules.
 app.register(import("fastify-swagger"), config.docs);
 app.register(import("fastify-mongodb"), config.mongodb);
 app.register(import("fastify-redis-channels"), config.pubsub);
@@ -23,6 +23,7 @@ app.register(import("fastify-metrics"), config.stats);
 
 // Register middleware.
 app.register(import("./mid/authentication.js"));
+app.register(import("./mid/emailing.js"));
 
 // Register api routes.
 app.register(import("./api/app.js"), { prefix: "api/app" });
