@@ -1,4 +1,4 @@
-import config from "./cfg/index.js";
+import configurations from "./configurations/index.js";
 import fastify from "fastify";
 import fs from "fs";
 
@@ -6,24 +6,24 @@ import fs from "fs";
 const definition = JSON.parse(fs.readFileSync("./package.json"));
 
 // Run app server.
-const app = fastify(config.fastify);
+const app = fastify(configurations.fastify);
 app.ready(() => console.log("Server is up and running."));
 app.decorate("definition", definition);
 
 // Register node modules.
-app.register(import("fastify-swagger"), config.docs);
-app.register(import("fastify-mongodb"), config.mongodb);
-app.register(import("fastify-redis-channels"), config.pubsub);
-app.register(import("fastify-redis"), config.redis);
-app.register(import("fastify-static"), config.ui);
-app.register(import("fastify-static"), config.letsencrypt);
-app.register(import("fastify-websocket"), config.sck);
-app.register(import("fastify-jwt"), config.jwt);
-app.register(import("fastify-metrics"), config.stats);
+app.register(import("fastify-swagger"), configurations.docs);
+app.register(import("fastify-mongodb"), configurations.mongodb);
+app.register(import("fastify-redis-channels"), configurations.pubsub);
+app.register(import("fastify-redis"), configurations.redis);
+app.register(import("fastify-static"), configurations.ui);
+app.register(import("fastify-static"), configurations.letsencrypt);
+app.register(import("fastify-websocket"), configurations.sck);
+app.register(import("fastify-jwt"), configurations.jwt);
+app.register(import("fastify-metrics"), configurations.stats);
 
 // Register middleware.
-app.register(import("./mid/authentication.js"));
-app.register(import("./mid/emailing.js"));
+app.register(import("./middleware/authentication.js"));
+app.register(import("./middleware/emailing.js"));
 
 // Register api routes.
 app.register(import("./api/app.js"), { prefix: "api/app" });

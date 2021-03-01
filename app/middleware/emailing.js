@@ -1,5 +1,5 @@
 import nodemailer from "nodemailer";
-import templates from "../emails/index.js";
+import templates from "../templates/emails/index.js";
 import fastifyPlugin from "fastify-plugin";
 
 export default fastifyPlugin (async (_app, _options) => {
