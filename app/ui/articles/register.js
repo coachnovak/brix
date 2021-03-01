@@ -130,8 +130,6 @@ export default {
 				})
 			});
 
-			const registerContent = await registerResponse.json();
-
 			if (registerResponse.status === 201) {
 				_component.close("registered");
 
@@ -143,8 +141,6 @@ export default {
 						action: { options: { icon: "sign-in", text: "Sign in", composition: "text icon" }, windows: { name: "signin" } }
 					}
 				});
-			} else {
-				globalThis.notify({ icon: "exclamation-circle", text: registerContent.message });
 			}
 		});
 	}

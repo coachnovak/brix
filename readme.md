@@ -53,3 +53,7 @@ Developers: https://github.com/coachnovak/brix/
 	* ***production*** - Running in production or not, format: `<true or false>`. Use `false` in dev.
 	
 	* ***usetls*** - Use tls for web communication encryption, format: `<true or false>`. If this property is true and ***production*** is `false` the certificates are genereated using a built-in self-sign method.
+
+	* ***smtpurl*** - Smtp connect url for e-mailing, format: `smtps://<username>:<password>@<server>[:port]/[?pool=true]`.
+
+	* ***smtpfrom*** - E-mail address to use as sender, format: `recipient@domain.name`.

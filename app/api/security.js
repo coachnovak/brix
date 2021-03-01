@@ -23,7 +23,7 @@ export default async (_app, _options) => {
 		if (!email || !password) return _response.status(400).send({ message: "Missing mandatory parameters" });
 
 		const emailValid = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email);
-		const passwordValid = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{7,15}$/.test(password);
+		const passwordValid = password !== "";
 		if (!emailValid) { _response.status(400).send({ message: "Provided e-mail is invalid." }); return; }
 		if (!passwordValid) { _response.status(400).send({ message: "Provided password is invalid." }); return; }
 
@@ -33,6 +33,9 @@ export default async (_app, _options) => {
 		if (!user) {
 			return _response.status(401).send({ message: "Authentication failed, user wasn't found." });
 		} else {
+			if (user.confirmed === null)
+				return _response.status(400).send({ message: "The user account must be activated before first use." });
+
 			const result = await hashPassword({ password, salt: user.salt });
 			if (user.password !== result.hash) return _response.status(401).send({ message: "Authentication failed, invalid credentials." });
 
@@ -49,7 +52,7 @@ export default async (_app, _options) => {
 			});
 
 			const response = await _app.mongo.db.collection("sessions").insertOne({ user: user._id, token, salt });
-			if (response?.result?.ok !== 1) return _response.status(500).send("Failed to store session");
+			if (response?.result?.ok !== 1) return _response.status(500).send({ message: "Failed to store session" });
 
 			 _response.status(201).send({ token, expires });
 		}
@@ -74,7 +77,7 @@ export default async (_app, _options) => {
 			return _response.status(400).send("Missing mandatory parameters");
 
 		const emailValid = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email);
-		const passwordValid = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{7,15}$/.test(password);
+		const passwordValid = password !== "";
 		const firstNameValid = /^[a-zA-Z\u00C0-\u00ff]+$/i.test(firstName);
 		const lastNameValid = /^[a-zA-Z\u00C0-\u00ff]+$/.test(lastName);
 		if (!emailValid) { _response.status(400).send({ message: "Provided e-mail is invalid." }); return; }
@@ -86,28 +89,98 @@ export default async (_app, _options) => {
 		const existingUser = await _app.mongo.db.collection("users").findOne({ email, deleted: null });
 		if (existingUser) return _response.status(400).send({ message: "Provided e-mail is already in use." });
 
-		const result = await hashPassword({ password });
-		const response = await _app.mongo.db.collection("users").insertOne({
+		const hashedPassword = await hashPassword({ password });
+		const confirmCode = crypto.randomBytes(40).toString("hex");
+
+		const registrationResponse = await _app.mongo.db.collection("users").insertOne({
 			email,
-			password: result.hash,
-			salt: result.salt,
+			password: hashedPassword.hash,
+			salt: hashedPassword.salt,
 			firstName,
 			lastName,
 			registered: new Date(),
 			confirmed: null,
+			confirmCode,
 			deleted: null
 		});
 
-		if (response?.result?.ok !== 1)
+		if (registrationResponse?.result?.ok !== 1)
 			return _response.status(500).send({ message: "Failed to register user." });
 
+		// Send an e-mail for confirmation.
+		const from = process.env.smtpfrom;
+
+		const emailResponse = await _app.email.send({
+			from,
+			to: email,
+			template: "confirmation",
+			data: {
+				firstName,
+				lastName,
+				confirmCode
+			}
+		});
+
 		return _response.status(201).send({ message: "Success!" });
+	});
+
+	_app.post("/forgot/", async (_request, _response) => {
+		let { email } = _request.body;
+
+		if (!email)
+			return _response.status(400).send("Missing mandatory parameters");
+
+		const emailValid = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email);
+		if (!emailValid) { _response.status(400).send({ message: "Provided e-mail is invalid." }); return; }
+
+		email = email.toLowerCase();
+		const user = await _app.mongo.db.collection("users").findOne({ email, confirmed: { $ne: null }, deleted: null });
+		if (!user) return _response.status(400).send({ message: "Provided e-mail was not found." });
+
+		const password = crypto.randomBytes(16).toString("hex");
+		const hashedPassword = await hashPassword({ password, salt: user.salt });
+
+		const forgottenResponse = await _app.mongo.db.collection("users").updateOne({ _id: user._id }, { $set: { password: hashedPassword.hash } });
+		if (forgottenResponse?.result?.ok !== 1) return _response.status(500).send({ message: "Failed to reset the password." });
+
+		// Send an e-mail with reset password.
+		const from = process.env.smtpfrom;
+
+		const emailResponse = await _app.email.send({
+			from,
+			to: user.email,
+			template: "forgotten",
+			data: {
+				firstName: user.firstName,
+				lastName: user.lastName,
+				password
+			}
+		});
+
+		return _response.status(200).send({ message: "Success!" });
+	});
+
+	_app.get("/activate/:confirmCode", async (_request, _response) => {
+		const user = await _app.mongo.db.collection("users").findOne({ confirmCode: _request.params.confirmCode, deleted: null });
+		if (!user) _response.status(404).send({ message: "Confirmation code couln't be used." });
+		if (user.confirmed !== null) return _response.redirect("/");
+
+		const response = await _app.mongo.db.collection("users").updateOne({ _id: user._id }, { $set: { confirmed: new Date() } });
+		if (response.result?.ok !== 1) return _response.status(500).send({ message: "Failed to activate your account." });
+
+		return _response.redirect("/");
 	});
 
 	_app.get("/identify/", {
 		preValidation: [_app.authentication]
 	}, async (_request, _response) => {
 		const user = await _app.mongo.db.collection("users").findOne({ _id: new _app.mongo.ObjectId(_request.user.user), deleted: null });
+
+		if (!user)
+			return _response.status(401).send({ message: "Failed to obtain the identity, user wasn't found." });
+		else if (user.confirmed === null)
+			return _response.status(400).send({ message: "The user account must be activated before first use." });
+
 		return _response.status(200).send(user);
 	});
 };

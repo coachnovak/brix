@@ -20,8 +20,10 @@ globalThis.fetcher = async (_url, _options = {}) => {
 			globalThis.notify({ icon: "shield-alt", text: "Access to the requested operation denied." });
 			break;
 
+		case 400:
 		case 500:
-			globalThis.notify({ icon: "exclamation-triangle", text: response.text() });
+			const serverError = await response.json();
+			globalThis.notify({ icon: "exclamation-triangle", text: serverError.message });
 			break;
 
 	}
