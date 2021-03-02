@@ -1,8 +1,8 @@
-FROM node:15.10.0-alpine3.10
+FROM node
 
 WORKDIR /brix
 
 COPY package.json .
 COPY . .
 
-CMD ["node", "--inspect=0.0.0.0", "app/index.js"]
+CMD ["node", "--inspect-brk=0.0.0.0", "app/index.js"]
