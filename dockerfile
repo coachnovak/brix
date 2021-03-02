@@ -1,4 +1,4 @@
-FROM node
+FROM node:15.10.0-alpine3.10
 
 WORKDIR /brix
 
