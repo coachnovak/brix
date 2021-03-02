@@ -10,6 +10,18 @@ const boot = async () => {
 	const app = fastify(configurations.fastify);
 	app.decorate("definition", definition);
 
+	// Register api routes.
+	app.register((await import("./api/app.js")).default, { prefix: "api/app" });
+	app.register((await import("./api/security.js")).default, { prefix: "api/security" });
+	app.register((await import("./api/participant.js")).default, { prefix: "api/participant" });
+	app.register((await import("./api/participants.js")).default, { prefix: "api/participants" });
+	app.register((await import("./api/room.js")).default, { prefix: "api/room" });
+	app.register((await import("./api/room-invites.js")).default, { prefix: "api/room/invites" });
+	app.register((await import("./api/rooms.js")).default, { prefix: "api/rooms" });
+	app.register((await import("./api/comments.js")).default, { prefix: "api/comments" });
+	app.register((await import("./api/events.js")).default, { prefix: "api/events" });
+	app.register((await import("./api/my-invites.js")).default, { prefix: "api/my/invites" });
+
 	// Register node modules.
 	app.register((await import("fastify-swagger")).default, configurations.docs);
 	app.register((await import("fastify-mongodb")).default, configurations.mongodb);
@@ -24,18 +36,6 @@ const boot = async () => {
 	// Register middleware.
 	app.register((await import("./middleware/authentication.js")).default);
 	app.register((await import("./middleware/emailing.js")).default);
-
-	// Register api routes.
-	app.register((await import("./api/app.js")).default, { prefix: "api/app" });
-	app.register((await import("./api/security.js")).default, { prefix: "api/security" });
-	app.register((await import("./api/participant.js")).default, { prefix: "api/participant" });
-	app.register((await import("./api/participants.js")).default, { prefix: "api/participants" });
-	app.register((await import("./api/room.js")).default, { prefix: "api/room" });
-	app.register((await import("./api/room-invites.js")).default, { prefix: "api/room/invites" });
-	app.register((await import("./api/rooms.js")).default, { prefix: "api/rooms" });
-	app.register((await import("./api/comments.js")).default, { prefix: "api/comments" });
-	app.register((await import("./api/events.js")).default, { prefix: "api/events" });
-	app.register((await import("./api/my-invites.js")).default, { prefix: "api/my/invites" });
 
 	app.get('/test/', function (req, reply) {
 		reply.send('reply')
