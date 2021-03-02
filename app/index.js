@@ -10,36 +10,32 @@ const boot = async () => {
 	const app = fastify(configurations.fastify);
 	app.decorate("definition", definition);
 
-	// Register api routes.
-	app.register((await import("./api/app.js")).default, { prefix: "api/app" });
-	app.register((await import("./api/security.js")).default, { prefix: "api/security" });
-	app.register((await import("./api/participant.js")).default, { prefix: "api/participant" });
-	app.register((await import("./api/participants.js")).default, { prefix: "api/participants" });
-	app.register((await import("./api/room.js")).default, { prefix: "api/room" });
-	app.register((await import("./api/room-invites.js")).default, { prefix: "api/room/invites" });
-	app.register((await import("./api/rooms.js")).default, { prefix: "api/rooms" });
-	app.register((await import("./api/comments.js")).default, { prefix: "api/comments" });
-	app.register((await import("./api/events.js")).default, { prefix: "api/events" });
-	app.register((await import("./api/my-invites.js")).default, { prefix: "api/my/invites" });
-
 	// Register node modules.
-	app.register((await import("fastify-swagger")).default, configurations.docs);
-	app.register((await import("fastify-mongodb")).default, configurations.mongodb);
-	app.register((await import("fastify-redis-channels")).default, configurations.pubsub);
-	app.register((await import("fastify-redis")).default, configurations.redis);
-	app.register((await import("fastify-static")).default, configurations.ui);
-	app.register((await import("fastify-static")).default, configurations.letsencrypt);
-	app.register((await import("fastify-websocket")).default, configurations.sck);
-	app.register((await import("fastify-jwt")).default, configurations.jwt);
-	app.register((await import("fastify-metrics")).default, configurations.stats);
+	app.register(await import("fastify-swagger"), configurations.docs);
+	app.register(await import("fastify-mongodb"), configurations.mongodb);
+	app.register(await import("fastify-redis-channels"), configurations.pubsub);
+	app.register(await import("fastify-redis"), configurations.redis);
+	app.register(await import("fastify-static"), configurations.ui);
+	app.register(await import("fastify-static"), configurations.letsencrypt);
+	app.register(await import("fastify-websocket"), configurations.sck);
+	app.register(await import("fastify-jwt"), configurations.jwt);
+	app.register(await import("fastify-metrics"), configurations.stats);
 
 	// Register middleware.
-	app.register((await import("./middleware/authentication.js")).default);
-	app.register((await import("./middleware/emailing.js")).default);
+	app.register(await import("./middleware/authentication.js"));
+	app.register(await import("./middleware/emailing.js"));
 
-	app.get('/test/', function (req, reply) {
-		reply.send('reply')
-	});
+	// Register api routes.
+	app.register(await import("./api/app.js"), { prefix: "api/app" });
+	app.register(await import("./api/security.js"), { prefix: "api/security" });
+	app.register(await import("./api/participant.js"), { prefix: "api/participant" });
+	app.register(await import("./api/participants.js"), { prefix: "api/participants" });
+	app.register(await import("./api/room.js"), { prefix: "api/room" });
+	app.register(await import("./api/room-invites.js"), { prefix: "api/room/invites" });
+	app.register(await import("./api/rooms.js"), { prefix: "api/rooms" });
+	app.register(await import("./api/comments.js"), { prefix: "api/comments" });
+	app.register(await import("./api/events.js"), { prefix: "api/events" });
+	app.register(await import("./api/my-invites.js"), { prefix: "api/my/invites" });
 
 	// Register sck routes.
 	app.register(await import("./sck/room.js"), { prefix: "sck" });
