@@ -2,7 +2,7 @@ import { list } from "/components/list.js";
 
 export default {
 	options: {
-		position: "side"
+		position: "center"
 	},
 
 	styles: `
