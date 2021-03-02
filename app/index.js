@@ -26,8 +26,7 @@ const boot = async () => {
 	app.register(await import("./middleware/emailing.js"));
 
 	// Register api routes.
-	const appx = await import("./api/app.js");
-	app.register(appx, { prefix: "api/app" });
+	app.register(await import("./api/app.js"), { prefix: "api/app" });
 	app.register(await import("./api/security.js"), { prefix: "api/security" });
 	app.register(await import("./api/participant.js"), { prefix: "api/participant" });
 	app.register(await import("./api/participants.js"), { prefix: "api/participants" });
