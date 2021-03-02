@@ -41,7 +41,7 @@ export default async (_app, _options) => {
 		room.created = new Date();
 		room.deleted = null;
 
-		const isName = /^[a-zA-Z0-9 _]{1,20}$/.test(_request.params.id);
+		const isName = /^[a-zA-Z0-9 _]{1,40}$/.test(_request.params.id);
 		if (!isName) return _response.status(400).send({ message: "Provided name is invalid." });
 
 		for (let index = 0; index < 10; index++) {

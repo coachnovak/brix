@@ -50,7 +50,7 @@ export default {
 		});
 
 		createContinueElement.on("activated", async () => {
-			const nameValid = /^[a-zA-Z0-9 _]{1,20}$/.test(createNameElement.value());
+			const nameValid = /^[a-zA-Z0-9 _]{1,40}$/.test(createNameElement.value());
 			if (!nameValid) return globalThis.notify({ icon: "exclamation-circle", text: "Invalid name provided." });
 
 			const createResponse = await globalThis.fetcher(`/api/room/`, {
