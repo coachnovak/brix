@@ -37,6 +37,10 @@ const boot = async () => {
 	app.register(await import("./api/events.js"), { prefix: "api/events" });
 	app.register(await import("./api/my-invites.js"), { prefix: "api/my/invites" });
 
+	app.get('/test/', function (req, reply) {
+		reply.send('reply')
+	});
+
 	// Register sck routes.
 	app.register(await import("./sck/room.js"), { prefix: "sck" });
 
@@ -58,4 +62,4 @@ const boot = async () => {
 };
 
 // Start booting the server.
-setTimeout(boot, process.env.production === "true" ? 1 : 8000);
+setTimeout(boot, process.env.production === "true" ? 1 : 6000);
