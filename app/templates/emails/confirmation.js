@@ -32,7 +32,7 @@ export default _data => {
 					<br />
 					Please follow the link to activate your account and start enjoying our services.<br />
 					<br />
-					<a href="https://brix.party/api/security/activate/${confirmCode}">Activate accouny</a><br />
+					<a href="https://brix.party/api/security/activate/${confirmCode}">Activate account</a><br />
 					<br />
 					Sincerely,<br />
 					Brix Support
