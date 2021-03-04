@@ -57,3 +57,5 @@ Developers: https://github.com/coachnovak/brix/
 	* ***smtpurl*** - Smtp connect url for e-mailing, format: `smtps://<username>:<password>@<server>[:port]/[?pool=true]`.
 
 	* ***smtpfrom*** - E-mail address to use as sender, format: `recipient@domain.name`.
+
+	* ***admincode*** - Admin code is used for setup access validation and can be any string. A strong code is recommended.

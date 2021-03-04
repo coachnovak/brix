@@ -1,7 +1,10 @@
 import db from "../../db/index.js";
 
 export default async (_app, _options) => {
-	_app.get("/setup/", async (_request, _response) => {
+	_app.get("/setup/:admincode", async (_request, _response) => {
+		if (process.env.admincode !== _request?.params?.admincode)
+			return _response.status(401).send({ message: "Invalid admin code security code provided." });
+
 		const log = [];
 		const existingCollections = (await _app.mongo.db
 			.listCollections()
