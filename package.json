@@ -7,6 +7,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@cfworker/json-schema": "^1.6.8",
     "bcrypt": "^5.0.0",
     "fastify": "^3.12.0",
     "fastify-auth": "^1.0.1",

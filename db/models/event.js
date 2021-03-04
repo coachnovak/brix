@@ -1,5 +1,5 @@
 export default {
-	name: "events",
+	collection: "events",
 	schema: {
 		type: "object",
 		properties: {
@@ -13,6 +13,8 @@ export default {
 			deleted: { type: ["object", "null"], default: null }
 		}
 	},
-	data: [
+	documents: [
+	],
+	indexes: [
 	]
 }
