@@ -1,4 +1,4 @@
-import configurations from "./configurations/index.js";
+import configurations from "./cfg/index.js";
 import fastify from "fastify";
 import fs from "fs";
 
@@ -22,8 +22,8 @@ const boot = async () => {
 	app.register(await import("fastify-metrics"), configurations.stats);
 
 	// Register middleware.
-	app.register(await import("./middleware/authentication.js"));
-	app.register(await import("./middleware/emailing.js"));
+	app.register(await import("./mid/authentication.js"));
+	app.register(await import("./mid/emailing.js"));
 
 	// Register api routes.
 	app.register(await import("./api/app.js"), { prefix: "api/app" });
