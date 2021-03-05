@@ -20,6 +20,6 @@ export default {
 	documents: [
 	],
 	indexes: [
-		{ keys: { heartbeat: 1 }, options: { name: "heartbeat", expireAfterSeconds: 10 } }
+		{ keys: { heartbeat: 1 }, options: { name: "heartbeat", expireAfterSeconds: 30 } }
 	]
 }
