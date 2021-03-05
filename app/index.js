@@ -37,6 +37,7 @@ const boot = async () => {
 	app.register(await import("./api/comments.js"), { prefix: "api/comments" });
 	app.register(await import("./api/events.js"), { prefix: "api/events" });
 	app.register(await import("./api/my-invites.js"), { prefix: "api/my/invites" });
+	app.register(await import("./api/voting/index.js"), { prefix: "api/voting" });
 
 	// Register sck routes.
 	app.register(await import("./sck/room.js"), { prefix: "sck" });
