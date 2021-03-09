@@ -51,8 +51,9 @@ export default {
 					]
 				});
 
-				participantElement.on("activated", _event => {
-					_component.parameters.stream.send("poke", participant.user);
+				participantElement.on("activated", async _event => {
+					const pokeResponse = await globalThis.fetcher(`/api/participant/${_component.parameters.room._id}/poke/${participant.user._id}`, { method: "get" });
+					if (pokeResponse.status !== 200) return globalThis.notify({ icon: "exclamation-circle", text: "Failed to poke participant." });
 				});
 			}
 
