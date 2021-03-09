@@ -3,39 +3,13 @@ export default class {
 
 	constructor () {
 		this.socket = null;
-		this.sleep = 2000;
+		this.sleep = 3000;
 		this.abandoned = false;
 
 		const protocol = window.location.protocol;
 		const host = window.location.host.split(":");
 		this.url = `${protocol === "https:" ? "wss" : "ws"}://${host.join(":")}/sck/stream/`
 		this.connect();
-	}
-
-	async connected () {
-		this.subscriptions.forEach(_subscription => this.socket.send(JSON.stringify({ channel: _subscription.channel })));
-	}
-
-	async disconnected () {
-		setTimeout(() => this.reconnect(), this.sleep);
-	}
-
-	async error () {
-		this.close();
-	}
-
-	async message (_message) {
-		const { channel, message } = JSON.parse(_message.data);
-
-		// Find channel subscription.
-		this.subscriptions.forEach(_subscription => {
-			// Match channel and ensure there's a matching event by name.
-			if (_subscription.channel === channel && _subscription.events[message.name]) {
-				// Emit event with or without data.
-				if (message.data === undefined) _subscription.events[message.name]();
-				else _subscription.events[message.name](message.data);
-			}
-		});
 	}
 
 	subscribe (channel, events) {
@@ -70,10 +44,32 @@ export default class {
 
 	connect () {
 		this.socket = new WebSocket(this.url);
-		this.socket.onopen = _info => this.connected(_info);
-		this.socket.onclose = _info => this.disconnected(_info);
-		this.socket.onerror = _info => this.error(_info);
-		this.socket.onmessage = _info => this.message(_info);
+
+		this.socket.onopen = () => {
+			this.subscriptions.forEach(_subscription => this.socket.send(JSON.stringify({ channel: _subscription.channel })));
+		};
+
+		this.socket.onclose = () => {
+			setTimeout(() => this.reconnect(), this.sleep);
+		};
+
+		this.socket.onerror = () => {
+			this.close();
+		};
+
+		this.socket.onmessage = async _message => {
+			const { channel, message } = JSON.parse(_message.data);
+	
+			// Find channel subscription.
+			this.subscriptions.forEach(_subscription => {
+				// Match channel and ensure there's a matching event by name.
+				if (_subscription.channel === channel && _subscription.events[message.name]) {
+					// Emit event with or without data.
+					if (message.data === undefined) _subscription.events[message.name]();
+					else _subscription.events[message.name](message.data);
+				}
+			});
+		};
 	}
 
 	close (_abandon) {

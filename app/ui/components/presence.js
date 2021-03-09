@@ -1,7 +1,7 @@
 export default class {
 	constructor (_room) {
 		this.socket = null;
-		this.sleep = 2000;
+		this.sleep = 3000;
 		this.hasleft = false;
 		this.room = _room;
 
@@ -21,14 +21,20 @@ export default class {
 
 	join () {
 		this.socket = new WebSocket(this.url);
+
 		this.socket.onopen = () => {
 			this.socket.send(JSON.stringify({ join: this.room, token: localStorage.getItem("token") }));
 		};
+
 		this.socket.onclose = () => {
 			setTimeout(() => this.rejoin(), this.sleep)
 		};
-		this.socket.onerror = _info => this.rejoin();
-		this.socket.onmessage = _message => {
+
+		this.socket.onerror = () => {
+			this.leave(true);
+		};
+
+		this.socket.onmessage = async _message => {
 			const { code, message, when } = JSON.parse(_message.data);
 
 			switch (code) {
