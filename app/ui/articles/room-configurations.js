@@ -45,12 +45,9 @@ export default {
 				method: "delete"
 			});
 
-			if (deleteResponse.status === 200) {
-				globalThis.contents.close();
-				globalThis.contents.open({ name: "rooms" });
-				globalThis.notify({ icon: "info-circle", text: "Room was deleted." });
-			} else if (createResponse.status >= 400) {
-				globalThis.notify({ icon: "exclamation-circle", text: createContent.message });
+			if (deleteResponse.status >= 400) {
+				const deleteContent = deleteResponse.json();
+				globalThis.notify({ icon: "exclamation-circle", text: deleteContent.message });
 			}
 		});
 	}
