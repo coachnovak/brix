@@ -1,8 +1,5 @@
 export const pubsub = {
 	redis: {
-		url: process.env.pubsub,
-		options: {
-			enableOfflineQueue: true
-		}
+		url: process.env.pubsub
 	}
 };
