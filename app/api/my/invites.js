@@ -1,5 +1,3 @@
-import crypto from "crypto";
-
 export default async (_app, _options) => {
 	_app.get("/", {
 		preValidation: [_app.authentication]
