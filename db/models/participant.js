@@ -14,12 +14,13 @@ export default {
 				}
 			},
 			joined: { type: ["object"] },
+			heartbeat: { type: ["object"] },
 			left: { type: ["object", "null"], default: null }
 		}
 	},
 	documents: [
 	],
 	indexes: [
-		{ keys: { heartbeat: 1 }, options: { name: "left", expireAfterSeconds: 10 } }
+		{ keys: { heartbeat: 1 }, options: { name: "heartbeat", expireAfterSeconds: 10 } }
 	]
 }
