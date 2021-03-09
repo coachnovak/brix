@@ -1,5 +1,4 @@
-import socket from "/components/socket.js";
-
+import stream from "/components/stream.js";
 import { article } from "/components/article.js";
 import { shadow } from "/components/shadow.js";
 import { identity } from "/components/identity.js";
@@ -100,6 +99,9 @@ document.addEventListener("DOMContentLoaded", () => {
 	globalThis.on = (_name, _function) => document.addEventListener(_name, _function);
 	globalThis.once = (_name, _function) => document.addEventListener(_name, _function, { once: true });
 	globalThis.off = (_name, _function) => document.removeEventListener(_name, _function);
+
+	// Setup event stream.
+	globalThis.stream = new stream();
 
 	const signOut = () => {
 		localStorage.removeItem("token");
