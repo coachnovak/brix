@@ -40,25 +40,6 @@ export default async (_app, _options) => {
 						lastName: foundUser.lastName
 					}
 
-					// Register as participant, but first ensure user isn't in the room already.
-					const exists = await _app.mongo.db.collection("participants").findOne({ "user._id": new _app.mongo.ObjectId(user._id), room: new _app.mongo.ObjectId(room) });
-
-					if (!exists) {
-						let participant = {};
-						participant.room = new _app.mongo.ObjectId(room);
-						participant.user = {
-							_id: new _app.mongo.ObjectId(user._id),
-							firstName: user.firstName,
-							lastName: user.lastName
-						};
-						participant.heartbeat = new Date();
-						participant.registered = new Date();
-
-						const registration = await _app.mongo.db.collection("participants").insertOne(participant);
-						if (registration && registration.result && registration.result.ok !== 1)
-							return _connection.socket.send(JSON.stringify({ name: "database.failure", data: "Failed to register participant." }));
-					}
-
 					// Create tunnel for subscribers and producers.
 					tunnel = await _app.channels.use(message.data.room);
 					await _app.channels.subscribe(tunnel);

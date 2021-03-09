@@ -1,35 +1,39 @@
 export default async (_app, _options) => {
-	_app.post("/:room", {
-		preValidation: [_app.authentication]
+	_app.get("/:room/poke/:recipient", {
+		preValidation: [_app.authentication],
+		schema: {
+			params: {
+				type: "object",
+				properties: {
+					room: { type: "string", pattern: "^[a-f0-9]{24}$", description: "Room in which the poke should occur." },
+					recipient: { type: "string", pattern: "^[a-f0-9]{24}$", description: "Poke recipient." }
+				}
+			}
+		}
 	}, async (_request, _response) => {
-		const isObjectId = /^[a-f\d]{24}$/i.test(_request.params.room);
-		if (!isObjectId) return _response.status(400).send("Provided id is invalid.");
-
 		// Validate room existence.
 		const room = await _app.mongo.db.collection("rooms").findOne({ _id: new _app.mongo.ObjectId(_request.params.room), deleted: null });
 		if (!room) return _response.status(400).send("Provided room doesn't exist.");
 
-		// Get current user.
-		const user = await _app.mongo.db.collection("users").findOne({ _id: new _app.mongo.ObjectId(_request.user.user), deleted: null });
+		// Get sender.
+		const sender = await _app.mongo.db.collection("users").findOne({ _id: new _app.mongo.ObjectId(_request.user.user), deleted: null });
+		if (!sender) return _response.status(400).send("Sender wasn't found.");
 
-		// Ensure user isn't in the room already.
-		const exists = await _app.mongo.db.collection("participants").findOne({ "user._id": user._id, room: room._id });
-		if (exists) return { _id: exists._id };
+		// Get recipient.
+		const recipient = await _app.mongo.db.collection("users").findOne({ _id: new _app.mongo.ObjectId(_request.params.recipient), deleted: null });
+		if (!recipient) return _response.status(400).send("Recipient wasn't found.");
 
-		let participant = {};
-		participant.room = room._id;
-		participant.user = {
-			_id: user._id,
-			firstName: user.firstName,
-			lastName: user.lastName
-		};
-		participant.heartbeat = new Date();
-		participant.registered = new Date();
+		_app.publish(`${recipient._id.toString()}-room-${_request.params.room}`, {
+			name: "poke",
+			data: {
+				room: room._id,
+				sender: sender._id,
+				recipient: recipient._id
+			},
+			when: new Date()
+		});
 
-		const response = await _app.mongo.db.collection("participants").insertOne(participant);
-		if (response?.result?.ok !== 1) return _response.status(400).send("Failed to register participant.");
-
-		return _response.status(201).send({ _id: response?.insertedId.toString() });
+		return _response.status(200).send({ message: "Success!" });
 	});
 
 	_app.put("/:id", {
