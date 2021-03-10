@@ -36,12 +36,13 @@ export default async (_app, _options) => {
 				required: ["name", "expires"],
 				properties: {
 					name: { type: "string" },
-					options: {
+					items: {
 						type: "array",
 						contains: {
 							type: "object",
 							properties: {
 								_id: { type: "object" },
+								icon: { type: "string" },
 								label: { type: "string" }
 							}
 						}
@@ -56,7 +57,7 @@ export default async (_app, _options) => {
 		if (room.owner.toString() !== _request.user.user) return _response.status(401).send({ message: "Templates can only be created by the room owner." });
 
 		// Assign ids to options.
-		_request.body.options = _request.body.options.map(_option => {
+		_request.body.options = (_request.body.options ?? []).map(_option => {
 			return { _id: new _app.mongo.ObjectId(), label: _option.label }
 		});
 
@@ -96,6 +97,7 @@ export default async (_app, _options) => {
 				type: "object",
 				required: ["label"],
 				properties: {
+					icon: { type: "string" },
 					label: { type: "string" },
 					order: { type: "number" }
 				}
@@ -110,6 +112,7 @@ export default async (_app, _options) => {
 		if (roomResult.owner.toString() !== _request.user.user) return _response.status(401).send({ message: "Template option can only be deleted by the room owner." });
 
 		let option = { _id: new _app.mongo.ObjectId() };
+		if (_request?.body?.icon) option.icon = _request.body.icon;
 		if (_request?.body?.label) option.label = _request.body.label;
 		if (_request?.body?.order) option.order = _request.body.order;
 
