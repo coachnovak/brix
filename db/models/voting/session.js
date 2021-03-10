@@ -15,6 +15,7 @@ export default {
 				type: "object",
 				properties: {
 					_id: { type: "object" },
+					icon: { type: "string" },
 					label: { type: "string" }
 				}
 			},
