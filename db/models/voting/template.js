@@ -8,7 +8,7 @@ export default {
 			name: { type: "string" },
 			options: {
 				type: "array",
-				contains: {
+				items: {
 					type: "object",
 					properties: {
 						_id: { type: "object" },
