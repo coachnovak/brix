@@ -39,8 +39,14 @@ export default class {
 
 			switch (code) {
 				case 200:
-					if (this.heartbeat) return;
-					this.heartbeat = setInterval(() => this.socket.send(JSON.stringify({ alive: true })), 4000);
+					if (this.heartbeat)
+						return;
+
+					this.heartbeat = setInterval(() => {
+						if (this.socket.readyState === 1)
+							this.socket.send(JSON.stringify({ alive: true }))
+					}, 4000);
+
 					break;
 
 				case 500:
