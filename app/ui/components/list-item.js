@@ -2,19 +2,18 @@ import { base } from "/components/base.js";
 
 export class listItem extends base {
 	constructor (_properties = {}) {
-		super(Object.assign(_properties ? _properties : {}, {
-
-        }));
+		super(_properties);
 
 		this
+			.property("clickable", _properties.clickable !== null && _properties.clickable !== undefined ? _properties.clickable : true)
 			.property("contents", _properties.contents ? _properties.contents : null)
 			.property("data", _properties.data ? _properties.data : null);
 
 		this.styles.push(`
 			:host { overflow: hidden; }
+			:host([clickable="true"]:hover) #item { background: var(--component-e-h); cursor: pointer; }
 
-			#item { display: grid; grid-gap: 15px; padding: 15px; border-radius: 3px; cursor: pointer; transform: translateY(-100%); }
-			#item:hover { background: rgba(255, 255, 255, 0.05); }
+			#item { display: grid; grid-gap: 15px; padding: 15px; border-radius: 3px; transform: translateY(-100%); }
 			#item[visible="true"] { transform: translateY(0%); }
 
 			#avatar { position: relative; width: 34px; height: 34px; border-radius: 50%; background: var(--paper-3); }
@@ -30,7 +29,9 @@ export class listItem extends base {
 	async connectedCallback () {
 		await super.connectedCallback();
 		this.readInIcons();
-		this.tabable();
+
+		if (this.clickable)
+			this.tabable();
 
 		let composition = [];
 		let elements = [];
