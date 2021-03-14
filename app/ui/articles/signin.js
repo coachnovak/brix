@@ -29,8 +29,8 @@ export default {
 			<h2 id="signin-head">Sign in</h2>
 
 			<div id="signin-form">
-				<app-textbox type="textbox" id="signin-email" placeholder="Whats your e-mail"></app-textbox>
-				<app-textbox type="password" id="signin-password" placeholder="Whats your password"></app-textbox>
+				<app-textbox type="textbox" id="signin-email" autocomplete="name" placeholder="Whats your e-mail"></app-textbox>
+				<app-textbox type="password" id="signin-password" autocomplete="current-password" placeholder="Whats your password"></app-textbox>
 			</div>
 
 			<div id="signin-primaries">
