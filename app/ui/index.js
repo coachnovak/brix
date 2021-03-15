@@ -85,6 +85,10 @@ globalThis.windows = {
 			parameters: _article.parameters || {},
 			shadow: shadowElement
 		}));
+	},
+	list: () => {
+		const articles = document.querySelectorAll("#windows > app-article");
+		return articles;
 	}
 };
 
