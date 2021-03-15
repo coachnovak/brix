@@ -2,13 +2,16 @@ import { list } from "/components/list.js";
 
 export default {
 	styles: `
-		#room-configurations-list { display: block; }
-		#room-configurations-list .empty { padding: 20px; text-align: center; }
+		#rooms-configurations { display: grid; grid-gap: 20px; }
 	`,
 
 	markup: `
-		<div id="rooms-configurations-actions">
-			<app-list id="room-configurations-actions-list" break="2"></app-list>
+		<div id="rooms-configurations">
+			<h3 class="center">General configurations</h2>
+			<app-list id="room-configurations-general" break="2"></app-list>
+
+			<h3 class="center">Voting configurations</h2>
+			<app-list id="room-configurations-voting"></app-list>
 		</div>
 	`,
 
@@ -16,11 +19,12 @@ export default {
 		// Close article if user isn't signed in.
 		if (!localStorage.getItem("token")) return _component.close();
 
-		const actionsListElement = _component.use("room-configurations-actions-list");
+		// General.
+		const generalElement = _component.use("room-configurations-general");
 
 		// Enable room rename.
-		(await actionsListElement.add({
-			id: "rename",
+		(await generalElement.add({
+			id: "general-rename",
 			contents: [
 				{ icon: "text" },
 				{ text: "Rename this room" },
@@ -33,8 +37,8 @@ export default {
 		});
 
 		// Enable room deletion.
-		(await actionsListElement.add({
-			id: "delete",
+		(await generalElement.add({
+			id: "general-delete",
 			contents: [
 				{ icon: "minus" },
 				{ text: "Delete this room" },
@@ -49,6 +53,21 @@ export default {
 				const deleteContent = deleteResponse.json();
 				globalThis.notify({ icon: "exclamation-circle", text: deleteContent.message });
 			}
+		});
+
+		// Voting.
+		const votingElement = _component.use("room-configurations-voting");
+
+		// Enable configure templates.
+		(await votingElement.add({
+			id: "voting-templates",
+			contents: [
+				{ icon: "ballot" },
+				{ text: "Configure voting templates" },
+				{ arrow: true }
+			]
+		})).on("activated", async _event => {
+			globalThis.windows.open({ name: "voting/configure/index", parameters: _component.parameters });
 		});
 	}
 };

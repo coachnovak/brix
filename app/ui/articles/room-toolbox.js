@@ -13,17 +13,17 @@ export default {
 
 		const utilitiesElement = _component.use("room-toolbox-list");
 
-		const estimateEffortElement = await utilitiesElement.add({
-			id: "estimate-effort",
+		const votingElement = await utilitiesElement.add({
+			id: "voting",
 			contents: [
-				{ icon: "ruler-combined" },
-				{ text: "Estimate effort" },
+				{ icon: "vote-yea" },
+				{ text: "Start a new voting session" },
 				{ arrow: true }
 			]
 		});
 
-		estimateEffortElement.on("activated", _event => {
-			globalThis.windows.open({ name: "estimate-effort", parameters: _component.parameters });
+		votingElement.on("activated", _event => {
+			globalThis.windows.open({ name: "voting/index", parameters: _component.parameters });
 		});
 
 		_component.on("disposing", () => {

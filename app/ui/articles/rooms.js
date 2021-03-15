@@ -56,7 +56,7 @@ export default {
 
 					roomElement.on("activated", _event => {
 						globalThis.contents.close();
-						globalThis.contents.open({ name: "room", parameters: { alias: _event.detail.alias } });
+						globalThis.contents.open({ name: "room", parameters: { id: _event.detail._id } });
 					});
 				}
 			}

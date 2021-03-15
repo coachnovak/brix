@@ -14,7 +14,7 @@ export default {
 		// Close article if user isn't signed in.
 		if (!localStorage.getItem("token")) return _component.close();
 
-		const roomResponse = await globalThis.fetcher(`/api/room/${_component.parameters.id || _component.parameters.alias}`, { method: "get" });
+		const roomResponse = await globalThis.fetcher(`/api/room/${_component.parameters.id}`, { method: "get" });
 
 		if (roomResponse.status !== 200) {
 			globalThis.notify({ text: "We can't find the room you're trying to enter." })
@@ -55,6 +55,25 @@ export default {
 					if (contentsElement) contentsElement.classList.remove("shake-hard", "shake-constant");
 					globalThis.notify({ icon: "hand-point-up", text: "Poke! Poke! 😜" });
 				}, 300);
+			},
+			"voting begins": _data => {
+				globalThis.windows.list().forEach(_article => {
+					if (_article.name === "voting/session/result")
+						_article.close("closed");
+				});
+
+				globalThis.windows.open({ name: "voting/session/cast", parameters: { session: _data } });
+			},
+			"voting progress": _data => {
+				globalThis.windows.open({ name: "voting/session/progress", parameters: { session: _data } });
+			},
+			"voting ends": _data => {
+				globalThis.windows.list().forEach(_article => {
+					if (_article.name === "voting/session/cast" && _article.parameters.session === _data)
+						_article.close("voting ended");
+				});
+
+				globalThis.windows.open({ name: "voting/session/result", parameters: { session: _data } });
 			}
 		});
 
@@ -77,10 +96,8 @@ export default {
 			globalThis.contents.open({ name: tabsElement.selected, parameters: { room } });
 		});
 
-		tabsElement.add("room-discussion", { icon: "comments-alt", composition: "icon" });
 		tabsElement.add("room-participants", { icon: "users", composition: "icon" });
 		tabsElement.add("room-toolbox", { icon: "toolbox", composition: "icon" });
-		tabsElement.add("room-history", { icon: "history", composition: "icon" });
 
 		// Show admin tabs if user owns the room.
 		const currentUserId = document.getElementById("identity").user._id;
