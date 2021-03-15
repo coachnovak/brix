@@ -98,8 +98,7 @@ export default async (_app, _options) => {
 				required: ["label"],
 				properties: {
 					icon: { type: "string" },
-					label: { type: "string" },
-					order: { type: "number" }
+					label: { type: "string" }
 				}
 			}
 		}
@@ -119,7 +118,7 @@ export default async (_app, _options) => {
 		let response = await _app.mongo.db.collection("voting.templates").updateOne({ _id: templateResult._id }, { $push: { options: option } });
 		if (response.result?.ok !== 1) return _response.status(500).send({ message: "Failed to update the option." });
 
-		return _response.status(200).send({ message: "Success!" });
+		return _response.status(201).send({ message: "Success!" });
 	});
 
 	_app.put("/:id", {
