@@ -76,7 +76,7 @@ header section app-button:hover { background: var(--paper-2); }
 #contents app-article[shelf="true"] { background-color: var(--paper-2); border-radius: 4px; padding: 20px; }
 
 @media all and (min-height: 600px) and (min-width: 576px) {
-	#contents { top: 80px; min-height: calc(100% - 100px); border-radius: 4px; }
+	#contents { top: 80px; min-height: calc(100% - 100px); border-radius: 8px; }
 	#contents:after { content: ""; display: block; position: absolute; top: 100%; width: calc(100% - 40px); height: 20px; }
 	#contents app-article[grow="true"] { min-height: 300px; }
 }
@@ -109,7 +109,7 @@ header section app-button:hover { background: var(--paper-2); }
 }
 
 @media all and (min-width: 536px) {
-	#windows app-article[position="center"] { left: 50%; top: 50%; right: unset; bottom: unset; max-width: calc(576px + 100px); min-width: calc(576px - 100px); transform: translate(-50%, -30%); border-radius: 2px; }
+	#windows app-article[position="center"] { left: 50%; top: 50%; right: unset; bottom: unset; max-width: calc(576px + 100px); min-width: calc(576px - 100px); transform: translate(-50%, -30%); border-radius: 8px; }
 	#windows app-article[position="center"][show="true"] { transform: translate(-50%, -50%); }
 }
 
