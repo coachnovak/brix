@@ -17,6 +17,8 @@ export class article extends base {
 			.property("full", _properties.full ? _properties.full : false)
 			.property("grow", _properties.grow ? _properties.grow : false)
 			.property("shadow", _properties.shadow ? _properties.shadow : null, { attribute: false });
+		
+		this.timers = {};
 	}
 
 	async connectedCallback () {
