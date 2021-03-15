@@ -10,8 +10,6 @@ export default {
 	markup: `
 		<div id="rooms">
 			<div id="rooms-head" class="center">
-				The floor is yours...<br />
-				<br />
 				<h2>What would you like to do?</h2>
 			</div>
 
