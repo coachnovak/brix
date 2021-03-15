@@ -12,12 +12,8 @@ export default {
 		#voting-template-configure-buttons { display: grid; grid-gap: 20px; grid-template-columns: repeat(auto-fill, 100%); grid-column: 1 / -1; }
 		#voting-template-configure-buttons app-button { width: 100%; }
 
-		@media all and (min-width: 256px) {
-			#voting-template-configure-buttons { grid-template-columns: repeat(auto-fill, calc(50% - 10px)); }
-		}
-
 		@media all and (min-width: 456px) {
-			#voting-template-configure-buttons { grid-template-columns: repeat(auto-fill, 25%); }
+			#voting-template-configure-buttons { grid-template-columns: repeat(auto-fill, minmax(100px, auto)); }
 		}
 	`,
 
@@ -27,7 +23,7 @@ export default {
 			<div id="voting-template-configure-expires"></div>
 			<app-list id="voting-template-configure-options"></app-list>
 			<div id="voting-template-configure-buttons" class="center">
-				<app-button id="voting-template-configure-delete" text="Delete" icon="times"s composition="text icon"></app-button>
+				<app-button id="voting-template-configure-delete" text="Delete template" icon="times" composition="text icon"></app-button>
 				<app-button id="voting-template-configure-close" text="Close" composition="text" embedded="true"></app-button>
 			</div>
 		</div>
@@ -66,7 +62,7 @@ export default {
 					contents: [
 						{ icon: option.icon },
 						{ text: option.label },
-						{ arrow: true }
+						{ delete: true }
 					]
 				});
 	

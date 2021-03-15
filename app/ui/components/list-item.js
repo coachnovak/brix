@@ -59,6 +59,9 @@ export class listItem extends base {
 			} else if (_content.arrow !== undefined) {
 				composition.push("min-content");
 				elements.push(`<i class="fad fa-arrow-right"></i>`);
+			} else if (_content.delete !== undefined) {
+				composition.push("min-content");
+				elements.push(`<i class="fad fa-times"></i>`);
 			}
 		});
 
