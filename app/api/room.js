@@ -5,13 +5,9 @@ export default async (_app, _options) => {
 		preValidation: [_app.authentication]
 	}, async (_request, _response) => {
 		const isObjectId = /^[a-f\d]{24}$/i.test(_request.params.id);
-		const isAlias = /^[a-zA-Z0-9]{10}$/.test(_request.params.id);
-		if (!isObjectId && !isAlias) return _response.status(400).send({ message: "Provided id or alias is invalid." });
+		if (!isObjectId) return _response.status(400).send({ message: "Provided id is invalid." });
 
-		const room = await _app.mongo.db.collection("rooms").findOne(
-			isObjectId ? { _id: new _app.mongo.ObjectId(_request.params.id), deleted: null } : { alias: _request.params.id.toLowerCase(), deleted: null }
-		);
-
+		const room = await _app.mongo.db.collection("rooms").findOne({ _id: new _app.mongo.ObjectId(_request.params.id), deleted: null });
 		if (room) return _response.status(200).send(room);
 		else return _response.status(404).send();
 	});
