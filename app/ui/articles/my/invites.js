@@ -59,7 +59,7 @@ export default {
 
 					inviteElement.on("activated", _event => {
 						globalThis.contents.close();
-						globalThis.contents.open({ name: "room", parameters: { id: _event.detail.room._id } });
+						globalThis.contents.open({ name: "room/index", parameters: { id: _event.detail.room._id } });
 					});
 				}
 			}

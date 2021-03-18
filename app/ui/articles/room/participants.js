@@ -61,13 +61,13 @@ export default {
 		}
 
 		_component.on("disposing", () => {
-			globalThis.contents.close("room-invites");
+			globalThis.contents.close("room/invites");
 			clearTimeout(scheduledUpdateTimer);
 		});
 
 		const user = document.getElementById("identity").user;
 		if (user && user._id === _component.parameters.room.owner)
-			globalThis.contents.open({ name: "room-invites", parameters: _component.parameters });
+			globalThis.contents.open({ name: "room/invites", parameters: _component.parameters });
 
 		await update();
 	}

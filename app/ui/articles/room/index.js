@@ -92,16 +92,16 @@ export default {
 		const tabsElement = _component.use("room-tabs");
 
 		tabsElement.on("selected", () => {
-			globalThis.contents.cut("room");
+			globalThis.contents.cut("room/index");
 			globalThis.contents.open({ name: tabsElement.selected, parameters: { room } });
 		});
 
-		tabsElement.add("room-participants", { icon: "users", composition: "icon" });
-		tabsElement.add("room-toolbox", { icon: "toolbox", composition: "icon" });
+		tabsElement.add("room/participants", { icon: "users", composition: "icon" });
+		tabsElement.add("room/toolbox", { icon: "toolbox", composition: "icon" });
 
 		// Show admin tabs if user owns the room.
 		const currentUserId = document.getElementById("identity").user._id;
 		if (room.owner === currentUserId)
-			tabsElement.add("room-configurations", { icon: "cog", composition: "icon" });
+			tabsElement.add("room/configurations", { icon: "cog", composition: "icon" });
 	}
 };

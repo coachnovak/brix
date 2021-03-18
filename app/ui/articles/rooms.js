@@ -54,7 +54,7 @@ export default {
 
 					roomElement.on("activated", _event => {
 						globalThis.contents.close();
-						globalThis.contents.open({ name: "room", parameters: { id: _event.detail._id } });
+						globalThis.contents.open({ name: "room/index", parameters: { id: _event.detail._id } });
 					});
 				}
 			}
@@ -63,11 +63,11 @@ export default {
 		};
 
 		_component.on("disposing", () => {
-			globalThis.contents.close("my-invites");
+			globalThis.contents.close("my/invites");
 			clearTimeout(scheduledUpdateTimer);
 		});
 
-		globalThis.contents.open({ name: "my-invites" });
+		globalThis.contents.open({ name: "my/invites" });
 		await updateMyRooms();
 
 		const createElement = await roomsElement.add({
@@ -80,9 +80,9 @@ export default {
 		});
 
 		createElement.on("activated", _event => {
-			globalThis.windows.open({ name: "room-create" }).once("created", _event => {
+			globalThis.windows.open({ name: "room/create" }).once("created", _event => {
 				globalThis.contents.close();
-				globalThis.contents.open({ name: "room", parameters: { id: _event.detail._id } });
+				globalThis.contents.open({ name: "room/index", parameters: { id: _event.detail._id } });
 			});
 		});
 	}

@@ -7,10 +7,10 @@ export default {
 
 	markup: `
 		<div id="rooms-configurations">
-			<h3 class="center">General configurations</h2>
+			<h3 class="center">General</h2>
 			<app-list id="room-configurations-general" break="2"></app-list>
 
-			<h3 class="center">Voting configurations</h2>
+			<h3 class="center">Voting</h2>
 			<app-list id="room-configurations-voting"></app-list>
 		</div>
 	`,
@@ -31,7 +31,7 @@ export default {
 				{ arrow: true }
 			]
 		})).on("activated", async _event => {
-			globalThis.windows.open({ name: "room-rename", parameters: _component.parameters }).once("renamed", _event => {
+			globalThis.windows.open({ name: "room/rename", parameters: _component.parameters }).once("renamed", _event => {
 				globalThis.emit(`${_component.parameters.room._id} renamed`, _event.detail);
 			});
 		});
