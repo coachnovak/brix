@@ -17,4 +17,9 @@ export default class {
 		if (!this.registry[_name]) return;
 		this.registry[_name].forEach(async _listener => _listener(_data));
 	}
+
+	async clear () {
+		for (const key in this.registry)
+			this.registry[key] = [];
+	}
 }
