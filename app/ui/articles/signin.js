@@ -55,7 +55,7 @@ export default {
 		});
 
 		_component.find("#email").events.on("activated", async () => _component.find("#password").focus());
-		_component.find("#password").events.on("activated", async () => _component.find("#continue").emit("activated"));
+		_component.find("#password").events.on("activated", async () => _component.find("#continue").events.emit("activated"));
 
 		_component.find("#forgot").events.on("activated", async () => globalThis.windows.open({ name: "signin-forgot" }));
 		_component.find("#register").events.on("activated", async () => globalThis.windows.open({ name: "register" }));
