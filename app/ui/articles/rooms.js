@@ -1,48 +1,49 @@
+import { component } from "/components/component.js";
 import { list } from "/components/list.js";
 import { textbox } from "/components/textbox.js";
 import { button } from "/components/button.js";
+import { ribbon } from "/components/ribbon.js";
 
 export default {
-	styles: `
-		#rooms-head { margin-bottom: 20px; }
-	`,
-
-	markup: `
-		<div id="rooms">
-			<div id="rooms-head" class="center">
-				<h2>What would you like to do?</h2>
-			</div>
-
-			<div id="rooms-select">
-				<app-list id="rooms-list"></app-list>
-			</div>
-		</div>
-	`,
+	templates: () => {
+		return {
+			style: component.template`
+				#layout { display: grid; grid-gap: var(--spacing); }
+				app-button { width: unset; position: relative; left: 50%; transform: translateX(-50%); }
+			`,
+		
+			markup: component.template`
+				<div id="layout">
+					<app-ribbon text="<h3>What would you like to do?</h3>"></app-ribbon>
+					<app-list id="list"></app-list>
+					<div id="actions">
+						<app-button id="create" icon="plus" composition="icon" size="huge" embedded="true"></app-button>
+					</div>
+				</div>
+			`
+		};
+	},
 
 	script: async _component => {
-		const roomsElement = _component.use("rooms-list");
-		let scheduledUpdateTimer = null;
+		const roomsElement = _component.find("#list");
 
 		const updateMyRooms = async () => {
-			// Close article if user isn't signed in.
-			if (!localStorage.getItem("token")) return _component.close();
-
 			const roomsResponse = await globalThis.fetcher(`/api/rooms/`, { method: "get" });
 			if (roomsResponse.status !== 200) return globalThis.contents.close("rooms");
 
 			const rooms = await roomsResponse.json();
 			for (let roomIndex = 0; roomIndex < rooms.length; roomIndex++) {
-				const existingRoom = roomsElement.use(rooms[roomIndex]._id);
 				const room = rooms[roomIndex];
 				const name = `Join ${room.name}`;
 				const count = `${room.participants} ${room.participants === 1 ? "participant" : "participants"}`;
+				const existingRoom = roomsElement.find(`#room-${room._id}`);
 
 				if (existingRoom) {
-					existingRoom.use("text").innerHTML = name;
-					existingRoom.use("count").innerHTML = count;
+					existingRoom.find("#text").innerHTML = name;
+					existingRoom.find("#count").innerHTML = count;
 				} else {
 					const roomElement = await roomsElement.add({
-						id: room._id,
+						id: `room-${room._id}`,
 						data: room,
 						contents: [
 							{ icon: "booth-curtain" },
@@ -52,37 +53,27 @@ export default {
 						]
 					});
 
-					roomElement.on("activated", _event => {
+					roomElement.events.on("activated", _data => {
 						globalThis.contents.close();
-						globalThis.contents.open({ name: "room/index", parameters: { id: _event.detail._id } });
+						globalThis.contents.open({ name: "room/index", parameters: { id: _data.data._id } });
 					});
 				}
 			}
 
-			scheduledUpdateTimer = setTimeout(() => updateMyRooms(), 4000);
+			_component.timers.once(() => updateMyRooms(), 4000);
 		};
 
-		_component.on("disposing", () => {
+		_component.events.on("disposed", () => {
 			globalThis.contents.close("my/invites");
-			clearTimeout(scheduledUpdateTimer);
 		});
 
 		globalThis.contents.open({ name: "my/invites" });
 		await updateMyRooms();
 
-		const createElement = await roomsElement.add({
-			id: "create",
-			contents: [
-				{ icon: "sparkles" },
-				{ text: "Create a room" },
-				{ arrow: true }
-			]
-		});
-
-		createElement.on("activated", _event => {
-			globalThis.windows.open({ name: "room/create" }).once("created", _event => {
+		_component.find("#create").events.on("activated", _event => {
+			globalThis.windows.open({ name: "room/create" }).events.on("created", _data => {
 				globalThis.contents.close();
-				globalThis.contents.open({ name: "room/index", parameters: { id: _event.detail._id } });
+				globalThis.contents.open({ name: "room/index", parameters: { id: _data._id } });
 			});
 		});
 	}

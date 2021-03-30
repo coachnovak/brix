@@ -7,7 +7,7 @@ export default async (_app, _options) => {
 		const isObjectId = /^[a-f\d]{24}$/i.test(_request.params.id);
 		if (!isObjectId) return _response.status(400).send({ message: "Provided id is invalid." });
 
-		const room = await _app.mongo.db.collection("rooms").findOne({ _id: new _app.mongo.ObjectId(_request.params.id), deleted: null });
+		const room = await _app.mongo.db.collection("rooms").findOne({ _id: new _app.mongo.objectid(_request.params.id), deleted: null });
 		if (room) return _response.status(200).send(room);
 		else return _response.status(404).send();
 	});
@@ -18,7 +18,7 @@ export default async (_app, _options) => {
 		const isObjectId = /^[a-f\d]{24}$/i.test(_request.params.id);
 		if (!isObjectId) return _response.status(400).send({ message: "Provided id is invalid." });
 
-		const count = await _app.mongo.db.collection("participants").countDocuments({ room: new _app.mongo.ObjectId(_request.params.id), deleted: null });
+		const count = await _app.mongo.db.collection("participants").countDocuments({ room: new _app.mongo.objectid(_request.params.id), deleted: null });
 		return _response.status(200).send(count);
 	});
 
@@ -31,7 +31,7 @@ export default async (_app, _options) => {
 		}
 
 		let room = {};
-		room.owner = new _app.mongo.ObjectId(_request.user.user);
+		room.owner = new _app.mongo.objectid(_request.user.user);
 		room.name = _request.body.name;
 		room.alias = crypto.randomBytes(5).toString("hex");
 		room.created = new Date();
@@ -65,7 +65,7 @@ export default async (_app, _options) => {
 			}
 		}
 	}, async (_request, _response) => {
-		const roomResult = await _app.mongo.db.collection("rooms").findOne({ _id: new _app.mongo.ObjectId(_request.params.id), deleted: null });
+		const roomResult = await _app.mongo.db.collection("rooms").findOne({ _id: new _app.mongo.objectid(_request.params.id), deleted: null });
 		if (!roomResult) return _response.status(404).send({ message: "Room couldn't be found." });
 		if (roomResult.owner.toString() !== _request.user.user) return _response.status(401).send({ message: "Room can only be renamed by the owner." });
 		const oldName = roomResult.name;
@@ -99,7 +99,7 @@ export default async (_app, _options) => {
 			}
 		}
 	}, async (_request, _response) => {
-		const roomResult = await _app.mongo.db.collection("rooms").findOne({ _id: new _app.mongo.ObjectId(_request.params.id), deleted: null });
+		const roomResult = await _app.mongo.db.collection("rooms").findOne({ _id: new _app.mongo.objectid(_request.params.id), deleted: null });
 		if (!roomResult) return _response.status(404).send({ message: "Room couldn't be found." });
 		if (roomResult.owner.toString() !== _request.user.user) return _response.status(401).send({ message: "Room can only be deleted by the owner." });
 

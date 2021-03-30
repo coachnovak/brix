@@ -33,7 +33,7 @@ export default class {
 	send (_name, _data) {
 		if (this.socket.readyState === 1)
 			this.socket.send(JSON.stringify({
-				token: localStorage.getItem("token"),
+				token: globalThis.session.token,
 				name: _name,
 				data: _data
 			}));

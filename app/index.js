@@ -4,13 +4,14 @@ import fastify from "fastify";
 const app = fastify(configurations.fastify);
 
 app.register(import("fastify-swagger"), configurations.docs);
-app.register(import("fastify-mongodb"), configurations.mongodb);
 app.register(import("fastify-redis-channels"), configurations.pubsub);
 app.register(import("fastify-static"), configurations.ui);
 app.register(import("fastify-static"), configurations.letsencrypt);
 app.register(import("fastify-websocket"), configurations.sck);
 app.register(import("fastify-jwt"), configurations.jwt);
+app.register(import("fastify-cors"), configurations.cors);
 app.register(import("fastify-metrics"), configurations.stats);
+app.register(import("fastify-multipart"), configurations.multipart);
 
 app.register(import("./mid/index.js"));
 app.register(import("./api/index.js"));

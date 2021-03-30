@@ -1,7 +1,7 @@
 export default async (_app, _options) => {
 	const getSession = async (_id, _status) => {
 		const match = {};
-		match._id = new _app.mongo.ObjectId(_id);
+		match._id = new _app.mongo.objectid(_id);
 		match.deleted = null;
 
 		if (_status?.new) {
@@ -68,7 +68,7 @@ export default async (_app, _options) => {
 		const session = await getSession(_request.params.id);
 		if (!session) return _response.status(404).send({ message: "Session couldn't be found." });
 
-		const participating = await _app.mongo.db.collection("participants").countDocuments({ room: session.room, user: new _app.mongo.ObjectId(_request.user.user) });
+		const participating = await _app.mongo.db.collection("participants").countDocuments({ room: session.room, user: new _app.mongo.objectid(_request.user.user) });
 		if (participating === 0) return _response.status(400).send({ message: "Session can only be shown if you're in the room where it was held." });
 
 		return _response.status(200).send(session);
@@ -93,7 +93,7 @@ export default async (_app, _options) => {
 		}
 	}, async (_request, _response) => {
 		// Get the template.
-		const template = await _app.mongo.db.collection("voting.templates").findOne({ _id: new _app.mongo.ObjectId(_request.params.template), deleted: null });
+		const template = await _app.mongo.db.collection("voting.templates").findOne({ _id: new _app.mongo.objectid(_request.params.template), deleted: null });
 		if (template === null) return _response.status(404).send({ message: "Provided template wasn't found." });;
 
 		// Get participants.
@@ -102,9 +102,9 @@ export default async (_app, _options) => {
 
 		let session = {};
 		session.room = template.room;
-		session.initiator = new _app.mongo.ObjectId(_request.user.user);
+		session.initiator = new _app.mongo.objectid(_request.user.user);
 		session.topic = _request.body.topic;
-		session.participants = participants.map(_participant => new _app.mongo.ObjectId(_participant.user));
+		session.participants = participants.map(_participant => new _app.mongo.objectid(_participant.user));
 		session.options = template.options;
 		session.votes = [];
 		session.expires = template.expires;
@@ -197,8 +197,8 @@ export default async (_app, _options) => {
 		if (existing) return _response.status(400).send({ message: "You have already placed your vote in this session." });
 
 		const vote = {};
-		vote.user = new _app.mongo.ObjectId(_request.user.user);
-		vote.option = new _app.mongo.ObjectId(_request.params.option);
+		vote.user = new _app.mongo.objectid(_request.user.user);
+		vote.option = new _app.mongo.objectid(_request.params.option);
 		vote.registered = new Date();
 
 		let response = await _app.mongo.db.collection("voting.sessions").updateOne({ _id: session._id }, { $push: { votes: vote } });

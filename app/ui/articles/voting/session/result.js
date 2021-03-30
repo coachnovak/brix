@@ -1,3 +1,4 @@
+import { component } from "/components/component.js";
 import { button } from "/components/button.js";
 import { progress } from "/components/progress.js";
 
@@ -6,31 +7,31 @@ export default {
 		position: "center"
 	},
 
-	styles: `
-		#voting-session-result { display: grid; grid-gap: 20px; }
-		#voting-session-result-expires { opacity: 0.6; }
-
-		#voting-session-result-votes { display: grid; grid-gap: 5px; }
-		#voting-session-result-votes > div { display: grid; grid-gap: 15px; grid-template-columns: min-content auto min-content; padding: 15px; }
-		#voting-session-result-votes > div > app-progress { grid-column: 1 / -1; }
-	`,
-
-	markup: `
-		<div id="voting-session-result">
-			<h2 class="center">Voting result</h2>
-			<div class="center"><span id="voting-session-result-topic"></span> <span id="voting-session-result-expires"></span></div>
-			<div class="center"><span id="voting-session-result-notvoted"></span></div>
-			<div id="voting-session-result-votes"></div>
-			<div class="center">
-				<app-button id="voting-session-result-close" text="Close" composition="text"></app-button>
-			</div>
-		</div>
-	`,
+	templates: () => {
+		return {
+			style: component.template`
+				:host([type]) { width: var(--size-s); }
+		
+				#layout { display: grid; grid-gap: 20px; }
+				#expires { opacity: 0.6; }
+		
+				#votes { display: grid; grid-gap: 5px; }
+				#votes > div { display: grid; grid-gap: 15px; grid-template-columns: min-content auto min-content; padding: 15px; }
+				#votes > div > app-progress { grid-column: 1 / -1; }
+			`,
+		
+			markup: component.template`
+				<div id="layout">
+					<h2 class="center">Voting result</h2>
+					<div class="center"><span id="topic"></span> <span id="expires"></span></div>
+					<div class="center"><span id="notvoted"></span></div>
+					<div id="votes"></div>
+				</div>
+			`
+		};
+	},
 
 	script: async _component => {
-		// Close article if user isn't signed in.
-		if (!localStorage.getItem("token")) return _component.close("cancelled");
-
 		const summarize = (_array, _keys, _sort) => {
 			let groups = {};
 	
@@ -55,22 +56,21 @@ export default {
 		// Remap votes and summarize votes.
 		session.summary = session.votes.map(_vote => { return { option: _vote.option }; });
 		session.summary = summarize(session.summary, _item => { return [_item.option]; }, (_first, _second) => _second.length - _first.length);
-		console.log(session.summary);
 
-		const topicElement = _component.use("voting-session-result-topic");
+		const topicElement = _component.find("#topic");
 		topicElement.innerText = session.topic;
 
-		const expiresElement = _component.use("voting-session-result-expires");
+		const expiresElement = _component.find("#expires");
 		if (session.expires === null) expiresElement.innerText = "has no time limit.";
 		else expiresElement.innerText = `has a time limit of ${session.expires} seconds.`;
 
-		const notvotedElement = _component.use("voting-session-result-notvoted");
+		const notvotedElement = _component.find("#notvoted");
 		const notvoted = session.participants.length - session.votes.length;
 		if (notvoted === 0) notvotedElement.innerText = `Everyone casted their vote.`;
 		else if (notvoted === 1) notvotedElement.innerText = `${notvoted} vote was not casted.`;
 		else notvotedElement.innerText = `${notvoted} votes were not casted.`;
 
-		const votesElement = _component.use("voting-session-result-votes");
+		const votesElement = _component.find("#votes");
 		session.summary.forEach(_item => {
 			const option = session.options.find(_option => _item.key.option === _option._id);
 			const voteElement = document.createElement("div");
@@ -83,15 +83,8 @@ export default {
 			const countElement = voteElement.appendChild(document.createElement("div"));
 			countElement.innerText = _item.length;
 
-			const progressElement = voteElement.appendChild(document.createElement("app-progress"));
-			progressElement.max = session.votes.length;
-			progressElement.current = _item.length;
-
+			voteElement.appendChild(new progress({ max: session.votes.length, current: _item.length }));
 			votesElement.appendChild(voteElement);
-		});
-
-		_component.use("voting-session-result-close").once("activated", () => {
-			_component.close("closed");
 		});
 	}
 };

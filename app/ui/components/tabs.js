@@ -1,54 +1,60 @@
-import { base } from "/components/base.js";
+import { component } from "/components/component.js";
 import { button } from "/components/button.js";
 
-export class tabs extends base {
+export class tabs extends component {
 	constructor (_properties = {}) {
-		super(Object.assign(_properties ? _properties : {}, {
+		super({ ..._properties });
 
-        }));
+		const { selected } = _properties;
+		this.property({ name: "selected", value: selected, options: { default: null } });
+    }
 
-		this
-			.property("selected", _properties.selected ? _properties.selected : null);
+	connectedCallback ({ style, markup } = {}) {
+		super.conditionsCallback();
+		super.connectedCallback({
+			style: component.template`
+				#buttons { text-align: center; }
+				#buttons > app-button { display: inline-grid; margin-right: 10px; }
+				#buttons > app-button:last-child { margin-right: 0; }
+				#buttons > app-button.selected { border-bottom-color: var(--paper-3); }
 
-		this.styles.push(`
-			#buttons { text-align: center; }
-			#buttons > app-button { display: inline-grid; margin-right: 10px; }
-			#buttons > app-button:last-child { margin-right: 0; }
-			#buttons > app-button.selected { border-bottom-color: var(--paper-4); }
-		`);
+				${style ? style() : ""}
+			`,
+
+			markup: component.template`
+				<div id="buttons"></div>
+
+				${markup ? markup() : ""}
+			`
+		});
 	}
 
-	async connectedCallback () {
-		await super.connectedCallback();
-		this.readInIcons();
-
-		const buttonsElement = this.appendChild(document.createElement("div"));
-		buttonsElement.setAttribute("id", "buttons");
-
-		this.emit("ready");
+	disconnectedCallback () {
+		super.disconnectedCallback();
 	}
 
 	add (_id, _button) {
-		const buttonsElement = this.use("buttons");
-		const buttonElement = buttonsElement.appendChild(new button(Object.assign(_button, {
+		const buttonsElement = this.find("#buttons");
+		const buttonElement = buttonsElement.appendChild(new button({
 			id: `tab_${_id}`,
 			size: "large",
-			embedded: true
-		})));
+			embedded: true,
+			..._button
+		}));
 
-		buttonElement.on("activated", () => this.activate(_id));
+		buttonElement.events.on("activated", () => this.activate(_id));
 		if (this.selected === null) this.activate(_id);
 	}
 
 	activate (_id) {
-		const oldButtonElement = this.use(`tab_${this.selected}`);
+		const oldButtonElement = this.find(`#tab_${this.selected}`);
 		if (oldButtonElement) oldButtonElement.classList.remove("selected");
 
-		const newButtonElement = this.use(`tab_${_id}`);
+		const newButtonElement = this.find(`#tab_${_id}`);
 		newButtonElement.classList.add("selected");
 
 		this.selected = _id;
-		this.emit("selected");
+		this.events.emit("selected");
 	}
 }
 

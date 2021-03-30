@@ -1,41 +1,48 @@
-import { base } from "/components/base.js";
+import { component } from "/components/component.js";
 
-export class progress extends base {
+export class progress extends component {
 	constructor (_properties = {}) {
-		_properties = Object.assign({
-			max: 0,
-			current: 0
-        }, _properties);
+		super({ ..._properties, canfocus: true });
 
-		super(_properties);
+		const { max, current } = _properties;
+		this.property({ name: "max", value: max, options: { default: 0 } })
+			.property({ name: "current", value: current, options: { default: 0 } });
+    }
 
-		this
-			.property("max", _properties.max)
-			.property("current", _properties.current);
+	connectedCallback ({ style, markup } = {}) {
+		super.conditionsCallback();
+		super.connectedCallback({
+			style: component.template`
+				:host { position: relative; background: var(--action-e-1); width: 100%; height: 3px; }
+				#current { position: absolute; left: 0; top: 0; bottom: 0; background: var(--action-e-f); transition-property: width; }
 
-		this.styles.push(`
-			:host { position: relative; background: var(--component-e-b); width: 100%; height: 3px; }
-			#current { position: absolute; left: 0; top: 0; bottom: 0; background: var(--component-e-f); }
-		`);
+				${style ? style() : ""}
+			`,
+
+			markup: component.template`
+				<div><div id="current"></div></div>
+
+				${markup ? markup() : ""}
+			`
+		});
+
+		// Initial render.
+		this.render();
+
+		// Redirect events.
+		/* None */
+
+		// Handle events.
+		this.events.on("max updated", () => this.render());
+		this.events.on("current updated", () => this.render());
 	}
 
-	async connectedCallback () {
-		await super.connectedCallback();
-
-		this.html(`
-			${this.html()}
-			<div><div id="current"></div></div>
-		`);
-
-		this.on("max updated", () => this.render());
-		this.on("current updated", () => this.render());
-
-		await this.render();
-		this.emit("ready");
+	disconnectedCallback () {
+		super.disconnectedCallback();
 	}
 
-	async render () {
-		const currentElement = this.use("current");
+	render () {
+		const currentElement = this.find("#current");
 
 		if (this.current === 0) {
 			currentElement.style.width = "0%";

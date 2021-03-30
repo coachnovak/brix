@@ -16,15 +16,12 @@ export default class {
 		// If no connection is ready, terminate request.
 		if (this.socket.readyState !== 1) return null;
 
-		// Provide token if available.
-		const token = localStorage.getItem("token");
-
 		// Send subscription request.
-		this.socket.send(JSON.stringify({ channel, token }));
+		this.socket.send(JSON.stringify({ channel, token: globalThis.session.token }));
 
 		// Register subscription.
-		const user = document.getElementById("identity").user
-		if (user) channel = channel.replace("{user}", user._id);
+		if (globalThis.session.signedin)
+			channel = channel.replace("{user}",  globalThis.session.identity._id);
 
 		this.subscriptions.push({ channel, events });
 

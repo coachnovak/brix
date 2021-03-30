@@ -10,7 +10,7 @@ export default async (_app, _options) => {
 			}
 		}
 	}, async (_request, _response) => {
-		const response = await _app.mongo.db.collection("voting.templates").find({ room: new _app.mongo.ObjectId(_request.params.room), deleted: null });
+		const response = await _app.mongo.db.collection("voting.templates").find({ room: new _app.mongo.objectid(_request.params.room), deleted: null });
 		const list = await response.toArray();
 
 		return _response.status(200).send(list);

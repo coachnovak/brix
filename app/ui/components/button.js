@@ -1,84 +1,122 @@
-import { base } from "/components/base.js";
+import { component } from "/components/component.js";
 
-export class button extends base {
+export class button extends component {
 	constructor (_properties = {}) {
-		super(Object.assign(_properties ? _properties : {}, {
+		super({ ..._properties, canfocus: true });
 
-        }));
+		const { text, icon, size, secondary, embedded, composition, round, glow } = _properties;
+		this.property({ name: "text", value: text, options: { default: null, isattribute: true } })
+			.property({ name: "icon", value: icon, options: { default: null, isattribute: true } })
+			.property({ name: "size", value: size, options: { default: null, isattribute: true } })
 
-		this
-			.property("text", _properties.text ? _properties.text : null)
-			.property("icon", _properties.icon ? _properties.icon : null)
-			.property("size", _properties.size ? _properties.size : null)
-			.property("secondary", _properties.secondary ? _properties.secondary : null)
-			.property("embedded", _properties.embedded ? _properties.embedded : null)
-			.property("composition", _properties.composition ? _properties.composition : null);
+			.property({ name: "secondary", value: secondary, options: { default: null, isattribute: true } })
+			.property({ name: "embedded", value: embedded, options: { default: null, isattribute: true } })
+			.property({ name: "composition", value: composition, options: { default: null, isattribute: true } })
 
-		this.styles.push(`
-			:host { user-select: none; }
-			:host { display: inline-grid; background: var(--button-p-b); color: var(--button-p-f); border: 2px solid transparent; border-radius: 3px; padding: 13px; grid-gap: 9px; align-items: center; justify-content: center; align-content: center; letter-spacing: 1px; cursor: pointer; white-space: nowrap; outline: 0; }
-			:host([secondary="true"]) { background: var(--button-s-b); color: var(--button-s-f); }
-			:host([embedded="true"]) { background: var(--button-e-b); color: var(--button-e-f); }
+			.property({ name: "round", value: round, options: { default: false, isattribute: true } })
+			.property({ name: "glow", value: glow, options: { default: false, isattribute: true } });
+    }
 
-			:host([composition*="vertical"]) { text-align: center; }
-			:host([composition="text icon"]) { grid-template-columns: auto min-content; }
-			:host([composition="vertical text icon"]) { grid-template-rows: auto min-content; }
-			:host([composition="icon text"]) { grid-template-columns: min-content auto; }
-			:host([composition="vertical icon text"]) { grid-template-rows: min-content auto; }
-			:host([composition="text"]),
-			:host([composition="icon"]) { grid-template-columns: auto; }
-			:host([composition="vertical text"]),
-			:host([composition="vertical icon"]) { grid-template-rows: auto; }
+	connectedCallback ({ style, markup } = {}) {
+		super.connectedCallback({
+			style: component.template`
+				:host { user-select: none; touch-action: none; }
+				:host { display: inline-grid; background: var(--action-p-1); color: var(--action-p-f); border: 2px solid transparent; border-radius: 3px; padding: 13px; grid-gap: 9px; align-items: center; justify-content: center; align-content: center; letter-spacing: 1px; cursor: pointer; white-space: nowrap; outline: 0; box-shadow: var(--action-p-s); }
+				:host([secondary="true"]) { background: var(--action-s-1); color: var(--action-s-f); box-shadow: var(--action-s-s); }
+				:host([embedded="true"]) { background: var(--action-e-1); color: var(--action-e-f);  box-shadow: var(--action-e-s); }
+		
+				:host([composition*="vertical"]) { text-align: center; }
+				:host([composition="text icon"]) { grid-template-columns: auto min-content; }
+				:host([composition="vertical text icon"]) { grid-template-rows: auto min-content; }
+				:host([composition="icon text"]) { grid-template-columns: min-content auto; }
+				:host([composition="vertical icon text"]) { grid-template-rows: min-content auto; }
+				:host([composition="text"]),
+				:host([composition="icon"]) { grid-template-columns: auto; }
+				:host([composition="vertical text"]),
+				:host([composition="vertical icon"]) { grid-template-rows: auto; }
+		
+				:host([round="true"]) { border-radius: 50%; }
+				:host([glow="true"]) { animation: glow 1.5s ease-in-out 6 alternate; }
+		
+				:host(:hover) { background: var(--action-p-2); }
+				:host(:focus) { border-color: var(--action-p-3); }
+		
+				:host([secondary="true"]:hover) { background: var(--action-s-2); }
+				:host([secondary="true"]:focus) { border-color: var(--action-s-2); }
+		
+				:host([embedded="true"]:hover) { background: var(--action-e-2); }
+				:host([embedded="true"]:focus) { border-color: var(--action-e-3); }
+		
+				i { font-size: 10pt; }
+		
+				:host([size="large"]) { padding: 8px; }
+				:host([size="large"]) i { font-size: 18pt; }
+		
+				:host([size="huge"]) { padding: 10px; }
+				:host([size="huge"]) i { font-size: 24pt; }
+		
+				@keyframes glow {
+					from { box-shadow: 0 0 -5px -0 rgba(255, 255, 255, 0.75); }
+					to { box-shadow: 0 0 80px 0 rgba(255, 255, 255, 0.75); }
+				}
 
-			:host(:hover) { background: var(--button-p-h); }
-			:host(:focus) { border-color: var(--button-p-a); }
+				${style ? style() : ""}
+			`,
 
-			:host([secondary="true"]:hover) { background: var(--button-s-h); }
-			:host([secondary="true"]:focus) { border-color: var(--button-s-a); }
+			markup: component.template`
+				${markup ? markup() : ""}
+			`
+		});
 
-			:host([embedded="true"]:hover) { background: var(--button-e-h); }
-			:host([embedded="true"]:focus) { border-color: var(--button-e-a); }
-
-			i { font-size: 10pt; }
-
-			:host([size="large"]) { padding: 8px; }
-			:host([size="large"]) i { font-size: 18pt; }
-		`);
-	}
-
-	async connectedCallback () {
-		await super.connectedCallback();
-		this.tabable();
-		this.readInIcons();
+		// Initial render.
 		this.render();
 
-		this.on("click", () => this.emit("activated"));
-		this.on("keydown", _event => { if (_event.key ==="Enter") this.emit("activated") });
+		// Redirect events.
+		this.events.redirect(this, "click", "activated");
+		this.events.redirect(this, "keydown");
 
-		this.on("mousedown", () => this.emit("hold"));
-		this.on("touchstart", () => this.emit("hold"));
+		this.events.redirect(this, "mousedown", "hold");
+		this.events.redirect(this, "touchstart", "hold");
 
-		this.on("mouseup", () => this.emit("release"));
-		this.on("touchend", () => this.emit("release"));
+		this.events.redirect(this, "mouseup", "release");
+		this.events.redirect(this, "touchend", "release");
 
-		this.emit("ready");
+		this.events.redirect(this, "contextmenu", "options");
+
+		// Handle events.
+		this.events.on("text updated", _value => this.render());
+		this.events.on("icon updated", _value => this.render());
+
+		this.events.on("keydown", _event => {
+			_event.key === "Enter" && this.events.emit("activated");
+			this.events.emit("changed");
+		});
+
+		this.events.on("options", _event => _event.preventDefault() & _event.stopPropagation());
 	}
 
-	async render () {
-		const textElement = this.use("text");
+	disconnectedCallback () {
+		super.disconnectedCallback();
+	}
+
+	render () {
+		const textElement = this.find("#text");
 		if (textElement) textElement.remove();
 
-		const iconElement = this.use("icon");
+		const iconElement = this.find("#icon");
 		if (iconElement) iconElement.remove();
 
+		const templateElement = document.createElement("template");
 		this.composition.split(" ").forEach(_type => {
 			const value = this[_type];
 
 			switch (_type) {
-				case "text": this.append(`<div id="text">${value}</div>`); break;
-				case "icon": this.append(`<i id="icon" class="fad fa-${value}"></i>`); break;
+				case "text": templateElement.innerHTML += `<div id="text">${value}</div>`; break;
+				case "icon": templateElement.innerHTML += `<i id="icon" class="fad fa-${value}"></i>`; break;
 			}
 		});
+
+		this.append(templateElement.content.cloneNode(true));
 	}
 }
 

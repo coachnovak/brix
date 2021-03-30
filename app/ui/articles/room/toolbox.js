@@ -1,19 +1,22 @@
+import { component } from "/components/component.js";
+
 export default {
-	styles: `
+	templates: () => {
+		return {
+			style: component.template`
 
-	`,
-
-	markup: `
-		<app-list id="room-toolbox-list"></app-list>
-	`,
+			`,
+		
+			markup: component.template`
+				<app-list id="room-toolbox-list"></app-list>
+			`
+		};
+	},
 
 	script: async _component => {
-		// Close article if user isn't signed in.
-		if (!localStorage.getItem("token")) return _component.close();
+		const toolboxElement = _component.find("#room-toolbox-list");
 
-		const utilitiesElement = _component.use("room-toolbox-list");
-
-		const votingElement = await utilitiesElement.add({
+		const votingElement = await toolboxElement.add({
 			id: "voting",
 			contents: [
 				{ icon: "vote-yea" },
@@ -22,11 +25,11 @@ export default {
 			]
 		});
 
-		votingElement.on("activated", _event => {
+		votingElement.events.on("activated", _event => {
 			globalThis.windows.open({ name: "voting/index", parameters: _component.parameters });
 		});
 
-		_component.on("disposing", () => {
+		_component.events.on("disposed", () => {
 			globalThis.contents.close("room-participants");
 		});
 	}

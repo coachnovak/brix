@@ -17,7 +17,7 @@ export default async (_app, _options) => {
 		const isObjectId = /^[a-f\d]{24}$/i.test(_request.params.id);
 		if (!isObjectId) return _response.status(400).send({ message: "Provided id is invalid." });
 
-		const template = await _app.mongo.db.collection("voting.templates").findOne({ _id: new _app.mongo.ObjectId(_request.params.id), deleted: null });
+		const template = await _app.mongo.db.collection("voting.templates").findOne({ _id: new _app.mongo.objectid(_request.params.id), deleted: null });
 		if (template) return _response.status(200).send(template);
 		else return _response.status(404).send();
 	});
@@ -52,13 +52,13 @@ export default async (_app, _options) => {
 			}
 		}
 	}, async (_request, _response) => {
-		const room = await _app.mongo.db.collection("rooms").findOne({ _id: new _app.mongo.ObjectId(_request.params.room), deleted: null });
+		const room = await _app.mongo.db.collection("rooms").findOne({ _id: new _app.mongo.objectid(_request.params.room), deleted: null });
 		if (room === null) return _response.status(404).send({ message: "Provided room wasn't found." });
 		if (room.owner.toString() !== _request.user.user) return _response.status(401).send({ message: "Templates can only be created by the room owner." });
 
 		// Assign ids to options.
 		_request.body.options = (_request.body.options ?? []).map(_option => {
-			return { _id: new _app.mongo.ObjectId(), label: _option.label }
+			return { _id: new _app.mongo.objectid(), label: _option.label }
 		});
 
 		let template = {};
@@ -103,14 +103,14 @@ export default async (_app, _options) => {
 			}
 		}
 	}, async (_request, _response) => {
-		const templateResult = await _app.mongo.db.collection("voting.templates").findOne({ _id: new _app.mongo.ObjectId(_request.params.template), deleted: null });
+		const templateResult = await _app.mongo.db.collection("voting.templates").findOne({ _id: new _app.mongo.objectid(_request.params.template), deleted: null });
 		if (!templateResult) return _response.status(404).send({ message: "Template couldn't be found." });
 
 		const roomResult = await _app.mongo.db.collection("rooms").findOne({ _id: templateResult.room, deleted: null });
 		if (!roomResult) return _response.status(404).send({ message: "Room couldn't be found." });
 		if (roomResult.owner.toString() !== _request.user.user) return _response.status(401).send({ message: "Template option can only be deleted by the room owner." });
 
-		let option = { _id: new _app.mongo.ObjectId() };
+		let option = { _id: new _app.mongo.objectid() };
 		if (_request?.body?.icon) option.icon = _request.body.icon;
 		if (_request?.body?.label) option.label = _request.body.label;
 		if (_request?.body?.order) option.order = _request.body.order;
@@ -139,7 +139,7 @@ export default async (_app, _options) => {
 			}
 		}
 	}, async (_request, _response) => {
-		const templateResult = await _app.mongo.db.collection("voting.templates").findOne({ _id: new _app.mongo.ObjectId(_request.params.id), deleted: null });
+		const templateResult = await _app.mongo.db.collection("voting.templates").findOne({ _id: new _app.mongo.objectid(_request.params.id), deleted: null });
 		if (!templateResult) return _response.status(404).send({ message: "Template couldn't be found." });
 
 		const roomResult = await _app.mongo.db.collection("rooms").findOne({ _id: templateResult.room, deleted: null });
@@ -171,7 +171,7 @@ export default async (_app, _options) => {
 			}
 		}
 	}, async (_request, _response) => {
-		const templateResult = await _app.mongo.db.collection("voting.templates").findOne({ _id: new _app.mongo.ObjectId(_request.params.template), deleted: null });
+		const templateResult = await _app.mongo.db.collection("voting.templates").findOne({ _id: new _app.mongo.objectid(_request.params.template), deleted: null });
 		if (!templateResult) return _response.status(404).send({ message: "Template couldn't be found." });
 
 		const roomResult = await _app.mongo.db.collection("rooms").findOne({ _id: templateResult.room, deleted: null });
@@ -202,14 +202,14 @@ export default async (_app, _options) => {
 			}
 		}
 	}, async (_request, _response) => {
-		const templateResult = await _app.mongo.db.collection("voting.templates").findOne({ _id: new _app.mongo.ObjectId(_request.params.template), deleted: null });
+		const templateResult = await _app.mongo.db.collection("voting.templates").findOne({ _id: new _app.mongo.objectid(_request.params.template), deleted: null });
 		if (!templateResult) return _response.status(404).send({ message: "Template couldn't be found." });
 
 		const roomResult = await _app.mongo.db.collection("rooms").findOne({ _id: templateResult.room, deleted: null });
 		if (!roomResult) return _response.status(404).send({ message: "Room couldn't be found." });
 		if (roomResult.owner.toString() !== _request.user.user) return _response.status(401).send({ message: "Template option can only be deleted by the room owner." });
 
-		let response = await _app.mongo.db.collection("voting.templates").updateOne({ _id: templateResult._id }, { $pull: { options: { _id: new _app.mongo.ObjectId(_request.params.option) } } });
+		let response = await _app.mongo.db.collection("voting.templates").updateOne({ _id: templateResult._id }, { $pull: { options: { _id: new _app.mongo.objectid(_request.params.option) } } });
 		if (response.result?.ok !== 1) return _response.status(500).send({ message: "Failed to update the option." });
 
 		return _response.status(200).send({ message: "Success!" });
@@ -226,7 +226,7 @@ export default async (_app, _options) => {
 			}
 		}
 	}, async (_request, _response) => {
-		const templateResult = await _app.mongo.db.collection("voting.templates").findOne({ _id: new _app.mongo.ObjectId(_request.params.id), deleted: null });
+		const templateResult = await _app.mongo.db.collection("voting.templates").findOne({ _id: new _app.mongo.objectid(_request.params.id), deleted: null });
 		if (!templateResult) return _response.status(404).send({ message: "Template couldn't be found." });
 
 		const roomResult = await _app.mongo.db.collection("rooms").findOne({ _id: templateResult.room, deleted: null });

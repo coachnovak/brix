@@ -5,7 +5,7 @@ export default async (_app, _options) => {
 		const response = await _app.mongo.db.collection("rooms").aggregate([
 			{
 				"$match": {
-					"owner": new _app.mongo.ObjectId(_request.user.user),
+					"owner": new _app.mongo.objectid(_request.user.user),
 					"deleted": null
 				}
 			}, {
@@ -34,7 +34,7 @@ export default async (_app, _options) => {
 	_app.get("/count/", {
 		preValidation: [_app.authentication]
 	}, async (_request, _response) => {
-		const count = await _app.mongo.db.collection("rooms").countDocuments({ owner: new _app.mongo.ObjectId(_request.user.user), deleted: null });
+		const count = await _app.mongo.db.collection("rooms").countDocuments({ owner: new _app.mongo.objectid(_request.user.user), deleted: null });
 		return _response.status(200).send(count);
 	});
 };

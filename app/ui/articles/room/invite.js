@@ -1,3 +1,4 @@
+import { component } from "/components/component.js";
 import { button } from "/components/button.js";
 import { textbox } from "/components/textbox.js";
 
@@ -6,82 +7,67 @@ export default {
 		position: "center"
 	},
 
-	styles: `
-		#room-invite { display: grid; grid-gap: 20px; }
-		#room-invite-buttons { display: grid; grid-gap: 20px; grid-template-columns: repeat(auto-fill, 100%); grid-column: 1 / -1; }
-		#room-invite-buttons app-button { width: 100%; }
-
-		@media all and (min-width: 256px) {
-			#room-invite-buttons { grid-template-columns: repeat(auto-fill, calc(50% - 10px)); }
-		}
-
-		@media all and (min-width: 456px) {
-			#room-invite-buttons { grid-template-columns: repeat(auto-fill, 25%); }
-		}
-	`,
-
-	markup: `
-		<div id="room-invite">
-			<h2>Invite someone</h2>
-			<app-textbox type="textbox" id="room-invite-email" placeholder="E-mail address"></app-textbox>
-			<div id="room-invite-buttons">
-				<app-button id="room-invite-continue" text="Invite" icon="share" composition="text icon"></app-button>
-				<app-button id="room-invite-cancel" text="Cancel" composition="text" embedded="true"></app-button>
-			</div>
-		</div>
-	`,
+	templates: () => {
+		return {
+			style: component.template`
+				:host([type]) { width: var(--size-s); }
+		
+				#layout { display: grid; grid-gap: var(--spacing); }
+				#actions app-button { width: 100%; }
+		
+				@media (orientation: landscape) {
+					#actions app-button { width: unset; position: relative; left: 50%; transform: translateX(-50%); }
+				}
+			`,
+		
+			markup: component.template`
+				<div id="layout">
+					<h2>Invite someone</h2>
+		
+					<app-textbox id="email" placeholder="E-mail address"></app-textbox>
+		
+					<div id="actions">
+						<app-button id="continue" text="Invite" icon="share" composition="text icon"></app-button>
+					</div>
+				</div>
+			`
+		};
+	},
 
 	script: async _component => {
-		// Close article if user isn't signed in.
-		if (!localStorage.getItem("token")) return _component.close("cancelled");
-
-		if (_component.shadow) _component.shadow.once("activated", async () => {
+		_component.shadow && _component.shadow.events.on("activated", async () => {
 			_component.close("cancelled");
 		});
 
-		const inviteEmailElement = _component.use("room-invite-email");
-		const inviteContinueElement = _component.use("room-invite-continue");
+		const inviteEmailElement = _component.find("#email");
+		const inviteContinueElement = _component.find("#continue");
+		inviteEmailElement.events.on("activated", async () => inviteContinueElement.events.emit("activated"));
+		inviteEmailElement.focus();
 
-		inviteEmailElement.on("activated", async () => {
-			inviteContinueElement.emit("activated");
-		});
+		inviteContinueElement.events.on("activated", async () => {
+			const emailValid = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(inviteEmailElement.value);
+			if (!emailValid) return globalThis.notify([{ icon: "exclamation-circle" }, { text: "Invalid e-mail provided." }]).close(3000);
 
-		inviteContinueElement.on("activated", async () => {
-			const emailValid = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(inviteEmailElement.value());
-			if (!emailValid) return globalThis.notify({ icon: "exclamation-circle", text: "Invalid e-mail provided." });
-
-			const inviteResponse = await globalThis.fetcher(`/api/room/invites/${_component.parameters.room._id}`, {
+			await globalThis.fetcher(`/api/room/invites/${_component.parameters.room._id}`, {
 				method: "post",
 				body: JSON.stringify({
-					email: inviteEmailElement.value() /*,
+					email: inviteEmailElement.value /*,
 					ttl: 30*/
 				})
+			}, {
+				201: _response => {
+					_component.close("invited");
+
+					globalThis.windows.open({
+						name: "success",
+						parameters: {
+							title: "Great!",
+							description: "Your invite has been sent.",
+							action: { options: { text: "Keep collaborating", composition: "text" }, windows: { close: true } }
+						}
+					});
+				}
 			});
-
-			const inviteContent = await inviteResponse.json();
-
-			if (inviteResponse.status === 201) {
-				_component.close("registered");
-
-				globalThis.windows.open({
-					name: "success",
-					parameters: {
-						title: "Great!",
-						description: "Your invite has been sent.",
-						action: { options: { text: "Keep collaborating", composition: "text" }, windows: { close: true } }
-					}
-				});
-			} else if (inviteResponse.status >= 400) {
-				globalThis.notify({ icon: "exclamation-circle", text: inviteContent.message });
-			}
-		});
-
-		inviteEmailElement.once("ready", () => {
-			inviteEmailElement.focus();
-		});
-
-		_component.use("room-invite-cancel").once("activated", () => {
-			_component.close("cancelled");
 		});
 	}
 };

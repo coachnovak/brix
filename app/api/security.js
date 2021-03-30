@@ -65,8 +65,8 @@ export default async (_app, _options) => {
 				properties: {
 					email: { type: "string", description: "An e-mail address to use for authentication." },
 					password: { type: "string", description: "A password to use when authenticating." },
-					firstName: { type: "string", description: "The first name or given name of the user." },
-					lastName: { type: "string", description: "The last name or surname of the user." }
+					firstName: { type: "string", description: "The first or given name of the user." },
+					lastName: { type: "string", description: "The last or family name of the user." }
 				}
 			}
 		}
@@ -174,7 +174,7 @@ export default async (_app, _options) => {
 	_app.get("/identify/", {
 		preValidation: [_app.authentication]
 	}, async (_request, _response) => {
-		const user = await _app.mongo.db.collection("users").findOne({ _id: new _app.mongo.ObjectId(_request.user.user), deleted: null });
+		const user = await _app.mongo.db.collection("users").findOne({ _id: new _app.mongo.objectid(_request.user.user), deleted: null });
 
 		if (!user)
 			return _response.status(401).send({ message: "Failed to obtain the identity, user wasn't found." });

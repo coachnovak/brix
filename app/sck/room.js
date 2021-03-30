@@ -31,7 +31,7 @@ export default async (_app, _options) => {
 					if (!message.data?.room) return _connection.socket.send(JSON.stringify({ name: "invalid.parameter", data: "Room is invalid." }));
 					room = message.data.room;
 
-					const foundUser = await _app.mongo.db.collection("users").findOne({ _id: new _app.mongo.ObjectId(session.user), deleted: null });
+					const foundUser = await _app.mongo.db.collection("users").findOne({ _id: new _app.mongo.objectid(session.user), deleted: null });
 					if (!foundUser) return _connection.socket.send(JSON.stringify({ name: "invalid.state", message: "Session user couldn't be identified." }));
 
 					user = {
@@ -52,7 +52,7 @@ export default async (_app, _options) => {
 				case "heartbeat":
 					// Ensure setup has completed.
 					if (!tunnel) return _connection.socket.send(JSON.stringify({ name: "invalid.state", data: "Setup is not completed." }));
-					_app.mongo.db.collection("participants").updateOne({ "user._id": new _app.mongo.ObjectId(user._id), room: new _app.mongo.ObjectId(room) }, { $set: { heartbeat: new Date() } });
+					_app.mongo.db.collection("participants").updateOne({ "user._id": new _app.mongo.objectid(user._id), room: new _app.mongo.objectid(room) }, { $set: { heartbeat: new Date() } });
 
 					break;
 
@@ -73,8 +73,8 @@ export default async (_app, _options) => {
 					// Save event in the storage.
 					await _app.mongo.db.collection("events").insertOne({
 						token: message.token,
-						room: new _app.mongo.ObjectId(message.room),
-						user: new _app.mongo.ObjectId(message.user._id),
+						room: new _app.mongo.objectid(message.room),
+						user: new _app.mongo.objectid(message.user._id),
 						name: message.name,
 						data: message.data,
 						when: message.when,
@@ -98,7 +98,7 @@ export default async (_app, _options) => {
 
 		_connection.socket.on("close", async _event => {
 			// Leave the room.
-			if (user && room) await _app.mongo.db.collection("participants").deleteOne({ "user._id": new _app.mongo.ObjectId(user._id), room: new _app.mongo.ObjectId(room) });
+			if (user && room) await _app.mongo.db.collection("participants").deleteOne({ "user._id": new _app.mongo.objectid(user._id), room: new _app.mongo.objectid(room) });
 
 			// Unsubscribe from subscription.
 			if (tunnel) await _app.channels.unsubscribe(tunnel);

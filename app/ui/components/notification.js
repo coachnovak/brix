@@ -1,42 +1,100 @@
-import { base } from "/components/base.js";
+import anime from "/assets/scripts/anime.es.js";
+import { component } from "/components/component.js";
+import { loader } from "/components/loader.js";
+import { progress } from "/components/progress.js";
 
-export class notification extends base {
+export class notification extends component {
 	constructor (_properties = {}) {
-		super(Object.assign(_properties, {
+		super({ ..._properties });
 
-		}));
+		const { contents, composition } = _properties;
+		this.property({ name: "contents", value: contents, options: { default: [] } })
+			.property({ name: "composition", value: composition, options: { default: null, isattribute: true } });
+    }
 
-		this
-			.property("icon", _properties.icon ? _properties.icon : null)
-			.property("text", _properties.text ? _properties.text : null);
+	connectedCallback ({ style, markup } = {}) {
+		super.conditionsCallback();
+		super.connectedCallback({
+			style: component.template`
+				:host { display: grid; grid-gap: var(--spacing); padding: var(--spacing); align-items: center; }
+				:host { background: var(--paper-2); color: var(--pen-1); box-shadow: var(--paper-s); }
+				:host { opacity: 0; transform: translateY(100%); }
+
+				#text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+				app-progress { grid-column: 1 / -1; }
+
+				${style ? style() : ""}
+			`,
+
+			markup: component.template`
+
+				${markup ? markup() : ""}
+			`
+		});
+
+		// Redirect events.
+		/* None */
+
+		// Handle events.
+		/* None */
+
+		// Initial render.
+		this.render();
+
+		// Animate pop.
+		this.popup = anime({
+			targets: this,
+			duration: 800,
+			translateY: ["100%", "0px"],
+			opacity: [0, 1],
+			easing: "easeInOutElastic(1, .5)",
+			loop: false
+		});
 	}
 
-	async connectedCallback () {
-		await super.connectedCallback();
-
-		const containerElement = this.appendChild(document.createElement("div"));
-		containerElement.classList.add("container");
-		this.timerShowNotification = setTimeout(() => containerElement.classList.add("show"), 25);
-		this.timerShowContent = setTimeout(() => containerElement.classList.add("showcontent"), 500);
-
-		const iconElement = containerElement.appendChild(document.createElement("div"));
-		iconElement.classList.add("icon");
-		iconElement.innerHTML = `<i class="fad fa-${this.icon}"></i>`;
-
-		const textElement = containerElement.appendChild(document.createElement("div"));
-		textElement.classList.add("text");
-		textElement.innerHTML = this.text;
-
-		const hideTime = this.text.length * 100;
-		this.timerHide = setTimeout(() => containerElement.classList.add("hide"), hideTime);
-		this.timerRemove = setTimeout(() => this.remove(), hideTime + 400);
-		this.emit("ready");
+	disconnectedCallback () {
+		super.disconnectedCallback();
 	}
 
-	async disconnectedCallback () {
-		clearTimeout(this.timerShowNotification);
-		clearTimeout(this.timerHide);
-		clearTimeout(this.timerRemove);
+	render () {
+		const composition = [];
+		this.contents.forEach(_content => {
+			if (_content.icon !== undefined) {
+				composition.push("min-content");
+
+				const iconElement = this.append(document.createElement("i"));
+				iconElement.classList.add(`fad`, `fa-${_content.icon}`);
+			} else if (_content.text !== undefined) {
+				composition.push("auto");
+
+				const textElement = this.append(document.createElement("div"));
+				textElement.setAttribute("id", "text");
+				textElement.innerHTML = _content.text;
+			} else if (_content.loader !== undefined) {
+				composition.push("min-content");
+				this.append(new loader(_content.loader));
+			} else if (_content.progress !== undefined) {
+				this.append(new progress(_content.progress));
+			}
+		});
+
+		this.find("style").innerHTML += `:host { grid-template-columns: ${composition.join(" ")}; }`;
+	}
+
+	progress (_value) {
+		const progressElement = this.find("app-progress");
+		progressElement.current = _value > progressElement.max ? progressElement.max : _value;
+	}
+
+	close (_ms) {
+		const closeNow = () => {
+			this.popup.finished.then(() => this.remove());
+			this.popup.reverse();
+			this.popup.play();
+		};
+
+		if (_ms) this.timers.once(_ms, () => closeNow());
+		else closeNow();
 	}
 }
 

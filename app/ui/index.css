@@ -1,36 +1,62 @@
+@import "/styles/shake.css";
+
 :root {
-	--header-b: rgba(5, 5, 20, 1);
-	--header-f: rgba(255, 255, 255, 1);
+	--step: 5%;
 
-	--paper-1: rgba(17, 17, 32, 1);
-	--paper-2: rgba(30, 30, 43, 1);
-	--paper-3: rgba(43, 43, 55, 1);
-	--paper-4: rgba(55, 55, 67, 1);
+	/* Primary */
+	--pbc: 240, 30%;
+	--pbl: 10%;
+	--pfc: 360, 100%;
+	--pfl: 100%;
 
-	--pen-1: rgba(255, 255, 255, 1);
-	--pen-2: rgba(255, 255, 255, 1);
-	--pen-3: rgba(255, 255, 255, 1);
-	--pen-4: rgba(255, 255, 255, 1);
+	/* Secondary */
+	--sbc: 0, 0%;
+	--sbl: 10%;
+	--sfc: 360, 100%;
+	--sfl: 100%;
 
-	--button-p-b: rgba(60, 60, 120);
-	--button-p-h: rgba(70, 70, 130);
-	--button-p-a: rgba(80, 80, 140);
-	--button-p-f: rgba(255, 255, 255);
+	/* Embedded */
+	--ebc: 0, 0%;
+	--ebl: 100%;
+	--efc: 360, 100%;
+	--efl: 100%;
 
-	--button-s-b: rgba(68, 68, 79);
-	--button-s-h: rgba(80, 80, 91);
-	--button-s-a: rgba(82, 82, 103);
-	--button-s-f: rgba(255, 255, 255);
+	/* Components */
+	--spacing: 20px;
+	--background: hsl(var(--pbc), calc(var(--pbl) + calc(var(--step) * 0))); /*linear-gradient(to bottom, hsl(var(--pbc), calc(var(--pbl) + calc(var(--step) * -1))), hsl(var(--pbc), calc(var(--pbl) + calc(var(--step) * 1))));*/
+	--graphic-s: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.35));
 
-	--button-e-b: rgba(255, 255, 255, 0);
-	--button-e-h: rgba(255, 255, 255, 0.05);
-	--button-e-a: rgba(255, 255, 255, 0.10);
-	--button-e-f: rgba(255, 255, 255);
+	--paper-1: hsl(var(--pbc), calc(var(--pbl) + calc(var(--step) * 1)));
+	--paper-2: hsl(var(--pbc), calc(var(--pbl) + calc(var(--step) * 2)));
+	--paper-3: hsl(var(--pbc), calc(var(--pbl) + calc(var(--step) * 3)));
+	--paper-s: 0 1px 4px 1px rgba(0, 0, 0, 0.25), 0 1px 2px 0px rgba(0, 0, 0, 0.25);
 
-	--component-e-b: rgba(255, 255, 255, 0.025);
-	--component-e-h: rgba(255, 255, 255, 0.050);
-	--component-e-a: rgba(255, 255, 255, 0.100);
-	--component-e-f: rgba(255, 255, 255);
+	--pen-1: hsl(var(--pfc), calc(var(--pfl) - calc(var(--step) * 0)));
+	--pen-2: hsl(var(--pfc), calc(var(--pfl) - calc(var(--step) * 1)));
+	--pen-3: hsl(var(--pfc), calc(var(--pfl) - calc(var(--step) * 2)));
+
+	--input-p-1: hsl(var(--pbc), calc(var(--pbl) + calc(var(--step) * 4)));
+	--input-p-2: hsl(var(--pbc), calc(var(--pbl) + calc(var(--step) * 5)));
+	--input-p-3: hsl(var(--pbc), calc(var(--pbl) + calc(var(--step) * 6)));
+	--input-p-f: hsl(var(--pfc), calc(var(--pfl)));
+
+	--action-p-1: hsl(var(--pbc), calc(var(--pbl) + calc(var(--step) * 7)));
+	--action-p-2: hsl(var(--pbc), calc(var(--pbl) + calc(var(--step) * 8)));
+	--action-p-3: hsl(var(--pbc), calc(var(--pbl) + calc(var(--step) * 9)));
+	--action-p-f: hsl(var(--pfc), calc(var(--pfl)));
+	--action-p-s: unset;
+
+	--action-s-1: hsl(var(--sbc), calc(var(--sbl) + calc(var(--step) * 7)));
+	--action-s-2: hsl(var(--sbc), calc(var(--sbl) + calc(var(--step) * 8)));
+	--action-s-3: hsl(var(--sbc), calc(var(--sbl) + calc(var(--step) * 9)));
+	--action-s-f: hsl(var(--sfc), calc(var(--sfl)));
+	--action-s-s: unset;
+
+	--action-e-1: hsla(var(--ebc), var(--ebl), 0.00);
+	--action-e-2: hsla(var(--ebc), var(--ebl), 0.05);
+	--action-e-3: hsla(var(--ebc), var(--ebl), 0.10);
+	--action-e-f: hsla(var(--efc), var(--efl), 1);
+	--action-e-s: unset;
 }
 
 * { transition-property: none; transition-duration: 0.3s; transition-timing-function: cubic-bezier(0.5,0.25,0,1); }
@@ -42,14 +68,34 @@
 ::-webkit-scrollbar-thumb { background-color: rgba(255, 255, 255, 0.1); }
 
 html,
-body { margin: 0; padding: 0; background: var(--paper-1); }
+body { margin: 0; padding: 0; height: 100%; }
 body { font-family: 'Roboto', sans-serif; font-size: 9pt; font-weight: 300; }
+body { background: var(--background); }
 
-#cover { position: fixed; left: 0; top: 0; right: 0; bottom: 0; background: center url(/assets/cover.jpg); background-size: cover; }
+body > .cover { position: fixed; left: 0; top: 0; right: 0; bottom: 0; opacity: 1; }
+body > .cover > div { display: flex; flex-direction: column; position: fixed; left: 0; top: 0; right: 0; bottom: 0; }
+body > .cover > div > div:nth-child(1) { flex: 1 1 50%; }
+body > .cover > div > div:nth-child(2) { flex: 0 1 auto; }
+body > .cover > div > div:nth-child(2) > svg { position: relative; width: 100%; height: 15vh; margin-bottom: -7px; min-height: 100px; max-height: 150px; }
+body > .cover > div > div:nth-child(2) > svg > g > use { animation: cover-waves cubic-bezier(.55, .5, .45, .5) infinite; }
+body > .cover > div > div:nth-child(2) > svg > g > use:nth-child(1) { fill: hsla(var(--pfc), var(--pfl), 10%); animation-delay: -2s; animation-duration: 10s; }
+body > .cover > div > div:nth-child(2) > svg > g > use:nth-child(2) { fill: hsla(var(--pfc), var(--pfl), 25%); animation-delay: -3s; animation-duration: 15s; }
+body > .cover > div > div:nth-child(2) > svg > g > use:nth-child(3) { fill: hsla(var(--pfc), var(--pfl), 40%); animation-delay: -4s; animation-duration: 25s; }
+body > .cover > div > div:nth-child(2) > svg > g > use:nth-child(4) { fill: hsla(var(--pfc), var(--pfl), 100%); animation-delay: -5s; animation-duration: 40s; }
+body > .cover > div > div:nth-child(3) { flex: 1 0 auto; background: hsla(var(--pfc), var(--pfl), 100%); margin-top: 3px; }
+
+@keyframes cover-waves {
+	0% { transform: translate3d(-90px, 0, 0); }
+	100% { transform: translate3d(85px, 0, 0); }
+}
+ 
+@media (orientation: portrait) {
+	body > .cover { display: none; }
+}
 
 /* ------------------ Header */
 
-header { display: grid; grid-template-columns: auto min-content; position: fixed; left: 0; top: 0; right: 0; height: 60px; background: var(--header-b); color: var(--header-f); }
+header { display: grid; grid-template-columns: auto min-content; position: fixed; left: 0; top: 0; right: 0; height: 60px; background: var(--background); }
 header h1 { margin: 0; padding: 18px; }
 header h1 { font-size: 18pt; font-weight: 100; color: var(--pen-1); text-transform: uppercase; }
 header section { display: grid; grid-auto-flow: column; grid-gap: 10px; padding: 8px; }
@@ -58,93 +104,39 @@ header section app-button:hover { background: var(--paper-2); }
 
 /* ------------------ Contents */
 
-#contents { display: flex; flex-direction: column; position: absolute; left: 50%; top: 60px; width: 100%; min-height: calc(100% - 60px); transform: translateX(-50%); padding: 20px; }
-#contents { background: var(--paper-1); color: var(--pen-1); }
+#contents { display: flex; flex-direction: column; position: absolute; left: calc(50% - 1px); top: 60px; width: calc(100% + 2px); min-height: calc(100% - 60px); transform: translateX(-50%); padding: 20px; }
+#contents { background: var(--paper-1); color: var(--pen-1); box-shadow: var(--paper-s); }
 #contents:empty { display: none; }
 
-@media all and (min-width: 576px) {
-	#contents { max-width: 576px; }
-}
-
-#contents app-article { display: block; flex: 0 1 auto; width: 100%; transform: translateY(10%); opacity: 0; position: relative; margin-bottom: 20px; }
-#contents app-article:last-child { margin-bottom: 0; }
-#contents app-article[show="true"] { animation: contents-app-article-show forwards; }
-#contents app-article[full="true"] { position: absolute; left: 0; top: 0; right: 0; bottom: 0; }
-#contents app-article[grow="true"] { flex: 1 1 auto; overflow: auto; }
-#contents app-article[paddingless="true"] { padding: 0; }
-#contents app-article[nooverflow="true"] { overflow: hidden; }
-#contents app-article[shelf="true"] { background-color: var(--paper-2); border-radius: 4px; padding: 20px; }
-
-@media all and (min-height: 600px) and (min-width: 576px) {
-	#contents { top: 80px; min-height: calc(100% - 100px); border-radius: 8px; }
+@media (orientation: landscape) {
+	#contents { top: 80px; width: calc(100% - calc(var(--spacing) * 2)); max-width: 576px; min-height: calc(100% - 100px); }
 	#contents:after { content: ""; display: block; position: absolute; top: 100%; width: calc(100% - 40px); height: 20px; }
-	#contents app-article[grow="true"] { min-height: 300px; }
-}
-
-@media all and (min-width: 576px) {
-	#contents app-article[full="true"] { position: relative; left: unset; top: unset; right: unset; bottom: unset; }
-}
-
-@keyframes contents-app-article-show {
-	0% { transform: translateY(10%); opacity: 0; }
-	100% { transform: translateY(0%); opacity: 1; }
 }
 
 /* ------------------ Windows */
 
-#windows { position: fixed; left: 0; top: 0; right: 0; bottom: 0; }
+#windows { position: fixed; left: 0; top: 0; right: 0; bottom: 0; backdrop-filter: blur(2px) grayscale(50%); }
 #windows:empty { display: none; }
 
-#windows app-shadow { display: block; position: fixed; left: 0; top: 0; right: 0; bottom: 0; opacity: 0.3; background: rgb(0, 0, 0); }
-#windows app-article { display: block; position: absolute; top: 0; right: 0; bottom: 0; min-width: 100%; max-width: calc(300px); max-height: 100vh; background: var(--paper-1); color: var(--pen-1); padding: 20px; overflow: auto; }
-#windows app-article { transform: translateX(100%); opacity: 0; }
-#windows app-article[nooverflow="true"] { overflow: hidden; }
-#windows app-article[paddingless="true"] { padding: 0; }
-#windows app-article[show="true"] { transform: translateX(0%); opacity: 1; transition-property: transform, opacity; }
-#windows app-article[position="side"] { box-shadow: 6px 0px 8px 0px rgb(0, 0, 0, 0.5); }
-#windows app-article[position="center"] { box-shadow: 0px 6px 8px 0px rgb(0, 0, 0, 0.5); }
+/* ------------------ Additions */
 
-@media all and (min-width: 300px) {
-	#windows app-article[position="side"] { left: unset; min-width: unset; max-width: unset; width: 300px; }
-}
-
-@media all and (min-width: 536px) {
-	#windows app-article[position="center"] { left: 50%; top: 50%; right: unset; bottom: unset; max-width: calc(576px + 100px); min-width: calc(576px - 100px); transform: translate(-50%, -30%); border-radius: 8px; }
-	#windows app-article[position="center"][show="true"] { transform: translate(-50%, -50%); }
-}
-
-@keyframes windows-app-article-slidein {
-	0% { transform: translateY(10%); opacity: 0; }
-	100% { transform: translateY(0%); opacity: 1; }
-}
+#additions { position: fixed; top: 0; right: 0; bottom: 0; }
 
 /* ------------------ Headers */
 
 h1 { font-size: 32pt; font-weight: 100; color: var(--pen-1); line-height: 110%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-h2 { font-size: 18pt; font-weight: 100; margin: 0; line-height: 110%; }
-h3 { font-size: 14pt; font-weight: 100; margin: 0; line-height: 110%; }
+h2 { font-size: 16pt; font-weight: 100; margin: 0; line-height: 110%; }
+h3 { font-size: 12pt; font-weight: 100; margin: 0; line-height: 110%; }
 h4 { font-size: 9pt; font-weight: 300; margin: 0; line-height: 110%; }
-
 .center { text-align: center; }
 
 /* ------------------ Divider */
 
 .divider { position: relative; text-align: center; }
-.divider:before { display: block; position: absolute; left: 0; top: 50%; width: 100%; height: 1px; background: var(--paper-2); content: ""; }
+.divider:before { display: block; position: absolute; left: 0; top: 50%; width: 100%; height: 1px; background: var(--paper-3); content: ""; }
 .divider span { position: relative; background: var(--paper-1); padding: 10px; }
 
-@media all and (min-width: 456px) {
-	.divider.vertical:before { display: block; position: absolute; left: 50%; top: 0; width: 1px; height: 100%; background: var(--paper-2); content: ""; }
+@media (orientation: landscape) {
+	.divider.vertical:before { display: block; position: absolute; left: 50%; top: 0; width: 1px; height: 100%; background: var(--paper-3); content: ""; }
 	.divider.vertical span { position: absolute; background: var(--paper-1); padding: 10px; top: 50%; transform: translate(-50%, -50%); }
 }
-
-/*! * * * * * * * * * * * * * * * * * * * *\  
-  CSShake :: shake-hard
-  v1.5.0
-  CSS classes to move your DOM
-  (c) 2015 @elrumordelaluz
-  http://elrumordelaluz.github.io/csshake/
-  Licensed under MIT
-\* * * * * * * * * * * * * * * * * * * * */
-
-.shake-hard{display:inherit;transform-origin:center center}.shake-freeze,.shake-constant.shake-constant--hover:hover,.shake-trigger:hover .shake-constant.shake-constant--hover{animation-play-state:paused}.shake-freeze:hover,.shake-trigger:hover .shake-freeze,.shake-hard:hover,.shake-trigger:hover .shake-hard{animation-play-state:running}@keyframes shake-hard{2%{transform:translate(-9px, 3px) rotate(2.5deg)}4%{transform:translate(0px, 7px) rotate(.5deg)}6%{transform:translate(5px, -1px) rotate(-1.5deg)}8%{transform:translate(1px, 7px) rotate(.5deg)}10%{transform:translate(-9px, -9px) rotate(-2.5deg)}12%{transform:translate(-1px, 4px) rotate(-2.5deg)}14%{transform:translate(-2px, -3px) rotate(-.5deg)}16%{transform:translate(3px, 0px) rotate(3.5deg)}18%{transform:translate(5px, -2px) rotate(-1.5deg)}20%{transform:translate(2px, 9px) rotate(1.5deg)}22%{transform:translate(-9px, 5px) rotate(-.5deg)}24%{transform:translate(6px, 8px) rotate(1.5deg)}26%{transform:translate(-4px, 1px) rotate(-2.5deg)}28%{transform:translate(-4px, 6px) rotate(.5deg)}30%{transform:translate(10px, -6px) rotate(1.5deg)}32%{transform:translate(-8px, 5px) rotate(-2.5deg)}34%{transform:translate(9px, 4px) rotate(-1.5deg)}36%{transform:translate(-9px, 4px) rotate(.5deg)}38%{transform:translate(7px, -8px) rotate(3.5deg)}40%{transform:translate(8px, 1px) rotate(3.5deg)}42%{transform:translate(0px, -8px) rotate(2.5deg)}44%{transform:translate(-2px, -5px) rotate(2.5deg)}46%{transform:translate(-1px, -3px) rotate(3.5deg)}48%{transform:translate(2px, 5px) rotate(-1.5deg)}50%{transform:translate(8px, 0px) rotate(2.5deg)}52%{transform:translate(-1px, 0px) rotate(3.5deg)}54%{transform:translate(-5px, -3px) rotate(-1.5deg)}56%{transform:translate(-4px, 7px) rotate(-.5deg)}58%{transform:translate(1px, -1px) rotate(1.5deg)}60%{transform:translate(4px, 8px) rotate(.5deg)}62%{transform:translate(5px, -7px) rotate(1.5deg)}64%{transform:translate(-1px, -4px) rotate(-.5deg)}66%{transform:translate(-9px, -2px) rotate(-1.5deg)}68%{transform:translate(4px, 6px) rotate(2.5deg)}70%{transform:translate(-6px, 5px) rotate(-1.5deg)}72%{transform:translate(-4px, 2px) rotate(1.5deg)}74%{transform:translate(-4px, -5px) rotate(-1.5deg)}76%{transform:translate(3px, 9px) rotate(-.5deg)}78%{transform:translate(2px, 1px) rotate(-1.5deg)}80%{transform:translate(4px, 4px) rotate(2.5deg)}82%{transform:translate(-6px, 9px) rotate(-2.5deg)}84%{transform:translate(4px, 6px) rotate(3.5deg)}86%{transform:translate(5px, 9px) rotate(-1.5deg)}88%{transform:translate(1px, 4px) rotate(-1.5deg)}90%{transform:translate(5px, 3px) rotate(1.5deg)}92%{transform:translate(9px, -2px) rotate(1.5deg)}94%{transform:translate(9px, 3px) rotate(2.5deg)}96%{transform:translate(-1px, 6px) rotate(.5deg)}98%{transform:translate(-6px, -2px) rotate(-.5deg)}0%,100%{transform:translate(0, 0) rotate(0)}}.shake-hard:hover,.shake-trigger:hover .shake-hard,.shake-hard.shake-freeze,.shake-hard.shake-constant{animation-name:shake-hard;animation-duration:100ms;animation-timing-function:ease-in-out;animation-iteration-count:infinite}

@@ -9,7 +9,7 @@ export default async (_app, _options) => {
 
 			if (message?.join && message?.token) {
 				// Validate room existence.
-				room = await _app.mongo.db.collection("rooms").findOne({ _id: new _app.mongo.ObjectId(message?.join), deleted: null });
+				room = await _app.mongo.db.collection("rooms").findOne({ _id: new _app.mongo.objectid(message?.join), deleted: null });
 				if (!room) return _connection.socket.close();
 
 				// Get token session.
@@ -17,7 +17,7 @@ export default async (_app, _options) => {
 				if (!session?.user) return _connection.socket.close();
 
 				// Get token user.
-				user = await _app.mongo.db.collection("users").findOne({ _id: new _app.mongo.ObjectId(session?.user), deleted: null }, { _id: 1, firstName: 1, lastName: 1 });
+				user = await _app.mongo.db.collection("users").findOne({ _id: new _app.mongo.objectid(session?.user), deleted: null }, { _id: 1, firstName: 1, lastName: 1 });
 				if (!user) return _connection.socket.close();
 
 				let participant = {};

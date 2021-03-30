@@ -7,10 +7,9 @@ export default class {
 
 		const protocol = window.location.protocol;
 		const host = window.location.host.split(":");
-		const token = localStorage.getItem("token");
 		
-		if (!token) {
-			// No session token found.
+		if (globalThis.sessionStorage.signedin === false) {
+			// Not signed in.
 			this.hasleft = true;
 			return;
 		}
@@ -23,7 +22,7 @@ export default class {
 		this.socket = new WebSocket(this.url);
 
 		this.socket.onopen = () => {
-			this.socket.send(JSON.stringify({ join: this.room, token: localStorage.getItem("token") }));
+			this.socket.send(JSON.stringify({ join: this.room, token: globalThis.session.token }));
 		};
 
 		this.socket.onclose = () => {
@@ -50,7 +49,7 @@ export default class {
 					break;
 
 				case 500:
-					globalThis.notify({ icon: "exclamation-triangle", text: message });
+					globalThis.notify([{ icon: "exclamation-triangle" }, { text: message }]).close(3000);
 					break;
 
 			}

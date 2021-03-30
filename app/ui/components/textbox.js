@@ -1,49 +1,74 @@
-import { base } from "/components/base.js";
+import { component } from "/components/component.js";
 
-export class textbox extends base {
+export class textbox extends component {
 	constructor (_properties = {}) {
-		super(Object.assign(_properties ? _properties : {}, {
+		super(_properties);
 
-        }));
+		const { type, placeholder, autocomplete, readonly, value } = _properties;
+		this.property({ name: "type", value: type, options: { default: "text", isattribute: true } })
+			.property({ name: "placeholder", value: placeholder, options: { default: null, isattribute: true } })
+			.property({ name: "autocomplete", value: autocomplete, options: { default: null, isattribute: true } })
+			.property({ name: "readonly", value: readonly, options: { default: null }, getter: () => this.find("input").hasAttribute("readonly") })
+			.property({ name: "value", value: value, options: { default: null }, getter: () => this.find("input").value });
+    }
 
-		this
-			.property("placeholder", _properties.placeholder ? _properties.placeholder : null)
-			.property("type", _properties.type ? _properties.type : null)
-			.property("center", _properties.center ? _properties.center : null)
-			.property("autocomplete", _properties.autocomplete ? _properties.autocomplete : null);
+	connectedCallback ({ style, markup } = {}) {
+		super.conditionsCallback();
+		super.connectedCallback({
+			style: component.template`
+				input { display: inline-block; background: transparent; border: 2px solid var(--input-p-1); border-radius: 3px; color: var(--input-p-f); padding: 15px; width: 100%; }
+				input { font-size: 9pt; font-weight: 400; }
+				input:focus { border-color: var(--input-p-3); outline: 0; }
+				:host([center="true"]) #input { text-align: center; }
 
-        this.styles.push(`
-			#input { display: inline-block; background: var(--paper-2); border: 0px; color: var(--pen-1); padding: 15px; border-radius: 3px; width: 100%; }
-			#input { font-size: 9pt; font-weight: 400; }
-			#input:focus { outline: 0; }
-			:host([center="true"]) #input { text-align: center; }
-		`);
+				:host([readonly]) input { border-style: dotted; cursor: default; }
+
+				${style ? style() : ""}
+			`,
+
+			markup: component.template`
+				<input type="${this.type}" placeholder="${this.placeholder}" autocomplete="${this.autocomplete}" />
+
+				${markup ? markup() : ""}
+			`
+		});
+
+		// Redirect events.
+		this.events.redirect(this.find("input"), "keydown");
+
+		// Handle events.
+		this.events.on("readonly updated", _value => {
+			if (_value) {
+				this.find("input").setAttribute("readonly", "");
+				this.setAttribute("readonly", "");
+			} else {
+				this.find("input").removeAttribute("readonly");
+				this.removeAttribute("readonly");
+			}
+		});
+
+		this.events.on("value updated", _value => {
+			this.find("input").value = _value;
+		});
+
+		this.events.on("keydown", _event => {
+			if (_event.key === "Enter")
+				this.events.emit("activated");
+
+			this.events.emit("changed");
+		});
 	}
 
-	async connectedCallback () {
-		await super.connectedCallback();
-
-		this.append(`<input type="${this.type}" id="input" autocomplete="${this.autocomplete}" placeholder="${this.placeholder}" />`);
-		this.on("placeholder updated", _event => { this.use("input").setAttribute("placeholder", _event.detail); });
-		this.on("autocomplete updated", _event => { this.use("input").setAttribute("autocomplete", _event.detail); });
-
-		this.use("input").addEventListener("keydown", _event => { if (_event.key ==="Enter") this.emit("activated") });
-		this.use("input").addEventListener("keydown", _event => this.emit("changed"));
-
-		this.emit("ready");
-	}
-
-	value (_value) {
-		if (_value) this.use("input").value = _value
-		else return this.use("input").value;
+	disconnectedCallback () {
+		super.disconnectedCallback();
 	}
 
 	clear () {
-		this.use("input").value = "";
+		this.value = "";
 	}
 
 	focus () {
-		this.use("input").focus();
+		this.find("input").focus();
 	}
 }
 

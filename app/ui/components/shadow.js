@@ -1,19 +1,37 @@
-import { base } from "/components/base.js";
+import { component } from "/components/component.js";
 
-export class shadow extends base {
+export class shadow extends component {
 	constructor (_properties = {}) {
-		super(Object.assign(_properties ? _properties : {}, {
-			isolated: false
-        }));
+		super({ ..._properties, canfocus: true });
+    }
+
+	connectedCallback ({ style, markup } = {}) {
+		super.conditionsCallback();
+		super.connectedCallback({
+			style: component.template`
+				:host { display: block; position: fixed; left: 0; top: 0; right: 0; bottom: 0; opacity: 0.3; background: rgb(0, 0, 0); }
+
+				${style ? style() : ""}
+			`,
+
+			markup: component.template`
+
+				${markup ? markup() : ""}
+			`
+		});
+
+		// Redirect events.
+		this.events.redirect(this, "click", "activated");
+
+		// Handle events.
+		/* None */
 	}
 
-	async connectedCallback () {
-		await super.connectedCallback();
-
-		this.on("click", () => this.emit("activated"));
+	disconnectedCallback () {
+		super.disconnectedCallback();
 	}
 
-	async close () {
+	close () {
 		this.remove();
 	}
 }

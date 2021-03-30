@@ -1,3 +1,4 @@
+import { component } from "/components/component.js";
 import { button } from "/components/button.js";
 
 export default {
@@ -5,29 +6,33 @@ export default {
 		position: "center"
 	},
 
-	styles: `
-		#voting { display: grid; grid-gap: 20px; }
-	`,
-
-	markup: `
-		<div id="voting">
-			<h2>Start with a template</h2>
-			<app-textbox type="textbox" id="voting-topic" placeholder="Set topic for this session"></app-textbox>
-			<app-list id="voting-templates"></app-list>
-			<div class="center"><app-button id="voting-cancel" text="Cancel" composition="text" embedded="true"></app-button></div>
-		</div>
-	`,
+	templates: () => {
+		return {
+			style: component.template`
+				:host([type]) { width: var(--size-s); }
+		
+				#layout { display: grid; grid-gap: var(--spacing); }
+			`,
+		
+			markup: component.template`
+				<div id="layout">
+					<h2>Start with a template</h2>
+					<app-textbox id="voting-topic" placeholder="Set topic for this session"></app-textbox>
+					<app-list id="voting-templates"></app-list>
+				</div>
+			`
+		};
+	},
 
 	script: async _component => {
-		// Close article if user isn't signed in.
-		if (!localStorage.getItem("token")) return _component.close("cancelled");
-
-		if (_component.shadow) _component.shadow.once("activated", async () => {
+		_component.shadow && _component.shadow.events.on("activated", async () => {
 			_component.close("cancelled");
 		});
 
-		const topicElement = _component.use("voting-topic");
-		const templatesElement = _component.use("voting-templates");
+		const topicElement = _component.find("#voting-topic");
+		topicElement.focus();
+
+		const templatesElement = _component.find("#voting-templates");
 		const templatesResponse = await globalThis.fetcher(`/api/voting/templates/${_component.parameters.room._id}`, { method: "get" });
 		if (templatesResponse.status !== 200) _component.close("error");
 
@@ -37,7 +42,7 @@ export default {
 			const text = template.name;
 
 			const templateElement = await templatesElement.add({
-				id: template._id,
+				id: `template-${template._id}`,
 				data: template,
 				contents: [
 					{ icon: "box-ballot" },
@@ -46,11 +51,11 @@ export default {
 				]
 			});
 
-			templateElement.on("activated", async _event => {
-				const newSessionResponse = await globalThis.fetcher(`/api/voting/session/${_event.detail._id}`, {
+			templateElement.events.on("activated", async _event => {
+				const newSessionResponse = await globalThis.fetcher(`/api/voting/session/${_event.data._id}`, {
 					method: "post",
 					body: JSON.stringify({
-						topic: topicElement.value() === "" ? template.name : topicElement.value()
+						topic: topicElement.value === "" ? template.name : topicElement.value
 					})
 				});
 
@@ -60,13 +65,9 @@ export default {
 					_component.close("selected");
 				} else if (newSessionResponse.status > 400 && newSessionResponse.status < 499) {
 					const newSessionFailure = newSessionResponse.json();
-					globalThis.notify({ icon: "exclamation-circle", text: newSessionFailure.message });
+					globalThis.notify([{ icon: "exclamation-circle" }, { text: newSessionFailure.message }]).close(3000);
 				}
 			});
 		}
-
-		_component.use("voting-cancel").once("activated", () => {
-			_component.close("cancelled");
-		});
 	}
 };

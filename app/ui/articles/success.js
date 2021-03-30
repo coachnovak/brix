@@ -1,42 +1,44 @@
+import { component } from "/components/component.js";
 import { button } from "/components/button.js";
 
 export default {
 	options: {
-		paddingless: true,
-		nooverflow: true,
-		full: true
+		full: true,
+		closable: false
 	},
 
-	styles: `
-		.success.container { height: 260px; }
-		.success.container canvas { position: absolute; width: 100%; height: 100%; }
-		.success.container .fade { position: absolute; left: -5px; top: -5px; right: -5px; bottom: -5px; background: linear-gradient(180deg, rgba(15,15,25,0) 0%, rgba(15,15,25,1) 100%); }
-
-		.success.container .front { position: absolute; left: 50%; top: 50%; max-width: 100%; overflow: hidden; transform: translate(-50%, -50%); text-align: center; }
-		.success.container .front .title { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 10px; }
-		.success.container .front .description { max-width: 100%; }
-		.success.container .front .actions { display: inline-block; padding-top: 40px; }
-		.success.container .front .actions:empty { padding-top: 0; }
-	`,
-
-	markup: `
-		<div class="success container">
-			<canvas id="success.canvas"></canvas>
-
-			<div class="fade">&nbsp;</div>
-
-			<div class="front">
-				<h2 id="success.title" class="title center">Success!</h2>
-				<div id="success.description" class="description center"></div>
-				<div id="success.actions" class="actions"></div>
-			</div>
-		</div>
-	`,
+	templates: () => {
+		return {
+			style: component.template`
+				:host([type]) { width: var(--size-m); padding: 0; min-height: 260px; overflow: hidden; }
+		
+				canvas { position: absolute; width: 100%; height: 100%; }
+				.fade { position: absolute; left: -5px; top: -5px; right: -5px; bottom: -5px; background: linear-gradient(180deg, rgba(15,15,25,0) 0%, rgba(15,15,25,1) 100%); }
+		
+				.front { position: absolute; left: 50%; top: 50%; max-width: 100%; overflow: hidden; transform: translate(-50%, -50%); text-align: center; padding: calc(var(--spacing) * 3); }
+				.front .title { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 10px; }
+				.front .description { max-width: 100%; }
+				.front .actions { display: inline-block; padding-top: 40px; }
+				.front .actions:empty { padding-top: 0; }
+			`,
+		
+			markup: component.template`
+				<canvas id="canvas"></canvas>
+				<div class="fade">&nbsp;</div>
+		
+				<div class="front">
+					<h2 id="title" class="title center">Success!</h2>
+					<div id="description" class="description center"></div>
+					<div id="actions" class="actions"></div>
+				</div>
+			`
+		};
+	},
 
 	script: async _component => {
-		const titleElement = _component.use("success.title");
-		const descriptionElement = _component.use("success.description");
-		const actionsElement = _component.use("success.actions");
+		const titleElement = _component.find("#title");
+		const descriptionElement = _component.find("#description");
+		const actionsElement = _component.find("#actions");
 
 		if (_component.parameters && _component.parameters.title)
 			titleElement.innerHTML = _component.parameters.title;
@@ -46,7 +48,7 @@ export default {
 
 		if (_component.parameters && _component.parameters.action) {
 			const actionElement = actionsElement.appendChild(new button(_component.parameters.action.options ? _component.parameters.action.options : {}));
-			actionElement.on("activated", () => {
+			actionElement.events.on("activated", () => {
 				_component.close("closed");
 
 				if (_component.parameters.action.contents && _component.parameters.action.contents.name)
@@ -56,7 +58,7 @@ export default {
 			});
 		}
 
-		const canvas = _component.use("success.canvas");
+		const canvas = _component.find("#canvas");
 		const ctx = canvas.getContext("2d");
 
 		let confetti = [];
@@ -131,7 +133,7 @@ export default {
 		render();
 
 		const resizeObserver = new ResizeObserver(_entries => resize());
-		_component.on("disposing", () => resizeObserver.unobserve(_component));
+		_component.events.on("disposed", () => resizeObserver.unobserve(_component));
 		resizeObserver.observe(_component);
 	}
 };

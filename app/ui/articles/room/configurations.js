@@ -1,26 +1,28 @@
+import { component } from "/components/component.js";
 import { list } from "/components/list.js";
 
 export default {
-	styles: `
-		#rooms-configurations { display: grid; grid-gap: 20px; }
-	`,
-
-	markup: `
-		<div id="rooms-configurations">
-			<h3 class="center">General</h2>
-			<app-list id="room-configurations-general" break="2"></app-list>
-
-			<h3 class="center">Voting</h2>
-			<app-list id="room-configurations-voting"></app-list>
-		</div>
-	`,
+	templates: () => {
+		return {
+			style: component.template`
+				#layout { display: grid; grid-gap: 20px; }
+			`,
+		
+			markup: component.template`
+				<div id="layout">
+					<h3 class="center">General</h2>
+					<app-list id="room-configurations-general" break="2"></app-list>
+		
+					<h3 class="center">Voting</h2>
+					<app-list id="room-configurations-voting"></app-list>
+				</div>
+			`
+		};
+	},
 
 	script: async _component => {
-		// Close article if user isn't signed in.
-		if (!localStorage.getItem("token")) return _component.close();
-
 		// General.
-		const generalElement = _component.use("room-configurations-general");
+		const generalElement = _component.find("#room-configurations-general");
 
 		// Enable room rename.
 		(await generalElement.add({
@@ -30,9 +32,9 @@ export default {
 				{ text: "Rename this room" },
 				{ arrow: true }
 			]
-		})).on("activated", async _event => {
-			globalThis.windows.open({ name: "room/rename", parameters: _component.parameters }).once("renamed", _event => {
-				globalThis.emit(`${_component.parameters.room._id} renamed`, _event.detail);
+		})).events.on("activated", async _event => {
+			globalThis.windows.open({ name: "room/rename", parameters: _component.parameters }).events.on("renamed", _data => {
+				globalThis.emit(`${_component.parameters.room._id} renamed`, _data);
 			});
 		});
 
@@ -44,19 +46,19 @@ export default {
 				{ text: "Delete this room" },
 				{ arrow: true }
 			]
-		})).on("activated", async _event => {
+		})).events.on("activated", async _event => {
 			const deleteResponse = await globalThis.fetcher(`/api/room/${_component.parameters.room._id}`, {
 				method: "delete"
 			});
 
 			if (deleteResponse.status >= 400) {
 				const deleteContent = deleteResponse.json();
-				globalThis.notify({ icon: "exclamation-circle", text: deleteContent.message });
+				globalThis.notify([{ icon: "exclamation-circle" }, { text: deleteContent.message }]).close(3000);
 			}
 		});
 
 		// Voting.
-		const votingElement = _component.use("room-configurations-voting");
+		const votingElement = _component.find("#room-configurations-voting");
 
 		// Enable configure templates.
 		(await votingElement.add({
@@ -66,7 +68,7 @@ export default {
 				{ text: "Configure voting templates" },
 				{ arrow: true }
 			]
-		})).on("activated", async _event => {
+		})).events.on("activated", async _event => {
 			globalThis.windows.open({ name: "voting/configure/index", parameters: _component.parameters });
 		});
 	}

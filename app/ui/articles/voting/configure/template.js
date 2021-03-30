@@ -1,3 +1,4 @@
+import { component } from "/components/component.js";
 import { button } from "/components/button.js";
 
 export default {
@@ -5,47 +6,49 @@ export default {
 		position: "center"
 	},
 
-	styles: `
-		#voting-template-configure { display: grid; grid-gap: 20px; }
-		#voting-template-configure-expires { opacity: 0.5; }
-
-		#voting-template-configure-buttons { display: grid; grid-gap: 20px; grid-template-columns: repeat(auto-fill, 100%); grid-column: 1 / -1; }
-		#voting-template-configure-buttons app-button { width: 100%; }
-
-		@media all and (min-width: 456px) {
-			#voting-template-configure-buttons { grid-template-columns: repeat(auto-fill, minmax(100px, auto)); }
-		}
-	`,
-
-	markup: `
-		<div id="voting-template-configure">
-			<h2 id="voting-template-configure-name">Configure voting templates</h2>
-			<div id="voting-template-configure-expires"></div>
-			<app-list id="voting-template-configure-options"></app-list>
-			<div id="voting-template-configure-buttons" class="center">
-				<app-button id="voting-template-configure-delete" text="Delete template" icon="times" composition="text icon"></app-button>
-				<app-button id="voting-template-configure-close" text="Close" composition="text" embedded="true"></app-button>
-			</div>
-		</div>
-	`,
+	templates: () => {
+		return {
+			style: component.template`
+				:host([type]) { width: var(--size-s); }
+		
+				#layout { display: grid; grid-gap: var(--spacing); }
+				#expires { opacity: 0.5; }
+				#actions app-button { width: 100%; }
+		
+				@media (orientation: landscape) {
+					#actions app-button { width: unset; position: relative; left: 50%; transform: translateX(-50%); }
+				}
+			`,
+		
+			markup: component.template`
+				<div id="layout">
+					<h2 id="name">Configure voting templates</h2>
+					<div id="expires"></div>
+		
+					<app-list id="options"></app-list>
+		
+					<div id="actions">
+						<app-button id="delete" text="Delete template" composition="text" secondary="true"></app-button>
+					</div>
+				</div>
+			`
+		};
+	},
 
 	script: async _component => {
-		// Close article if user isn't signed in.
-		if (!localStorage.getItem("token")) return _component.close("cancelled");
-
-		if (_component.shadow) _component.shadow.once("activated", async () => {
+		_component.shadow && _component.shadow.events.on("activated", async () => {
 			_component.close("cancelled");
 		});
 
-		const nameElement = _component.use("voting-template-configure-name");
-		const expiresElement = _component.use("voting-template-configure-expires");
-		const optionsElement = _component.use("voting-template-configure-options");
+		const nameElement = _component.find("#name");
+		const expiresElement = _component.find("#expires");
+		const optionsElement = _component.find("#options");
 
 		const refresh = async () => {
 			const templateResponse = await globalThis.fetcher(`/api/voting/template/${_component.parameters.template._id}`, { method: "get" });
 
 			if (templateResponse.status !== 200) {
-				globalThis.notify({ text: "We can't find the template you're trying to open." });
+				globalThis.notify([{ text: "We can't find the template you're trying to open." }]).close(3000);
 				return _component.close("error");
 			}
 	
@@ -57,7 +60,7 @@ export default {
 			for (let optionIndex = 0; optionIndex < template.options.length; optionIndex++) {
 				const option = template.options[optionIndex];
 				const optionElement = await optionsElement.add({
-					id: option._id,
+					id: `option-${option._id}`,
 					data: option,
 					contents: [
 						{ icon: option.icon },
@@ -66,11 +69,11 @@ export default {
 					]
 				});
 	
-				optionElement.on("activated", async _event => {
-					const optionResponse = await globalThis.fetcher(`/api/voting/template/${_component.parameters.template._id}/option/${option._id}`, { method: "delete" });
+				optionElement.events.on("activated", async _event => {
+					const optionResponse = await globalThis.fetcher(`/api/voting/template/${_component.parameters.template._id}/option/${_event.data._id}`, { method: "delete" });
 
 					if (optionResponse.status === 200) refresh();
-					else globalThis.notify({ text: "We couldn't delete the option." });
+					else globalThis.notify([{ text: "We couldn't delete the option." }]).close(3000);
 				});
 			}
 	
@@ -83,28 +86,20 @@ export default {
 				]
 			});
 	
-			createElement.on("activated", _event => {
+			createElement.events.on("activated", _event => {
 				globalThis.windows
 					.open({ name: "voting/configure/option/create", parameters: _component.parameters })
-					.once("created", refresh);
+					.events.on("created", refresh);
 			});
 		};
 
 		refresh();
 
-		_component.use("voting-template-configure-delete").once("activated", async () => {
+		_component.find("#delete").events.on("activated", async () => {
 			const deleteResponse = await globalThis.fetcher(`/api/voting/template/${_component.parameters.template._id}`, { method: "delete" });
 
 			if (deleteResponse.status === 200) _component.close("deleted");
-			else globalThis.notify({ text: "We couldn't delete the template." });
-		});
-
-		_component.use("voting-template-configure-close").once("activated", () => {
-			_component.close("cancelled");
-		});
-
-		_component.on("disposing", () => {
-
+			else globalThis.notify([{ text: "We couldn't delete the template." }]).close(3000);
 		});
 	}
 };

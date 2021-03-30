@@ -16,7 +16,7 @@ export default async (_app, _options) => {
 		const response = await _app.mongo.db.collection("participants").aggregate([
 			{
 				"$match": {
-					"room": new _app.mongo.ObjectId(_request.params.room),
+					"room": new _app.mongo.objectid(_request.params.room),
 					"heartbeat": { $gt: datetime },
 					"left": null
 				}
