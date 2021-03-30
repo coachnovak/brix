@@ -77,7 +77,7 @@ export class avatar extends component {
 
 		const background = getComputedStyle(document.documentElement).getPropertyValue("--paper-2");
 		const foreground = getComputedStyle(document.documentElement).getPropertyValue("--pen-1");
-		const size = parseInt(getComputedStyle(_component).getPropertyValue("--size"));
+		const size = parseInt(getComputedStyle(this).getPropertyValue("--size"));
 
 		const canvas = document.createElement("canvas");
 		canvas.width = size;
