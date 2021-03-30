@@ -63,10 +63,10 @@ export class cover extends component {
 			401: async _response => {
 				const { message } = await _response.json();
 				globalThis.notify([{ icon: "exclamation-triangle" }, { text: message }]).close(3000);
-				this.style.backgroundImage = `url(/assets/profile-cover.svg})`;
+				this.style.backgroundImage = `url(/assets/profile-cover.svg)`;
 			},
 			404: async _response => {
-				this.style.backgroundImage = `url(/assets/profile-cover.svg})`;
+				this.style.backgroundImage = `url(/assets/profile-cover.svg)`;
 			}
 		});
 	}
