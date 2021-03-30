@@ -16,11 +16,11 @@ export class cover extends component {
 				:host([size=m]) { --size: 210px; }
 				:host([size=l]) { --size: 280px; }
 
-				:host { display: inline-block; background: var(--paper-3); background-size: cover; background-repeat: no-repeat; filter: opacity(75%); width: 100%; height: var(--size); }
-				:host([clickable="true"]) { cursor: pointer; border: 2px solid transparent; }
+				:host { display: inline-block; background: var(--paper-3); background-size: cover; background-repeat: no-repeat; background-position: center; filter: opacity(75%); width: 100%; height: var(--size); }
+				:host([clickable="true"]) { cursor: pointer; }
 
-				:host(:hover) { border-color: var(--action-p-2); }
-				:host(:focus) { border-color: var(--action-p-3); }
+				:host(:hover) { border: 2px solid var(--action-p-2); }
+				:host(:focus) { border: 2px solid var(--action-p-3); }
 
 				${style ? style() : ""}
 			`,
