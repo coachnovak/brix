@@ -1,49 +1,51 @@
+import { component } from "/components/component.js";
 import { button } from "/components/button.js";
 
 export default {
-	styles: `
-		#reactions-container-narrow { text-align: center; }
-
-		#reactions-container-wide { display: block; visibility: hidden; height: 0; }
-		#reactions-container-wide.reactable { visibility: visible; height: unset; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); overflow: hidden; }
-
-		#reactions-container-wide > div { transform: translateY(-100%); transition-property: transform; transition-duration: 0.2s; transition-delay: 0.2s; }
-		#reactions-container-wide.reactable > div { display: grid; grid-template-columns: repeat(6, auto); background: var(--paper-2); border-radius: 3px; padding: 5px; transform: translateY(0%); }
-	`,
-
-	markup: `
-		<div id="reactions-container" class="reactions container">
-			<div id="reactions-container-narrow">
-				<app-button id="reactions-container-narrow-action" icon="thumbs-up" composition="icon" size="large" embedded="true"></app-button>
-			</div>
-
-			<div id="reactions-container-wide">
-				<div id="reactions-container-wide-container">
-					<app-button id="reactions-container-wide-like" reaction="like" icon="thumbs-up" composition="icon" size="large" embedded="true"></app-button>
-					<app-button id="reactions-container-wide-heart" reaction="heart" icon="heart" composition="icon" size="large" embedded="true"></app-button>
-					<app-button id="reactions-container-wide-laughing" reaction="laughing" icon="grin-squint" composition="icon" size="large" embedded="true"></app-button>
-					<app-button id="reactions-container-wide-surprised" reaction="surprised" icon="surprise" composition="icon" size="large" embedded="true"></app-button>
-					<app-button id="reactions-container-wide-sad" reaction="sad" icon="sad-tear" composition="icon" size="large" embedded="true"></app-button>
-					<app-button id="reactions-container-wide-angry" reaction="angry" icon="angry" composition="icon" size="large" embedded="true"></app-button>
+	templates: () => {
+		return {
+			style: component.template`
+				#reactions-container-narrow { text-align: center; }
+		
+				#reactions-container-wide { display: block; visibility: hidden; height: 0; }
+				#reactions-container-wide.reactable { visibility: visible; height: unset; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); overflow: hidden; }
+		
+				#reactions-container-wide > div { transform: translateY(-100%); transition-property: transform; transition-duration: 0.2s; transition-delay: 0.2s; }
+				#reactions-container-wide.reactable > div { display: grid; grid-template-columns: repeat(6, auto); background: var(--paper-2); border-radius: 3px; padding: 5px; transform: translateY(0%); }
+			`,
+		
+			markup: component.template`
+				<div id="reactions-container" class="reactions container">
+					<div id="reactions-container-narrow">
+						<app-button id="reactions-container-narrow-action" icon="thumbs-up" composition="icon" size="large" embedded="true"></app-button>
+					</div>
+		
+					<div id="reactions-container-wide">
+						<div id="reactions-container-wide-container">
+							<app-button id="reactions-container-wide-like" reaction="like" icon="thumbs-up" composition="icon" size="large" embedded="true"></app-button>
+							<app-button id="reactions-container-wide-heart" reaction="heart" icon="heart" composition="icon" size="large" embedded="true"></app-button>
+							<app-button id="reactions-container-wide-laughing" reaction="laughing" icon="grin-squint" composition="icon" size="large" embedded="true"></app-button>
+							<app-button id="reactions-container-wide-surprised" reaction="surprised" icon="surprise" composition="icon" size="large" embedded="true"></app-button>
+							<app-button id="reactions-container-wide-sad" reaction="sad" icon="sad-tear" composition="icon" size="large" embedded="true"></app-button>
+							<app-button id="reactions-container-wide-angry" reaction="angry" icon="angry" composition="icon" size="large" embedded="true"></app-button>
+						</div>
+					</div>
 				</div>
-			</div>
-		</div>
-	`,
+			`
+		};
+	},
 
 	script: async _component => {
-		// Close article if user isn't signed in.
-		if (!localStorage.getItem("token")) return _component.close();
-
 		const stream = _component.parameters.stream;
 
-		const narrowActionElement = _component.use("reactions-container-narrow-action");
-		const wideElement = _component.use("reactions-container-wide");
-		const wideLikeElement = _component.use("reactions-container-wide-like");
-		const wideHeartElement = _component.use("reactions-container-wide-heart");
-		const wideLaughingElement = _component.use("reactions-container-wide-laughing");
-		const wideSurprisedElement = _component.use("reactions-container-wide-surprised");
-		const wideSadElement = _component.use("reactions-container-wide-sad");
-		const wideAngryElement = _component.use("reactions-container-wide-angry");
+		const narrowActionElement = _component.find("#reactions-container-narrow-action");
+		const wideElement = _component.find("#reactions-container-wide");
+		const wideLikeElement = _component.find("#reactions-container-wide-like");
+		const wideHeartElement = _component.find("#reactions-container-wide-heart");
+		const wideLaughingElement = _component.find("#reactions-container-wide-laughing");
+		const wideSurprisedElement = _component.find("#reactions-container-wide-surprised");
+		const wideSadElement = _component.find("#reactions-container-wide-sad");
+		const wideAngryElement = _component.find("#reactions-container-wide-angry");
 
 		let reactionsCount = 0;
 		let reactionsTimer = setInterval(() => {
@@ -168,7 +170,7 @@ export default {
 		const resizeObserver = new ResizeObserver(_entries => resize());
 		resizeObserver.observe(articleElement);
 
-		_component.on("disposing", () => {
+		_component.events.on("disposed", () => {
 			clearInterval(reactionsTimer);
 
 			// Dispose resize observer.

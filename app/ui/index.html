@@ -1,6 +1,6 @@
 <!doctype html>
 
-<html>
+<html lang="en">
 	<head>
 		<title>BRIX</title>
 
@@ -17,8 +17,6 @@
 
 		<script src="https://kit.fontawesome.com/b127a6ea84.js" crossorigin="anonymous"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/timeago.js/4.0.2/timeago.min.js" integrity="sha512-SVDh1zH5N9ChofSlNAK43lcNS7lWze6DTVx1JCXH1Tmno+0/1jMpdbR8YDgDUfcUrPp1xyE53G42GFrcM0CMVg==" crossorigin="anonymous"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/zxcvbn/4.2.0/zxcvbn.js"></script>
-		<script src="https://unpkg.com/vis-timeline/standalone/umd/vis-timeline-graph2d.min.js" crossorigin="anonymous"></script>
 
 		<link href="index.css" rel="stylesheet" />
 		<script src="index.js" type="module"></script>
@@ -26,23 +24,43 @@
 
 	<body>
 		<!-- Level 1 layer -->
-		<div id="cover"></div>
-		<div id="contents"></div>
+		<div class="cover">
+			<div>
+				<!-- Empty background -->
+				<div></div>
+
+				<!-- Wave background -->
+				<div><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
+					<defs><path id="wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" /></defs>
+					<g><use xlink:href="#wave" x="48" y="0" /><use xlink:href="#wave" x="48" y="3" /><use xlink:href="#wave" x="48" y="5" /><use xlink:href="#wave" x="48" y="7" /></g>
+				</svg></div>
+
+				<!-- Solid background -->
+				<div></div>
+			</div>
+		</div>
 
 		<!-- Level 2 layer -->
+		<div id="contents"></div>
+
+		<!-- Level 3 layer -->
 		<header>
 			<h1>BRIX</h1>
 
 			<section>
-				<app-identity id="identity"></app-identity>
-				<app-button id="button.home" icon="home" size="large" composition="icon"></app-button>
-				<app-button id="button.signin" icon="sign-in" size="large" composition="icon"></app-button>
-				<app-button id="button.signout" icon="sign-out" size="large" composition="icon"></app-button>
+				<app-button id="home" icon="home" size="large" composition="icon"></app-button>
+				<app-button id="signin" icon="sign-in" size="large" composition="icon"></app-button>
+				<app-button id="profile" icon="user" size="large" composition="icon"></app-button>
 			</section>
 		</header>
 
-		<!-- Level 3 layer -->
+		<!-- Level 4 layer -->
 		<div id="windows"></div>
+
+		<!-- Level 5 layer -->
+		<div id="additions"></div>
+
+		<!-- Level 6 layer -->
 		<app-notifications id="notifications"></app-notifications>
 	</body>
 </html>

@@ -17,7 +17,9 @@ export default async (_app, _options) => {
 				_app.mongo.db.createCollection(model.collection);
 				log.push({ message: `Collection '${model.collection}' was created.` });
 
-				_app.mongo.db.collection(model.collection).insertMany(model.documents, { ordered: true });
+				if (model.documents.length > 0)
+					_app.mongo.db.collection(model.collection).insertMany(model.documents, { ordered: true });
+
 				log.push({ message: `Collection '${model.collection}' was populated with ${model.documents.length} documents.` });
 
 				model.indexes.forEach(_index => {

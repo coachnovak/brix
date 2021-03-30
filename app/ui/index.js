@@ -1,45 +1,80 @@
-import socket from "/components/socket.js";
+import events from "/components/events.js";
+import stream from "/components/stream.js";
+import session from "/components/session.js";
 
 import { article } from "/components/article.js";
 import { shadow } from "/components/shadow.js";
-import { identity } from "/components/identity.js";
 import { button } from "/components/button.js";
 import { notifications } from "/components/notifications.js";
 
-globalThis.fetcher = async (_url, _options = {}) => {
+globalThis.fetcher = async (_url, _options = {}, _status = {}) => {
 	if (!_options.headers) _options.headers = {};
 	_options.headers["Content-Type"] = "application/json";
 
-	if (localStorage.getItem("token"))
-		_options.headers["Authorization"] = `Bearer ${localStorage.getItem("token")}`;
+	if (globalThis.session.signedin)
+		_options.headers["Authorization"] = `Bearer ${globalThis.session.token}`;
 
 	const response = await fetch(_url, _options);
 
+	if (_status[response.status])
+		return _status[response.status](response);
+
 	switch (response.status) {
 		case 401:
-			globalThis.notify({ icon: "shield-alt", text: "Access to the requested operation denied." });
+			if (_status["401"]) return _status["401"]();
+			globalThis.notify([{ icon: "shield-alt" }, { text: "Access to the requested operation denied." }]).close(3000);
 			break;
-
+	
 		case 400:
+			if (_status["400"]) return _status["400"]();
+
 		case 500:
 			const serverError = await response.json();
-			globalThis.notify({ icon: "exclamation-triangle", text: serverError.message });
+			globalThis.notify([{ icon: "exclamation-triangle" }, { text: serverError.message }]).close(3000);
 			break;
-
 	}
 
 	return response;
 };
 
+globalThis.uploader = async (_url, _options = {}, _status = {}, _progress) => {
+	const xhr = new XMLHttpRequest();
+	xhr.open(_options.method, _url);
+
+	if (globalThis.session.signedin)
+		xhr.setRequestHeader("Authorization", `Bearer ${globalThis.session.token}`);
+
+	xhr.onreadystatechange = () => {
+		if (xhr.readyState == 4) {
+			if (_status[xhr.status])
+				return _status[xhr.status](JSON.parse(xhr.response));
+		}
+	};
+	
+	xhr.upload.onerror = _error => {
+		debugger
+		return _status[xhr.status](JSON.parse(xhr.responseText));
+	};
+
+	xhr.upload.onabort = () => {
+
+	};
+
+	xhr.upload.onprogress = _event => {
+		if (_progress) _progress({ sent: _event.loaded, total: _event.total });
+	}
+
+	xhr.send(_options.body);
+};
+
 globalThis.contents = {
 	open: (_article) => {
 		const contents = document.getElementById("contents");
-		const newarticle = new article({
+		return contents.appendChild(new article({
 			name: _article.name,
-			parameters: _article.parameters || {}
-		});
-
-		contents.appendChild(newarticle);
+			parameters: _article.parameters || {},
+			type: "content"
+		}));
 	},
 
 	find: (_name) => {
@@ -62,6 +97,8 @@ globalThis.contents = {
 
 			if (close && _article.close) _article.close();
 		});
+
+		return globalThis.contents;
 	},
 
 	cut: (_name) => {
@@ -71,7 +108,7 @@ globalThis.contents = {
 		let close = false;
 		articles.forEach(_article => {
 			if (_article.name === _name) close = true;
-			else if (close === true) _article.close();
+			else if (close === true) _article.close("closed");
 		});
 	}
 };
@@ -79,86 +116,101 @@ globalThis.contents = {
 globalThis.windows = {
 	open: (_article, _options = {}) => {
 		const windows = document.getElementById("windows");
-		const shadowElement = windows.appendChild(new shadow());
 
 		return windows.appendChild(new article({
 			name: _article.name,
 			parameters: _article.parameters || {},
-			shadow: shadowElement
+			type: "window",
+			shadow: windows.appendChild(new shadow())
 		}));
+	},
+
+	close: (_name = null) => {
+		const windows = document.getElementById("windows");
+		const oldarticles = Array.from(windows.children).reverse();
+		oldarticles.forEach(_article => {
+			let close = true;
+
+			if (_name instanceof Array) {
+				if (!_name.includes(_article.name)) close = false;
+			} else if (_name !== null) {
+				if (_name !== _article.name) close = false;
+			}
+
+			if (close && _article.close) _article.close("closed");
+		});
+
+		return globalThis.windows;
+	},
+
+	list: () => {
+		const articles = document.querySelectorAll("#windows > app-article");
+		return articles;
 	}
 };
 
-globalThis.notify = ({ text, icon = "info-circle" }) => {
-	document.getElementById("notifications").push({ text, icon });
-	window.scrollTo(0, document.body.scrollHeight);
+globalThis.notify = (_contents) => {
+	return document.getElementById("notifications").push(_contents);
 };
 
-document.addEventListener("DOMContentLoaded", () => {
-	// Setup event quick access
+document.addEventListener("DOMContentLoaded", async () => {
 	globalThis.emit = (_name, _data) => document.dispatchEvent(new CustomEvent(_name, { detail: _data }));
 	globalThis.on = (_name, _function) => document.addEventListener(_name, _function);
 	globalThis.once = (_name, _function) => document.addEventListener(_name, _function, { once: true });
 	globalThis.off = (_name, _function) => document.removeEventListener(_name, _function);
 
-	const signOut = () => {
-		localStorage.removeItem("token");
-		localStorage.removeItem("expires");
+	globalThis.events = new events();
+	globalThis.session = new session();
+	globalThis.stream = new stream();
 
-		globalThis.emit("security.signedout");
+	// Initiate session evaluation.
+	await globalThis.session.evaluate();
+
+	// Open landing article.
+	globalThis.contents.open({ name: globalThis.session.signedin ? "rooms" : "doormat" });
+
+	// Emit global triggers.
+	document.addEventListener("mousedown", _event => globalThis.events.emit("mousedown", _event));
+	document.addEventListener("mouseup", _event => globalThis.events.emit("mouseup", _event));
+	document.addEventListener("touchstart", _event => globalThis.events.emit("touchstart", _event));
+	document.addEventListener("touchend", _event => globalThis.events.emit("touchend", _event));
+
+	document.getElementById("home").events.on("activated", () => {
 		globalThis.contents.close();
-		globalThis.contents.open({ name: "doormat" });
-	};
 
-	const verifySessionExpiration = () => {
-		const expiresInStore = localStorage.getItem("expires");
-		const tokenInStore = localStorage.getItem("token");
-		
-		if (expiresInStore) {
-			const expires = new Date(expiresInStore);
-			const now = new Date();
-			if (expires < now) signOut();
-		} else if (tokenInStore) {
-			// No session, yet token exists.
-			localStorage.removeItem("token");
-		}
-	};
-
-	verifySessionExpiration();
-	setInterval(verifySessionExpiration, 3000);
-
-	document.getElementById("button.home").on("activated", () => {
-		let tokenInStore = localStorage.getItem("token");
-
-		globalThis.contents.close();
-		if (tokenInStore) globalThis.contents.open({ name: "rooms" });
-		else globalThis.contents.open({ name: "doormat" });
+		if (globalThis.session.signedin)
+			globalThis.contents.open({ name: "rooms" });
+		else
+			globalThis.contents.open({ name: "doormat" });
 	});
 
-	document.getElementById("button.signin").on("activated", () => {
+	document.getElementById("signin").events.on("activated", () => {
 		globalThis.windows.open({ name: "signin" });
 	});
 
-	document.getElementById("button.signout").on("activated", () => signOut());
-
-	// Handle signed in and signed out.
-	globalThis.on("security.signedin", _info => {
-		document.getElementById("button.signin").visible = false;
-		document.getElementById("button.signout").visible = true;
-		document.getElementById("identity").refresh();
+	document.getElementById("profile").events.on("activated", () => {
+		globalThis.windows.open({ name: "my/profile" });
 	});
 
-	globalThis.on("security.signedout", _info => {
-		document.getElementById("button.signin").visible = true;
-		document.getElementById("button.signout").visible = false;
-		document.getElementById("identity").refresh();
+	// Set initial state on session buttons.
+	document.getElementById("signin").visible = globalThis.session.signedin === false;
+	document.getElementById("profile").visible = globalThis.session.signedin === true;
+
+	// Handle signedin and signedout events.
+	globalThis.session.events.on("signedin", () => {
+		document.getElementById("signin").visible = false;
+		document.getElementById("profile").visible = true;
 	});
 
-	// Emit initial session state.
-	let tokenInStore = localStorage.getItem("token");
-	globalThis.emit(tokenInStore ? "security.signedin" : "security.signedout");
+	globalThis.session.events.on("signedout", () => {
+		document.getElementById("signin").visible = true;
+		document.getElementById("profile").visible = false;
 
-	// Open first article.
-	if (tokenInStore) globalThis.contents.open({ name: "rooms" });
-	else globalThis.contents.open({ name: "doormat" });
+		// Reopen landing article.
+		globalThis.contents.close();
+		globalThis.contents.open({ name: "doormat" });
+
+		// Close all windows.
+		globalThis.windows.list().forEach(_window => _window.close("cancelled"));
+	});
 });

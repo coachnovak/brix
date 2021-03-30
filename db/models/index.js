@@ -4,6 +4,7 @@ import participants from "./participant.js";
 import room from "./room.js";
 import session from "./session.js";
 import user from "./user.js";
+import voting from "./voting/index.js";
 
 export default {
 	events,
@@ -11,5 +12,6 @@ export default {
 	participants,
 	room,
 	session,
-	user
+	user,
+	voting
 }

@@ -1,121 +1,91 @@
+import { component } from "/components/component.js";
 import { textbox } from "/components/textbox.js";
+import { password } from "/components/password.js";
 import { button } from "/components/button.js";
+import { link } from "/components/link.js";
 
 export default {
-	styles: `
-		#signin-head { margin-bottom: 20px; }
-		#signin-form { display: grid; grid-gap: 20px; grid-template-columns: auto; margin-bottom: 20px; }
-		#signin-primaries { display: grid; grid-gap: 20px; grid-template-columns: auto; }
-		#signin-primaries div app-button,
-		#signin-secondaries div app-button { width: 100%; }
-		#signin-secondaries { text-align: center; }
-		#signin-divider { margin-top: 20px; margin-bottom: 20px; }
-
-		@media all and (min-width: 456px) {
-			#signin-primaries div app-button { width: unset; }
-			#signin-primaries { grid-template-columns: min-content min-content auto; }
-			#signin-primaries div:nth-child(3) { text-align: right; }
-
-			#signin-secondaries div app-button { width: unset; }
-		}
-
-		@media all and (min-width: 456px) {
-			#signin { grid-template-columns: repeat(auto-fill, calc(50% - 10px)); }
-		}
-	`,
-
-	markup: `
-		<div id="signin">
-			<h2 id="signin-head">Sign in</h2>
-
-			<div id="signin-form">
-				<app-textbox type="textbox" id="signin-email" placeholder="Whats your e-mail"></app-textbox>
-				<app-textbox type="password" id="signin-password" placeholder="Whats your password"></app-textbox>
-			</div>
-
-			<div id="signin-primaries">
-				<div><app-button id="signin-continue" text="Sign in" icon="check" composition="text icon"></app-button></div>
-				<div><app-button id="signin-cancel" text="Cancel" composition="text" embedded="true"></app-button></div>
-				<div><app-button id="signin-forgot" text="Forgot password" composition="text" secondary="true"></app-button></div>
-			</div>
-
-			<div id="signin-divider" class="divider"><span>or</span></div>
-
-			<div id="signin-secondaries">
-				<div><app-button id="signin-register" text="Create an account" composition="text"></app-button></div>
-			</div>
-		</div>
-	`,
+	templates: () => {
+		return {
+			style: component.template`
+				:host([type]) { width: var(--size-s); }
+		
+				#layout { display: grid; grid-template-rows: auto; grid-gap: var(--spacing); }
+				#form { display: grid; grid-gap: var(--spacing); grid-template-columns: auto; }
+		
+				#primaries,
+				#secondaries { text-align: center; }
+			`,
+		
+			markup: component.template`
+				<div id="layout">
+					<div id="head">
+						<h2>Sign in</h2>
+						<br />
+						Let's log you in to your account so you can start collaborating.
+					</div>
+		
+					<div id="form">
+						<app-textbox id="email" placeholder="Whats your e-mail" autocomplete="email"></app-textbox>
+						<app-password id="password" placeholder="Whats your password" autocomplete="current-password"></app-password>
+						<app-link id="forgot" text="Did you forget your password?"></link>
+					</div>
+		
+					<div id="primaries">
+						<app-button id="continue" text="Sign in to your account" icon="check" composition="text icon"></app-button>
+					</div>
+		
+					<div id="divider" class="divider"><span>or</span></div>
+		
+					<div id="secondaries">
+						<div><app-button id="register" text="Create a new account" composition="text" secondary="true"></app-button></div>
+					</div>
+				</div>
+			`
+		};
+	},
 
 	script: async _component => {
-		const emailElement = _component.use("signin-email");
-		emailElement.on("ready", () => emailElement.focus());
+		const emailElement = _component.find("#email");
+		const passwordElement = _component.find("#password");
+		emailElement.focus();
 
-		const passwordElement = _component.use("signin-password");
-
-		if (_component.shadow) _component.shadow.once("activated", async () => {
+		_component.shadow && _component.shadow.events.on("activated", async () => {
 			_component.close("cancelled");
 		});
 
-		_component.use("signin-email").on("activated", async () => {
-			_component.use("signin-password").focus();
-		});
+		_component.find("#email").events.on("activated", async () => _component.find("#password").focus());
+		_component.find("#password").events.on("activated", async () => _component.find("#continue").emit("activated"));
 
-		_component.use("signin-password").on("activated", async () => {
-			_component.use("signin-continue").emit("activated");
-		});
+		_component.find("#forgot").events.on("activated", async () => globalThis.windows.open({ name: "signin-forgot" }));
+		_component.find("#register").events.on("activated", async () => globalThis.windows.open({ name: "register" }));
 
-		_component.use("signin-cancel").once("activated", async () => {
-			_component.close("cancelled");
-		});
+		_component.find("#continue").events.on("activated", async () => {
+			const emailValid = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(emailElement.value);
+			const passwordValid = passwordElement.value !== "";
 
-		_component.use("signin-forgot").on("activated", async () => {
-			globalThis.windows.open({ name: "signin-forgot" });
-		});
+			if (!emailValid) return globalThis.notify([{ text: "Invalid e-mail provided." }]).close(3000);
+			if (!passwordValid) return globalThis.notify([{ text: "Invalid password provided." }]).close(3000);
 
-		_component.use("signin-register").on("activated", async () => {
-			_component.use("signin-cancel").emit("activated");
-			globalThis.windows.open({ name: "register" });
-		});
-
-		_component.use("signin-continue").on("activated", async () => {
-			const emailValid = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(emailElement.value());
-			const passwordValid = passwordElement.value() !== "";
-			
-			if (!emailValid) return globalThis.notify({ text: "Invalid e-mail provided." });
-			if (!passwordValid) return globalThis.notify({ text: "Invalid password provided." });
-
-			const authResponse = await globalThis.fetcher(`/api/security/authenticate/`, {
+			await globalThis.fetcher(`/api/security/authenticate/`, {
 				method: "post",
 				body: JSON.stringify({
-					email: emailElement.value(),
-					password: passwordElement.value()
+					email: emailElement.value,
+					password: passwordElement.value
 				})
-			});
-
-			switch (authResponse.status) {
-				case 201:
-					const authDetails = await authResponse.json();
-					localStorage.setItem("token", authDetails.token);
-					localStorage.setItem("expires", authDetails.expires);
-					globalThis.emit("security.signedin");
-
-					document.getElementById("button.signin").visible = false;
-					document.getElementById("button.signout").visible = true;
-					document.getElementById("identity").refresh();
-
-					_component.close("signed in");
+			}, {
+				201: async (_response) => {
+					const session = await _response.json();
+					globalThis.session.events.emit("signedin", session);
+					_component.close("signedin");
 
 					globalThis.contents.close();
 					globalThis.contents.open({ name: "rooms" });
-
-					break;
-
-				case 401:
-					globalThis.notify({ text: "Failed to authenticate with the provided credentials." });
-					break;
-
-			}			
+				},
+				401: async (_response) => {
+					globalThis.notify([{ text: "Failed to authenticate with the provided credentials." }]).close(3000);
+				}
+			});
 		});
 	}
 };

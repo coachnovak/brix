@@ -1,11 +1,17 @@
+import { component } from "/components/component.js";
+
 export default {
-	styles: `
+	templates: () => {
+		return {
+			style: component.template`
 
-	`,
-
-	markup: `
-
-	`,
+			`,
+		
+			markup: component.template`
+		
+			`
+		};
+	},
 
 	script: async _component => {
 

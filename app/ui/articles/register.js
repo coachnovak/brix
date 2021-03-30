@@ -1,68 +1,66 @@
+import { component } from "/components/component.js";
 import { textbox } from "/components/textbox.js";
+import { password } from "/components/password.js";
 import { button } from "/components/button.js";
 
 export default {
-	styles: `
-		#register { display: grid; grid-gap: 20px; width: 100%; grid-template-columns: repeat(auto-fill, 100%); }
-		#register-head { grid-column: 1 / -1; text-align: center; margin-bottom: 10px; }
-		#register-image { grid-column: 1 / -1; text-align: center; margin-bottom: 10px; }
-		#register-buttons { display: grid; grid-gap: 20px; grid-template-columns: repeat(auto-fill, 100%); grid-column: 1 / -1; }
-		#register-buttons app-button { width: 100%; }
-
-		@media all and (min-width: 256px) {
-			#register img { width: 80%; }
-			#register-buttons { grid-template-columns: repeat(auto-fill, calc(50% - 10px)); }
-		}
-
-		@media all and (min-width: 456px) {
-			#register img { width: 50%; }
-			#register { grid-template-columns: repeat(auto-fill, calc(50% - 10px)); }
-			#register-buttons { grid-template-columns: repeat(auto-fill, 25%); }
-		}
-
-		meter { appearance: none; margin: 3px 0 10px 0; width: 100%; height: 3px; background: none; background-color: var(--paper-3); }
-		meter::-webkit-meter-bar { background: none; background-color: var(--paper-3); }
-
-		#password-strength-text:empty { display: none; }
-
-		meter[value="1"] { background: red; }
-		meter[value="2"] { background: yellow; }
-		meter[value="3"] { background: orange; }
-		meter[value="4"] { background: green; }
+	templates: () => {
+		return {
+			style: component.template`
+				:host([type]) { width: var(--size-m); padding: 0; }
 		
-		meter[value="1"]::-moz-meter-bar { background: red; }
-		meter[value="2"]::-moz-meter-bar { background: yellow; }
-		meter[value="3"]::-moz-meter-bar { background: orange; }
-		meter[value="4"]::-moz-meter-bar { background: green; }
-	`,
-
-	markup: `
-		<div id="register">
-			<div id="register-head">
-				<h2>User registration</h2>
-			</div>
-
-			<div id="register-image">
-				<img src="/assets/register.svg" />
-			</div>
-
-			<app-textbox type="textbox" id="register-email" placeholder="Whats your e-mail"></app-textbox>
-
-			<div id="register-password-hint">
-				<app-textbox type="password" id="register-password" placeholder="Whats your password"></app-textbox>
-				<meter max="4" id="password-strength-meter"></meter>
-				<div id="password-strength-text"></div>
-			</div>
-
-			<app-textbox type="textbox" id="register-firstname" placeholder="Whats your first name"></app-textbox>
-			<app-textbox type="textbox" id="register-lastname" placeholder="Whats your last name"></app-textbox>
-
-			<div id="register-buttons">
-				<app-button id="register-continue" text="Register" icon="check" composition="text icon"></app-button>
-				<app-button id="register-cancel" text="Cancel" composition="text" embedded="true"></app-button>
-			</div>
-		</div>
-	`,
+				#layout { display: grid; grid-template-columns: min-content auto; }
+		
+				#billboard { position: relative; background: var(--paper-3); width: 220px; }
+				#billboard i { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font-size: 48px; }
+		
+				#form { display: grid; grid-gap: var(--spacing); grid-template-columns: repeat(auto-fill, 100%); padding: calc(var(--spacing) * 3); }
+				#form #head { grid-column: 1 / -1; }
+		
+				#form #password-hint { grid-column: 1 / -1; }
+				#form #password-strength-text:empty { display: none; }
+		
+				#form #buttons { grid-column: 1 / -1; }
+				#form #buttons #continue { position: relative; left: 50%; transform: translateX(-50%); }
+		
+				@media (orientation: portrait) {
+					#layout { display: grid; grid-template-columns: auto; }
+					#billboard { display: none; }
+				}
+		
+				@media (orientation: landscape) and (min-width: 600px) {
+					#form { grid-template-columns: repeat(auto-fill, calc(50% - 10px)); }
+				}
+			`,
+		
+			markup: component.template`
+				<div id="layout">
+					<div id="billboard">
+						<i class="fad fa-sparkles"></i>
+					</div>
+		
+					<div id="form">
+						<div id="head">
+							<h2>Register</h2>
+							<br />
+							Let's get you all set up so you can verify your personal account and begin setting up your profile.
+						</div>
+		
+						<app-textbox id="firstname" placeholder="Whats your first name" autocomplete="given-name"></app-textbox>
+						<app-textbox id="lastname" placeholder="Whats your last name" autocomplete="family-name"></app-textbox>
+						<app-textbox id="email" placeholder="Whats your e-mail" autocomplete="email"></app-textbox>
+						<app-password id="password" placeholder="Whats your password" autocomplete="new-password"></app-password>
+		
+						<div id="password-hint">
+							<div id="password-strength-text"></div>
+						</div>
+		
+						<div id="buttons"><app-button id="continue" text="Register" icon="check" composition="text icon"></app-button></div>
+					</div>
+				</div>
+			`
+		};
+	},
 
 	script: async _component => {
 		const strength = {
@@ -74,59 +72,49 @@ export default {
 			5: "The password is great!"
 		}
 
-		const emailElement = _component.use("register-email");
-		emailElement.on("ready", () => emailElement.focus());
+		const emailElement = _component.find("#email");
+		emailElement.focus();
 
-		const passwordStrengthTextElement = _component.use("password-strength-text");
-		const passwordStrengthMeterElement = _component.use("password-strength-meter");
-		const passwordElement = _component.use("register-password");
-		passwordElement.on("changed", () => {
-			let value = passwordElement.value();
-			let result = zxcvbn(value);
-			passwordStrengthMeterElement.value = result.score;
-
-			if (value !== "")
-				passwordStrengthTextElement.innerHTML = strength[result.score + 1] + ` <span class="feedback">${result.feedback.suggestions}</span>`; 
-			else
-				passwordStrengthTextElement.innerHTML = strength[0];
+		const passwordStrengthTextElement = _component.find("#password-strength-text");
+		const passwordElement = _component.find("#password");
+		passwordElement.events.on("changed", () => {
+			const value = passwordElement.value
+			const result = passwordElement.evaluate();
+			passwordStrengthTextElement.innerHTML = value !== "" ? strength[result.score + 1] : strength[0];
 		});
 
-		const firstnameElement = _component.use("register-firstname");
-		const lastnameElement = _component.use("register-lastname");
+		const firstnameElement = _component.find("#firstname");
+		const lastnameElement = _component.find("#lastname");
 
-		_component.shadow.once("activated", async () => {
+		_component.shadow.events.on("activated", async () => {
 			_component.close("cancelled");
 		});
 
-		emailElement.on("activated", async () => passwordElement.focus());
-		passwordElement.on("activated", async () => firstnameElement.focus());
-		firstnameElement.on("activated", async () => lastnameElement.focus());
-		lastnameElement.on("activated", async () => _component.use("register-continue").emit("activated"));
+		emailElement.events.on("activated", async () => passwordElement.focus());
+		passwordElement.events.on("activated", async () => firstnameElement.focus());
+		firstnameElement.events.on("activated", async () => lastnameElement.focus());
+		lastnameElement.events.on("activated", async () => _component.find("#continue").emit("activated"));
 
-		_component.use("register-cancel").once("activated", async () => {
-			_component.close("cancelled");
-		});
-
-		_component.use("register-continue").on("activated", async () => {
-			let passwordValue = passwordElement.value();
+		_component.find("#continue").events.on("activated", async () => {
+			let passwordValue = passwordElement.value;
 			let passwordStrength = zxcvbn(passwordValue);
 
-			const emailValid = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(emailElement.value());
-			const firstnameValid = /^[a-zA-Z\u00C0-\u00ff]+$/i.test(firstnameElement.value());
-			const lastnameValid = /^[a-zA-Z\u00C0-\u00ff]+$/.test(lastnameElement.value());
+			const emailValid = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(emailElement.value);
+			const firstnameValid = /^[a-zA-Z\u00C0-\u00ff]+$/i.test(firstnameElement.value);
+			const lastnameValid = /^[a-zA-Z\u00C0-\u00ff]+$/.test(lastnameElement.value);
 
-			if (!emailValid) return globalThis.notify({ icon: "exclamation-circle", text: "Invalid e-mail provided." });
-			if (passwordStrength.score < 3) return globalThis.notify({ icon: "exclamation-circle", text: "Invalid password provided." });
-			if (!firstnameValid) return globalThis.notify({ icon: "exclamation-circle", text: "Invalid first name provided." });
-			if (!lastnameValid) return globalThis.notify({ icon: "exclamation-circle", text: "Invalid last name provided." });
+			if (!emailValid) return globalThis.notify([{ icon: "exclamation-circle" }, { text: "Invalid e-mail provided." }]).close(3000);
+			if (passwordStrength.score < 3) return globalThis.notify([{ icon: "exclamation-circle" }, { text: "Invalid password provided." }]).close(3000);
+			if (!firstnameValid) return globalThis.notify([{ icon: "exclamation-circle" }, { text: "Invalid first name provided." }]).close(3000);
+			if (!lastnameValid) return globalThis.notify([{ icon: "exclamation-circle" }, { text: "Invalid last name provided." }]).close(3000);
 
 			const registerResponse = await globalThis.fetcher(`/api/security/register/`, {
 				method: "post",
 				body: JSON.stringify({
-					email: emailElement.value(),
-					password: passwordElement.value(),
-					firstName: firstnameElement.value(),
-					lastName: lastnameElement.value()
+					email: emailElement.value,
+					password: passwordElement.value,
+					firstName: firstnameElement.value,
+					lastName: lastnameElement.value
 				})
 			});
 

@@ -13,13 +13,14 @@ export default {
 					lastName: { type: "string" }
 				}
 			},
+			joined: { type: ["object"] },
 			heartbeat: { type: ["object"] },
-			registered: { type: ["object"] }
+			left: { type: ["object", "null"], default: null }
 		}
 	},
 	documents: [
 	],
 	indexes: [
-		{ keys: { heartbeat: 1 }, options: { name: "heartbeat", expireAfterSeconds: 10 } }
+		{ keys: { heartbeat: 1 }, options: { name: "heartbeat", expireAfterSeconds: 30 } }
 	]
 }
