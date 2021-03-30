@@ -9,6 +9,8 @@ export default {
 			salt: { type: "string" },
 			firstName: { type: "string" },
 			lastName: { type: "string" },
+			cover: { type: "object" },
+			avatar: { type: "object" },
 			registered: { type: ["object"] },
 			confirmed: { type: ["object", "null"], default: null },
 			confirmCode: { type: "string" },
