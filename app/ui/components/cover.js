@@ -19,8 +19,8 @@ export class cover extends component {
 				:host { display: inline-block; background: var(--paper-3); background-size: cover; background-repeat: no-repeat; background-position: center; filter: opacity(75%); width: 100%; height: var(--size); }
 				:host([clickable="true"]) { cursor: pointer; }
 
-				:host(:hover) { border: 2px solid var(--action-p-2); }
-				:host(:focus) { border: 2px solid var(--action-p-3); }
+				:host([clickable="true"]:hover) { border: 2px solid var(--action-p-2); }
+				:host([clickable="true"]:focus) { border: 2px solid var(--action-p-3); }
 
 				${style ? style() : ""}
 			`,
