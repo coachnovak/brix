@@ -17,8 +17,8 @@ export default fastifyPlugin (async (_app, _options) => {
 		// Decorate with mongodb.
 		_app.decorate("mongo", mongo);
 
-	} catch {
-		console.log("Failed to connect to mongodb.");
+	} catch (_exception) {
+		console.log("Failed to connect to mongodb.", _exception);
 
 	}
 });
