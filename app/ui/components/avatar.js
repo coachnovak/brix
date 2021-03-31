@@ -19,7 +19,7 @@ export class avatar extends component {
 				:host([size=l]) { --size: 150px; }
 
 				:host { display: inline-block; background: var(--paper-1); background-size: cover; background-repeat: no-repeat; border-radius: 50%; width: var(--size); height: var(--size); }
-				:host([clickable="true"]) { cursor: pointer; border: 2px solid var(--paper-1); }
+				:host([clickable="true"]) { cursor: pointer; border: 4px solid var(--paper-1); }
 
 				:host(:hover) { border-color: var(--action-p-2); }
 				:host(:focus) { border-color: var(--action-p-3); }
