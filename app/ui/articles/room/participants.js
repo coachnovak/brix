@@ -6,12 +6,11 @@ export default {
 	templates: () => {
 		return {
 			style: component.template`
-				#list { display: block; }
 				#list .empty { padding: 20px; text-align: center; }
 			`,
 		
 			markup: component.template`
-				<app-list id="list"></app-list>
+				<app-list id="list" break="2"></app-list>
 			`
 		};
 	},
@@ -24,7 +23,7 @@ export default {
 			if (participantsResponse.status !== 200) return globalThis.notify([{ icon: "exclamation-circle" }, { text: "Failed to retrieve participants." }]).close(3000);
 
 			const participants = await participantsResponse.json();
-			const participantsChildren = Array.from(participantsElement.children());
+			const participantsChildren = participantsElement.items();
 
 			// Look for deleted participants.
 			Array.from(participantsChildren).forEach(_participantElement => {
@@ -42,7 +41,7 @@ export default {
 					id: `participant-${participant._id}`,
 					data: participant,
 					contents: [
-						{ icon: "user" },
+						{ avatar: { user: participant.user, size: "s" } },
 						{ text: `${participant.user.firstName} ${participant.user.lastName}` },
 						{ since: participant.registered }
 					]
