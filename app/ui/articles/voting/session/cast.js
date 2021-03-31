@@ -37,10 +37,6 @@ export default {
 	},
 
 	script: async _component => {
-		_component.shadow && _component.shadow.events.on("activated", async () => {
-			_component.close("cancelled");
-		});
-
 		const sessionResponse = await globalThis.fetcher(`/api/voting/session/${_component.parameters.session}`, { method: "get" });
 		if (sessionResponse.status !== 200) _component.close("error");
 		const session = await sessionResponse.json();
