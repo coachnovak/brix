@@ -1,5 +1,6 @@
 import anime from "/assets/scripts/anime.es.js";
 import { component } from "/components/component.js";
+import { avatar } from "/components/avatar.js";
 import { loader } from "/components/loader.js";
 import { progress } from "/components/progress.js";
 
@@ -7,26 +8,27 @@ export class notification extends component {
 	constructor (_properties = {}) {
 		super({ ..._properties });
 
-		const { contents, composition } = _properties;
-		this.property({ name: "contents", value: contents, options: { default: [] } })
-			.property({ name: "composition", value: composition, options: { default: null, isattribute: true } });
+		const { contents } = _properties;
+		this.property({ name: "contents", value: contents, options: { default: [] } });
     }
 
 	connectedCallback ({ style, markup } = {}) {
 		super.conditionsCallback();
 		super.connectedCallback({
 			style: component.template`
-				:host { display: grid; grid-gap: var(--spacing); padding: var(--spacing); align-items: center; }
-				:host { background: var(--paper-2); color: var(--pen-1); box-shadow: var(--paper-s); }
 				:host { opacity: 0; transform: translateY(100%); }
 
-				#text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+				#container { display: grid; grid-gap: var(--spacing); padding: var(--spacing); align-items: center; }
+				#container { background: var(--paper-2); color: var(--pen-1); box-shadow: var(--paper-s); }
+
+				.nowrap { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 				app-progress { grid-column: 1 / -1; }
 
 				${style ? style() : ""}
 			`,
 
 			markup: component.template`
+				<div id="container"></div>
 
 				${markup ? markup() : ""}
 			`
@@ -57,28 +59,35 @@ export class notification extends component {
 	}
 
 	render () {
-		const composition = [];
+		const template = [];
+		const containerElement = this.find("#container");
+		containerElement.innerHTML = "";
+
 		this.contents.forEach(_content => {
-			if (_content.icon !== undefined) {
-				composition.push("min-content");
-
-				const iconElement = this.append(document.createElement("i"));
+			if (_content.avatar !== undefined) {
+				containerElement.appendChild(new avatar(_content.avatar));
+				template.push("min-content");
+			} else if (_content.icon !== undefined) {
+				const iconElement = containerElement.appendChild(document.createElement("i"));
 				iconElement.classList.add(`fad`, `fa-${_content.icon}`);
-			} else if (_content.text !== undefined) {
-				composition.push("auto");
 
-				const textElement = this.append(document.createElement("div"));
+				template.push("min-content");
+			} else if (_content.text !== undefined) {
+				const textElement = containerElement.appendChild(document.createElement("div"));
 				textElement.setAttribute("id", "text");
 				textElement.innerHTML = _content.text;
+
+				template.push("auto");
 			} else if (_content.loader !== undefined) {
-				composition.push("min-content");
-				this.append(new loader(_content.loader));
+				containerElement.appendChild(new loader(_content.loader));
+				template.push("min-content");
 			} else if (_content.progress !== undefined) {
-				this.append(new progress(_content.progress));
+				containerElement.appendChild(new progress(_content.progress));
 			}
 		});
 
-		this.find("style").innerHTML += `:host { grid-template-columns: ${composition.join(" ")}; }`;
+		// Apply columns.
+		containerElement.style.gridTemplateColumns = template.join(" ");
 	}
 
 	progress (_value) {
