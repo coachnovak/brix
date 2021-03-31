@@ -11,6 +11,5 @@ export default fastifyPlugin (async (_app, _options) => {
 			_response.status(401).send("Access token couldn't be verified.");
 
 		}
-
 	});
 });
