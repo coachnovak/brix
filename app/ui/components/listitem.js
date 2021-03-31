@@ -1,4 +1,7 @@
 import { component } from "/components/component.js";
+import { avatar } from "/components/avatar.js";
+import { loader } from "/components/loader.js";
+import { progress } from "/components/progress.js";
 
 export class listitem extends component {
 	constructor (_properties = {}) {
@@ -15,9 +18,10 @@ export class listitem extends component {
 		super.connectedCallback({
 			style: component.template`
 				:host { overflow: hidden; }
-				:host([clickable="true"]:hover) #item { background: var(--action-e-2); cursor: pointer; }
-		
-				#item { display: grid; grid-gap: 15px; padding: 15px; border-radius: 3px; }
+
+				#container { display: grid; grid-gap: calc(var(--spacing) / 1.5); padding: calc(var(--spacing) / 1.5); align-items: center; border-radius: 3px; }
+				:host([clickable="true"]:hover) #container { background: var(--action-e-2); cursor: pointer; }
+
 				#avatar { position: relative; width: 34px; height: 34px; border-radius: 50%; background: var(--paper-3); }
 				#avatar i { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); }
 		
@@ -30,6 +34,8 @@ export class listitem extends component {
 			`,
 
 			markup: component.template`
+				<div id="container"></div>
+
 				${markup ? markup() : ""}
 			`
 		});
@@ -52,52 +58,72 @@ export class listitem extends component {
 	}
 
 	render () {
-		let composition = [];
-		let elements = [];
+		const template = [];
+		const containerElement = this.find("#container");
+		containerElement.innerHTML = "";
 
+		// Build template and elements.
 		this.contents.forEach(_content => {
 			if (_content.avatar !== undefined) {
-				composition.push("min-content");
-				elements.push(`<div id="avatar"><i class="fad fa-${_content.avatar}"></i></div>`);
-			} else if (_content.text !== undefined) {
-				composition.push("auto");
-				elements.push(`<div id="text">${_content.text}</div>`);
-			} else if (_content.since !== undefined) {
-				composition.push("min-content");
-				elements.push(`<div id="since" datetime="${_content.since}"></div>`);
-			} else if (_content.until !== undefined) {
-				composition.push("min-content");
-				if (_content.until) elements.push(`<div id="until">expires <span datetime="${_content.until}"></span></div>`);
-				else elements.push(`<div id="until">won't expire</div>`);
-			} else if (_content.count !== undefined) {
-				composition.push("min-content");
-				elements.push(`<div id="count">${_content.count}</div>`);
+				containerElement.appendChild(new avatar(_content.avatar));
+				template.push("min-content");
 			} else if (_content.icon !== undefined) {
-				composition.push("min-content");
-				elements.push(`<i class="fad fa-${_content.icon}"></i>`);
+				containerElement.appendChild(document.createElement("i")).classList.add(`fad`, `fa-${_content.icon}`);
+				template.push("min-content");
+			} else if (_content.text !== undefined) {
+				const textElement = containerElement.appendChild(document.createElement("div"));
+				textElement.setAttribute("id", "text");
+				textElement.innerHTML = _content.text;
+
+				template.push("auto");
 			} else if (_content.arrow !== undefined) {
-				composition.push("min-content");
-				elements.push(`<i class="fad fa-arrow-right"></i>`);
+				containerElement.appendChild(document.createElement("i")).classList.add(`fad`, `fa-arrow-right`);
+				template.push("min-content");
 			} else if (_content.delete !== undefined) {
-				composition.push("min-content");
-				elements.push(`<i class="fad fa-times"></i>`);
+				containerElement.appendChild(document.createElement("i")).classList.add(`fad`, `fa-times`);
+				template.push("min-content");
+			} else if (_content.since !== undefined) {
+				const sinceElement = containerElement.appendChild(document.createElement("div"));
+				sinceElement.setAttribute("id", "since");
+				sinceElement.setAttribute("datetime", "text");
+				sinceElement.innerHTML = _content.since;
+
+				template.push("min-content");
+
+				timeago.render(sinceElement);
+				this.events.on("disposed", () => timeago.cancel(sinceElement));
+			} else if (_content.until !== undefined) {
+				const untilContainerElement = containerElement.appendChild(document.createElement("div"));
+				untilContainerElement.setAttribute("id", "until");
+
+				if (_content.until)
+					untilContainerElement.innerHTML = `expires <span datetime="${_content.until}"></span>`;
+				else
+					untilContainerElement.innerHTML = `won't expire`;
+
+				template.push("min-content");
+
+				const untilElement = this.find("#until > span");
+				if (!untilElement) return;
+
+				timeago.render(untilElement);
+				this.events.on("disposed", () => timeago.cancel(untilElement));
+			} else if (_content.count !== undefined) {
+				const countElement = containerElement.appendChild(document.createElement("div"));
+				countElement.setAttribute("id", "count");
+				countElement.innerHTML = _content.count;
+
+				template.push("min-content");
+			} else if (_content.loader !== undefined) {
+				containerElement.appendChild(new loader(_content.loader));
+				template.push("min-content");
+			} else if (_content.progress !== undefined) {
+				containerElement.appendChild(new progress(_content.progress));
 			}
 		});
 
-		const templateElement = document.createElement("template");
-		templateElement.innerHTML = `<style>#item { grid-template-columns: ${composition.join(" ")}; }</style><div id="item">${elements.join("")}</div>`;
-		this.append(templateElement.content.cloneNode(true));
-
-		const since = this.find("#since");
-		if (since) timeago.render(since);
-
-		const until = this.find("#until > span");
-		if (until) timeago.render(until);
-
-		this.events.on("disposed", () => {
-			if (since) timeago.cancel(since);
-			if (until) timeago.cancel(until);
-		});
+		// Apply columns template.
+		containerElement.style.gridTemplateColumns = template.join(" ");
 	}
 }
 
