@@ -59,13 +59,6 @@ export default {
 			_component.timers.once(3000, () => update());
 		}
 
-		_component.events.on("disposed", () => {
-			globalThis.contents.close("room/invites");
-		});
-
-		if (globalThis.session.identity._id === _component.parameters.room.owner)
-			globalThis.contents.open({ name: "room/invites", parameters: _component.parameters });
-
 		await update();
 	}
 };

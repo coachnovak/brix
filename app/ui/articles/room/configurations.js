@@ -24,12 +24,24 @@ export default {
 		// General.
 		const generalElement = _component.find("#room-configurations-general");
 
+		// Enable room invitations.
+		(await generalElement.add({
+			id: "general-invitations",
+			contents: [
+				{ icon: "share-alt" },
+				{ text: "Manage room invites" },
+				{ arrow: true }
+			]
+		})).events.on("activated", async _event => {
+			globalThis.windows.open({ name: "room/invites", parameters: _component.parameters });
+		});
+
 		// Enable room rename.
 		(await generalElement.add({
 			id: "general-rename",
 			contents: [
 				{ icon: "text" },
-				{ text: "Rename this room" },
+				{ text: "Rename the room" },
 				{ arrow: true }
 			]
 		})).events.on("activated", async _event => {
@@ -43,7 +55,7 @@ export default {
 			id: "general-delete",
 			contents: [
 				{ icon: "minus" },
-				{ text: "Delete this room" },
+				{ text: "Delete the room" },
 				{ arrow: true }
 			]
 		})).events.on("activated", async _event => {
