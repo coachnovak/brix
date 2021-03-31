@@ -3,7 +3,7 @@ import { list } from "/components/list.js";
 
 export default {
 	options: {
-		shelf: true
+		position: "center"
 	},
 
 	templates: () => {
@@ -26,9 +26,6 @@ export default {
 	},
 
 	script: async _component => {
-		// Close article if user doesn't own the room.
-		if ( globalThis.session.signedin && _component.parameters.room.owner !== globalThis.session.identity._id) return _component.close()
-
 		const invitesElement = _component.find("#list");
 
 		const update = async () => {
