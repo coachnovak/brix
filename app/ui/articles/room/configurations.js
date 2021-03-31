@@ -11,10 +11,10 @@ export default {
 			markup: component.template`
 				<div id="layout">
 					<h3 class="center">General</h2>
-					<app-list id="room-configurations-general" break="2"></app-list>
+					<app-list id="general"></app-list>
 		
 					<h3 class="center">Voting</h2>
-					<app-list id="room-configurations-voting"></app-list>
+					<app-list id="voting"></app-list>
 				</div>
 			`
 		};
@@ -22,7 +22,7 @@ export default {
 
 	script: async _component => {
 		// General.
-		const generalElement = _component.find("#room-configurations-general");
+		const generalElement = _component.find("#general");
 
 		// Enable room invitations.
 		(await generalElement.add({
@@ -70,7 +70,7 @@ export default {
 		});
 
 		// Voting.
-		const votingElement = _component.find("#room-configurations-voting");
+		const votingElement = _component.find("#voting");
 
 		// Enable configure templates.
 		(await votingElement.add({
