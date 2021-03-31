@@ -55,7 +55,8 @@ export default {
 					contents: [
 						{ icon: "share-alt" },
 						{ text: `${invite.recipient.firstName} ${invite.recipient.lastName}` },
-						{ until: invite.expires }
+						{ until: invite.expires },
+						{ delete: true }
 					]
 				});
 
