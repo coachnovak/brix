@@ -15,12 +15,12 @@ export class list extends component {
 
 				/* @media all and (min-width: 276px) {
 					:host([break="2"]),
-					:host([break="3"]) { grid-template-columns: repeat(2, auto); grid-gap: 15px; }
+					:host([break="3"]) { grid-template-columns: repeat(2, auto); }
 				} */
-		
+
 				@media all and (min-width: 376px) {
-					:host([break="2"]) { grid-template-columns: repeat(2, auto); grid-gap: 15px; }
-					:host([break="3"]) { grid-template-columns: repeat(3, auto); grid-gap: 15px; }
+					:host([break="2"]) { grid-template-columns: repeat(2, 50%); }
+					:host([break="3"]) { grid-template-columns: repeat(3, 33%); }
 				}
 
 				${style ? style() : ""}
@@ -42,12 +42,17 @@ export class list extends component {
 		await super.disconnectedCallback();
 	}
 
-	async add (_item) {
+	items () {
+		return Array.from(this.children())
+			.filter(_child => _child.tagName.toLowerCase() === "app-listitem");
+	}
+
+	add (_item) {
 		this.count++;
 		return this.append(new listitem(_item));
 	}
 
-	async clear () {
+	clear () {
 		this.count = 0;
 
 		Array.from(this.children())
