@@ -17,7 +17,7 @@ export default {
 				#form { display: grid; grid-gap: var(--spacing); grid-template-columns: repeat(auto-fill, 100%); padding: calc(var(--spacing) * 3); }
 				#form #head { grid-column: 1 / -1; }
 		
-				#form #password-hint { grid-column: 1 / -1; }
+				#form .row { grid-column: 1 / -1; }
 				#form #password-strength-text:empty { display: none; }
 		
 				#form #buttons { grid-column: 1 / -1; }
@@ -48,12 +48,10 @@ export default {
 		
 						<app-textbox id="firstname" placeholder="Whats your first name" autocomplete="given-name"></app-textbox>
 						<app-textbox id="lastname" placeholder="Whats your last name" autocomplete="family-name"></app-textbox>
-						<app-textbox id="email" placeholder="Whats your e-mail" autocomplete="email"></app-textbox>
-						<app-password id="password" placeholder="Whats your password" autocomplete="new-password"></app-password>
-		
-						<div id="password-hint">
-							<div id="password-strength-text"></div>
-						</div>
+						<app-textbox id="email" placeholder="Whats your e-mail" autocomplete="email" class="row"></app-textbox>
+						<app-password id="password" placeholder="Type a strong password" autocomplete="new-password"></app-password>
+						<app-password id="confirm" placeholder="Confirm your password"></app-password>
+						<div class="row"><div id="password-strength-text"></div></div>
 		
 						<div id="buttons"><app-button id="continue" text="Register" icon="check" composition="text icon"></app-button></div>
 					</div>
@@ -73,10 +71,9 @@ export default {
 		}
 
 		const emailElement = _component.find("#email");
-		emailElement.focus();
-
 		const passwordStrengthTextElement = _component.find("#password-strength-text");
 		const passwordElement = _component.find("#password");
+		const confirmElement = _component.find("#confirm");
 		passwordElement.events.on("changed", () => {
 			const value = passwordElement.value
 			const result = passwordElement.evaluate();
@@ -85,27 +82,30 @@ export default {
 
 		const firstnameElement = _component.find("#firstname");
 		const lastnameElement = _component.find("#lastname");
+		firstnameElement.focus();
 
 		_component.shadow.events.on("activated", async () => {
 			_component.close("cancelled");
 		});
 
-		emailElement.events.on("activated", async () => passwordElement.focus());
-		passwordElement.events.on("activated", async () => firstnameElement.focus());
 		firstnameElement.events.on("activated", async () => lastnameElement.focus());
-		lastnameElement.events.on("activated", async () => _component.find("#continue").emit("activated"));
+		lastnameElement.events.on("activated", async () => emailElement.focus());
+		emailElement.events.on("activated", async () => passwordElement.focus());
+		passwordElement.events.on("activated", async () => confirmElement.focus());
+		confirmElement.events.on("activated", async () => _component.find("#continue").events.emit("activated"));
 
 		_component.find("#continue").events.on("activated", async () => {
 			const passwordResult = passwordElement.evaluate();
-
 			const emailValid = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(emailElement.value);
 			const firstnameValid = /^[a-zA-Z\u00C0-\u00ff]+$/i.test(firstnameElement.value);
 			const lastnameValid = /^[a-zA-Z\u00C0-\u00ff]+$/.test(lastnameElement.value);
+			const passwordMatchValid = passwordElement.value === confirmElement.value;
 
 			if (!emailValid) return globalThis.notify([{ icon: "exclamation-circle" }, { text: "Invalid e-mail provided." }]).close(3000);
 			if (passwordResult.score < 3) return globalThis.notify([{ icon: "exclamation-circle" }, { text: "Invalid password provided." }]).close(3000);
 			if (!firstnameValid) return globalThis.notify([{ icon: "exclamation-circle" }, { text: "Invalid first name provided." }]).close(3000);
 			if (!lastnameValid) return globalThis.notify([{ icon: "exclamation-circle" }, { text: "Invalid last name provided." }]).close(3000);
+			if (!passwordMatchValid) return globalThis.notify([{ icon: "exclamation-circle" }, { text: "Your confirmed password doesn't match." }]).close(3000);
 
 			const registerResponse = await globalThis.fetcher(`/api/security/register/`, {
 				method: "post",
