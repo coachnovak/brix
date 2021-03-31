@@ -3,8 +3,7 @@ import { button } from "/components/button.js";
 
 export default {
 	options: {
-		full: true,
-		closable: false
+		full: true
 	},
 
 	templates: () => {

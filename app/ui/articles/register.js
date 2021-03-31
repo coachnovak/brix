@@ -124,7 +124,7 @@ export default {
 					name: "success",
 					parameters: {
 						title: "Congratulations!",
-						description: "Your account has been created.",
+						description: "You'll soon get an e-mail to activate your account.",
 						action: { options: { icon: "sign-in", text: "Sign in", composition: "text icon" }, windows: { name: "signin" } }
 					}
 				});
