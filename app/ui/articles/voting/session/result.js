@@ -67,7 +67,7 @@ export default {
 		const notvotedElement = _component.find("#notvoted");
 		const notvoted = session.participants.length - session.votes.length;
 		if (notvoted === 0) notvotedElement.innerText = `Everyone casted their vote.`;
-		else if (notvoted === 1) notvotedElement.innerText = `${notvoted} vote was not casted.`;
+		else if (notvoted === 1) notvotedElement.innerText = `${notvoted} vote was not cast.`;
 		else notvotedElement.innerText = `${notvoted} votes were not casted.`;
 
 		const votesElement = _component.find("#votes");
