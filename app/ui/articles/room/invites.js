@@ -9,6 +9,8 @@ export default {
 	templates: () => {
 		return {
 			style: component.template`
+				:host([type]) { width: var(--size-s); }
+
 				#head { margin-bottom: 20px; }
 				#list { display: block; }
 				#list .empty { padding: 20px; text-align: center; }
