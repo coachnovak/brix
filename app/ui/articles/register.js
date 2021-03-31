@@ -96,15 +96,14 @@ export default {
 		lastnameElement.events.on("activated", async () => _component.find("#continue").emit("activated"));
 
 		_component.find("#continue").events.on("activated", async () => {
-			let passwordValue = passwordElement.value;
-			let passwordStrength = zxcvbn(passwordValue);
+			const passwordResult = passwordElement.evaluate();
 
 			const emailValid = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(emailElement.value);
 			const firstnameValid = /^[a-zA-Z\u00C0-\u00ff]+$/i.test(firstnameElement.value);
 			const lastnameValid = /^[a-zA-Z\u00C0-\u00ff]+$/.test(lastnameElement.value);
 
 			if (!emailValid) return globalThis.notify([{ icon: "exclamation-circle" }, { text: "Invalid e-mail provided." }]).close(3000);
-			if (passwordStrength.score < 3) return globalThis.notify([{ icon: "exclamation-circle" }, { text: "Invalid password provided." }]).close(3000);
+			if (passwordResult.score < 3) return globalThis.notify([{ icon: "exclamation-circle" }, { text: "Invalid password provided." }]).close(3000);
 			if (!firstnameValid) return globalThis.notify([{ icon: "exclamation-circle" }, { text: "Invalid first name provided." }]).close(3000);
 			if (!lastnameValid) return globalThis.notify([{ icon: "exclamation-circle" }, { text: "Invalid last name provided." }]).close(3000);
 
