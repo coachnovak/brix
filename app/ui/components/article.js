@@ -98,7 +98,7 @@ export class article extends component {
 				${this.instance.templates().markup()}
 	
 				<!-- Standard close button -->
-				${this.closable ? `<app-button id="close" icon="times" composition="icon" embedded="true"></app-button>` : ``}
+				${this.closable ? `<app-button id="close" icon="times" composition="icon" embedded="true" tiptext="Close" tipposition="bottom"></app-button>` : ``}
 			`;
 	
 			this.append(templateElement.content.cloneNode(true));

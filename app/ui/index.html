@@ -18,6 +18,9 @@
 		<script src="https://kit.fontawesome.com/b127a6ea84.js" crossorigin="anonymous"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/timeago.js/4.0.2/timeago.min.js" integrity="sha512-SVDh1zH5N9ChofSlNAK43lcNS7lWze6DTVx1JCXH1Tmno+0/1jMpdbR8YDgDUfcUrPp1xyE53G42GFrcM0CMVg==" crossorigin="anonymous"></script>
 
+		<script src="https://unpkg.com/@popperjs/core@2"></script>
+		<script src="https://unpkg.com/tippy.js@6"></script>
+
 		<link href="index.css" rel="stylesheet" />
 		<script src="index.js" type="module"></script>
 	</head>
@@ -48,9 +51,9 @@
 			<h1>BRIX</h1>
 
 			<section>
-				<app-button id="home" icon="home" size="large" composition="icon"></app-button>
-				<app-button id="signin" icon="key" size="large" composition="icon"></app-button>
-				<app-button id="profile" icon="user" size="large" composition="icon"></app-button>
+				<app-button id="home" icon="home" size="large" composition="icon" tiptext="Home" tipplacement="bottom"></app-button>
+				<app-button id="signin" icon="key" size="large" composition="icon" tiptext="Sign In" tipplacement="bottom"></app-button>
+				<app-button id="profile" icon="user" size="large" composition="icon" tiptext="My Profile" tipplacement="bottom"></app-button>
 			</section>
 		</header>
 

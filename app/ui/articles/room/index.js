@@ -10,10 +10,15 @@ export default {
 	templates: () => {
 		return {
 			style: component.template`
-
+				#head { position: relative; left: calc(0px - var(--spacing)); top: calc(0px - var(--spacing)); width: calc(100% + (var(--spacing) * 2)); height: 140px; }
+				#head { background: var(--paper-2); display: grid; grid-gap: var(--spacing); padding: calc(var(--spacing) * 1.5); }
 			`,
 		
 			markup: component.template`
+				<div id="head">
+					<h1 id="name"></h1>
+				</div>
+
 				<app-tabs id="views"></app-tabs>
 			`
 		};
@@ -29,8 +34,7 @@ export default {
 		}
 
 		const room = await roomResponse.json();
-		const nameElement = document.querySelector("header > h1");
-		const originalName = nameElement.innerHTML;
+		const nameElement = _component.find("#name");
 		nameElement.innerHTML = room.name;
 
 		// Create action button.
@@ -145,9 +149,6 @@ export default {
 		});
 
 		_component.events.on("disposed", () => {
-			// Reset element content.
-			nameElement.innerHTML = originalName;
-
 			// Unsubscribe from events.
 			unsubscribeFromRoom();
 			unsubscribeFromPersonal();
@@ -162,11 +163,11 @@ export default {
 			globalThis.contents.open({ name: `room/${tabsElement.selected}`, parameters: { room } });
 		});
 
-		tabsElement.add("participants", { icon: "users", composition: "icon" });
-		tabsElement.add("toolbox", { icon: "toolbox", composition: "icon" });
+		tabsElement.add("participants", { icon: "users", composition: "icon", tiptext: "Participants", tipplacement: "bottom" });
+		tabsElement.add("toolbox", { icon: "toolbox", composition: "icon", tiptext: "Toolbox", tipplacement: "bottom" });
 
 		// Show admin tabs if user owns the room.
 		if (room.owner === globalThis.session.identity._id)
-			tabsElement.add("configurations", { icon: "cog", composition: "icon" });
+			tabsElement.add("configurations", { icon: "cog", composition: "icon", tiptext: "Configurations", tipplacement: "bottom" });
 	}
 };

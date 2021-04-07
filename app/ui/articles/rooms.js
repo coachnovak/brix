@@ -17,7 +17,7 @@ export default {
 					<app-ribbon text="<h3>What would you like to do?</h3>"></app-ribbon>
 					<app-list id="list"></app-list>
 					<div id="actions">
-						<app-button id="create" icon="plus" composition="icon" size="huge" embedded="true"></app-button>
+						<app-button id="create" icon="plus" composition="icon" size="huge" embedded="true" tiptext="Create a new room" tipplacement="bottom"></app-button>
 					</div>
 				</div>
 			`

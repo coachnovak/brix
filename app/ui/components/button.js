@@ -4,7 +4,7 @@ export class button extends component {
 	constructor (_properties = {}) {
 		super({ ..._properties, canfocus: true });
 
-		const { text, icon, size, secondary, embedded, composition, round, glow } = _properties;
+		const { text, icon, size, secondary, embedded, composition, round, glow, tiptext, tipplacement } = _properties;
 		this.property({ name: "text", value: text, options: { default: null, isattribute: true } })
 			.property({ name: "icon", value: icon, options: { default: null, isattribute: true } })
 			.property({ name: "size", value: size, options: { default: null, isattribute: true } })
@@ -14,7 +14,10 @@ export class button extends component {
 			.property({ name: "composition", value: composition, options: { default: null, isattribute: true } })
 
 			.property({ name: "round", value: round, options: { default: false, isattribute: true } })
-			.property({ name: "glow", value: glow, options: { default: false, isattribute: true } });
+			.property({ name: "glow", value: glow, options: { default: false, isattribute: true } })
+			
+			.property({ name: "tiptext", value: tiptext, options: { default: "", isattribute: true } })
+			.property({ name: "tipplacement", value: tipplacement, options: { default: "auto", isattribute: true } });
     }
 
 	connectedCallback ({ style, markup } = {}) {
@@ -71,6 +74,19 @@ export class button extends component {
 		// Initial render.
 		this.render();
 
+		// Set up tippy.
+		if (this.tiptext)
+			this.tippy = tippy(this, {
+				arrow: true,
+				placement: this.tipplacement,
+				touch: "hold",
+				allowHTML: true,
+				theme: "custom",
+				content: _target => {
+					return _target["tiptext"];
+				}
+			});
+
 		// Redirect events.
 		this.events.redirect(this, "click", "activated");
 		this.events.redirect(this, "keydown");
@@ -97,6 +113,7 @@ export class button extends component {
 
 	disconnectedCallback () {
 		super.disconnectedCallback();
+		this?.tippy?.destroy();
 	}
 
 	render () {

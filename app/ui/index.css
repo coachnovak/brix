@@ -144,3 +144,12 @@ h4 { font-size: 9pt; font-weight: 300; margin: 0; line-height: 110%; }
 	.divider.vertical:before { display: block; position: absolute; left: 50%; top: 0; width: 1px; height: 100%; background: var(--paper-3); content: ""; }
 	.divider.vertical span { position: absolute; background: var(--paper-1); padding: 10px; top: 50%; transform: translate(-50%, -50%); }
 }
+
+/* ------------------ Tippy */
+
+.tippy-box[data-theme~="custom"] { background-color: var(--paper-3); color: var(--pen-1); box-shadow: var(--paper-s); border-radius: 0; }
+.tippy-box[data-theme~="custom"] .tippy-content { padding: 10px; font-size: 9pt; }
+.tippy-box[data-theme~="custom"][data-placement^="top"] > .tippy-arrow::before { border-top-color: var(--paper-3); }
+.tippy-box[data-theme~="custom"][data-placement^="bottom"] > .tippy-arrow::before { border-bottom-color: var(--paper-3); }
+.tippy-box[data-theme~="custom"][data-placement^="left"] > .tippy-arrow::before { border-left-color: var(--paper-3); }
+.tippy-box[data-theme~="custom"][data-placement^="right"] > .tippy-arrow::before { border-right-color: var(--paper-3); }
