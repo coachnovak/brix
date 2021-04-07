@@ -128,9 +128,9 @@ header section app-button:hover { background: var(--paper-2); }
 
 /* ------------------ Headers */
 
-h1 { font-size: 32pt; font-weight: 100; color: var(--pen-1); line-height: 110%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-h2 { font-size: 16pt; font-weight: 100; margin: 0; line-height: 110%; }
-h3 { font-size: 12pt; font-weight: 100; margin: 0; line-height: 110%; }
+h1 { font-size: 22pt; font-weight: 100; margin: 0; color: var(--pen-1); line-height: 110%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+h2 { font-size: 18pt; font-weight: 100; margin: 0; line-height: 110%; }
+h3 { font-size: 14pt; font-weight: 100; margin: 0; line-height: 110%; }
 h4 { font-size: 9pt; font-weight: 300; margin: 0; line-height: 110%; }
 .center { text-align: center; }
 
