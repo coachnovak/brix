@@ -69,10 +69,12 @@ export class textbox extends component {
 
 	focus () {
 		this.find("input").focus();
+		this.events.emit("focused");
 	}
 
 	blur () {
 		this.find("input").blur();
+		this.events.emit("blurred");
 	}
 }
 

@@ -124,10 +124,12 @@ export class component extends HTMLElement {
 
 	focus () {
 		this.focus();
+		this.events.emit("focused");
 	}
 
 	blur () {
 		this.blur();
+		this.events.emit("blurred");
 	}
 
 	find (_query) {
