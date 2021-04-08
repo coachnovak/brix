@@ -54,6 +54,8 @@ export class textbox extends component {
 		this.events.on("keydown", _event => {
 			if (_event.key === "Enter")
 				this.events.emit("activated");
+			else if (_event.key === "Escape")
+				this.events.emit("cancelled");
 
 			this.events.emit("changed");
 		});
