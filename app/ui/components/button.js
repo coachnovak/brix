@@ -1,4 +1,5 @@
 import { component } from "/components/component.js";
+import { image } from "/components/image.js";
 
 export class button extends component {
 	constructor (_properties = {}) {
@@ -49,14 +50,14 @@ export class button extends component {
 		
 				:host([embedded="true"]:hover) { background: var(--action-e-2); }
 				:host([embedded="true"]:focus) { border-color: var(--action-e-3); }
+
+				app-image { font-size: 10pt; }
+
+				:host([size="large"]) { padding: 8px; min-width: 44px; }
+				:host([size="large"]) app-image { font-size: 20px; }
 		
-				i { font-size: 10pt; }
-		
-				:host([size="large"]) { padding: 8px; }
-				:host([size="large"]) i { font-size: 18pt; }
-		
-				:host([size="huge"]) { padding: 10px; }
-				:host([size="huge"]) i { font-size: 24pt; }
+				:host([size="huge"]) { padding: 10px; min-width: 67px; }
+				:host([size="huge"]) app-image { font-size: 36px; }
 		
 				@keyframes glow {
 					from { box-shadow: 0 0 -5px -0 rgba(255, 255, 255, 0.75); }
@@ -129,7 +130,7 @@ export class button extends component {
 
 			switch (_type) {
 				case "text": templateElement.innerHTML += `<div id="text">${value}</div>`; break;
-				case "icon": templateElement.innerHTML += `<i id="icon" class="fad fa-${value}"></i>`; break;
+				case "icon": templateElement.innerHTML += `<app-image id="icon" icon="${value}"></app-image>`; break;
 			}
 		});
 
