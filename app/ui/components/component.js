@@ -146,6 +146,10 @@ export class component extends HTMLElement {
 		return this.shadowRoot ? this.shadowRoot.appendChild(_element) : super.appendChild(_element);
 	}
 
+	replace (_element) {
+		this.replaceWidth(_element);
+	}
+
 	remove () {
 		const parentElement = this.parentElement || this.parentNode;
 		if (parentElement) parentElement.removeChild(this);
