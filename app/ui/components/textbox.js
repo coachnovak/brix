@@ -34,7 +34,10 @@ export class textbox extends component {
 		});
 
 		// Redirect events.
-		this.events.redirect(this.find("input"), "keydown");
+		const inputElement = this.find("input");
+		this.events.redirect(inputElement, "keydown");
+		this.events.redirect(inputElement, "focus", "focused");
+		this.events.redirect(inputElement, "blur", "blurred");
 
 		// Handle events.
 		this.events.on("readonly updated", _value => {

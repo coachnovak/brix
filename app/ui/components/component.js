@@ -28,6 +28,10 @@ export class component extends HTMLElement {
 		if (this.conditioned) return;
 		else this.conditioned = true;
 
+		// Redirect events.
+		this.events.redirect(this, "focus", "focused");
+		this.events.redirect(this, "blur", "blurred");
+
 		// Handle events.
 		this.events.on("canfocus updated", _value => {
 			if (_value) this.setAttribute("tabindex", "0");
