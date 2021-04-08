@@ -18,12 +18,19 @@ export default class {
 
 	off (_names, _listener) {
 		const unregister = _name => {
-			if (!this.registry[_name]) return;
-			this.registry[_name] = this.registry[_name].filter(_listenerInRegistry => _listenerInRegistry !== _listener);
+			if (!this.registry[_name])
+				return;
+
+			if (_listener !== undefined)
+				this.registry[_name] = this.registry[_name].filter(_listenerInRegistry => _listenerInRegistry !== _listener);
+			else
+				this.registry[_name] = [];
 		};
 
-		if (_names instanceof Array) _names.forEach(_name => unregister(_name));
-		else unregister(_names);
+		if (_names instanceof Array)
+			_names.forEach(_name => unregister(_name));
+		else
+			unregister(_names);
 
 		return this;
 	}
