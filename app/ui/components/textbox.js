@@ -6,7 +6,7 @@ export class textbox extends component {
 
 		const { type, placeholder, autocomplete, readonly, value } = _properties;
 		this.property({ name: "type", value: type, options: { default: "text", isattribute: true } })
-			.property({ name: "placeholder", value: placeholder, options: { default: null, isattribute: true } })
+			.property({ name: "placeholder", value: placeholder, options: { default: "", isattribute: true } })
 			.property({ name: "autocomplete", value: autocomplete, options: { default: null, isattribute: true } })
 			.property({ name: "readonly", value: readonly, options: { default: null }, getter: () => this.find("input").hasAttribute("readonly") })
 			.property({ name: "value", value: value, options: { default: null }, getter: () => this.find("input").value });
@@ -16,7 +16,7 @@ export class textbox extends component {
 		super.conditionsCallback();
 		super.connectedCallback({
 			style: component.template`
-				input { display: inline-block; background: transparent; border: 2px solid var(--input-p-1); border-radius: 3px; color: var(--input-p-f); padding: 15px; width: 100%; }
+				input { display: inline-block; background: transparent; border: 2px solid var(--input-p-1); border-radius: var(--app-textbox-border-radius, 3px); color: var(--input-p-f); padding: var(--app-textbox-padding, 15px); width: 100%; }
 				input { font-size: 9pt; font-weight: 400; }
 				input:focus { border-color: var(--input-p-3); outline: 0; }
 				:host([center="true"]) #input { text-align: center; }
@@ -69,6 +69,10 @@ export class textbox extends component {
 
 	focus () {
 		this.find("input").focus();
+	}
+
+	blur () {
+		this.find("input").blur();
 	}
 }
 

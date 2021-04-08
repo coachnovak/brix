@@ -126,6 +126,10 @@ export class component extends HTMLElement {
 		this.focus();
 	}
 
+	blur () {
+		this.blur();
+	}
+
 	find (_query) {
 		const recurseDown = _element => {
 			const elementRoot = _element.shadowRoot || _element;
