@@ -1,5 +1,6 @@
 import { component } from "/components/component.js";
 import { image } from "/components/image.js";
+import { label } from "/components/label.js";
 
 export class button extends component {
 	constructor (_properties = {}) {
@@ -129,7 +130,7 @@ export class button extends component {
 			const value = this[_type];
 
 			switch (_type) {
-				case "text": templateElement.innerHTML += `<div id="text">${value}</div>`; break;
+				case "text": templateElement.innerHTML += `<app-label id="text">${value}</app-label>`; break;
 				case "icon": templateElement.innerHTML += `<app-image id="icon" icon="${value}"></app-image>`; break;
 			}
 		});
