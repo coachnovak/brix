@@ -11,6 +11,9 @@ export class component extends HTMLElement {
 	constructor (_properties = {}) {
 		super();
 
+		// Read default content.
+		this.initial = this.innerHTML;
+
 		// Prepare conditions.
 		this.timers = new timers();
 		this.events = new events();
