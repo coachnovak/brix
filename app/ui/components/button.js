@@ -23,6 +23,7 @@ export class button extends component {
     }
 
 	connectedCallback ({ style, markup } = {}) {
+		super.conditionsCallback();
 		super.connectedCallback({
 			style: component.template`
 				:host { user-select: none; touch-action: none; }
