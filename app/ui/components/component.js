@@ -123,12 +123,12 @@ export class component extends HTMLElement {
 	}
 
 	focus () {
-		this.focus();
+		super.focus();
 		this.events.emit("focused");
 	}
 
 	blur () {
-		this.blur();
+		super.blur();
 		this.events.emit("blurred");
 	}
 
