@@ -34,6 +34,7 @@ export default async (_app, _options) => {
 		room.owner = new _app.mongo.objectid(_request.user.user);
 		room.name = _request.body.name;
 		room.alias = crypto.randomBytes(5).toString("hex");
+		room.tags = [];
 		room.created = new Date();
 		room.deleted = null;
 
