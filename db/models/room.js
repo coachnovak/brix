@@ -7,6 +7,12 @@ export default {
 			owner: { type: "object" },
 			name: { type: "string" },
 			alias: { type: "string" },
+			tags: {
+				type: "array",
+				items: {
+					type: "string"
+				}
+			},
 			created: { type: ["object"] },
 			deleted: { type: ["object", "null"], default: null }
 		}
