@@ -17,10 +17,10 @@ export class textbox extends component {
 		super.connectedCallback({
 			style: component.template`
 				input { display: inline-block; background: transparent; border: 2px solid var(--input-p-1); border-radius: var(--app-textbox-border-radius, 3px); color: var(--input-p-f); padding: var(--app-textbox-padding, 15px); width: 100%; }
-				input { font-size: 9pt; font-weight: 400; }
+				input { font-size: var(--app-textbox-font-size, 9pt); text-transform: var(--app-textbox-text-transform); font-weight: 400; }
 				input:focus { border-color: var(--input-p-3); outline: 0; }
-				:host([center="true"]) #input { text-align: center; }
 
+				:host([center="true"]) #nput { text-align: center; }
 				:host([readonly]) input { border-style: dotted; cursor: default; }
 
 				${style ? style() : ""}
