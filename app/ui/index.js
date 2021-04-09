@@ -1,6 +1,7 @@
 import events from "/components/events.js";
 import stream from "/components/stream.js";
 import session from "/components/session.js";
+import keyboard from "/components/keyboard.js";
 
 import { article } from "/components/article.js";
 import { shadow } from "/components/shadow.js";
@@ -162,6 +163,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 	globalThis.events = new events();
 	globalThis.session = new session();
 	globalThis.stream = new stream();
+	globalThis.keyboard = new keyboard();
 
 	// Initiate session evaluation.
 	await globalThis.session.evaluate();
@@ -169,11 +171,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 	// Open landing article.
 	globalThis.contents.open({ name: globalThis.session.signedin ? "rooms" : "doormat" });
 
-	// Emit global triggers.
-	document.addEventListener("mousedown", _event => globalThis.events.emit("mousedown", _event));
-	document.addEventListener("mouseup", _event => globalThis.events.emit("mouseup", _event));
-	document.addEventListener("touchstart", _event => globalThis.events.emit("touchstart", _event));
-	document.addEventListener("touchend", _event => globalThis.events.emit("touchend", _event));
+	// Redirect events.
+	globalThis.events.redirect(document, "mousedown");
+	globalThis.events.redirect(document, "mouseup");
+	globalThis.events.redirect(document, "touchstart");
+	globalThis.events.redirect(document, "touchend");
+	globalThis.events.redirect(document, "keydown");
+	globalThis.events.redirect(document, "keyup");
 
 	document.getElementById("home").events.on("activated", () => {
 		globalThis.contents.close();
