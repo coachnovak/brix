@@ -46,7 +46,7 @@ export default {
 		nameElement.focus();
 
 		saveElement.events.on("activated", async () => {
-			const nameValid = /^[a-zA-Z0-9 _]{1,20}$/.test(nameElement.value);
+			const nameValid = /^[a-zA-Z0-9 _]{1,40}$/.test(nameElement.value);
 			if (!nameValid) return globalThis.notify([{ icon: "exclamation-circle" }, { text: "Invalid name provided." }]).close(3000);
 
 			const renameResponse = await globalThis.fetcher(`/api/room/rename/${_component.parameters.room._id}`, {
