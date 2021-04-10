@@ -3,6 +3,7 @@ import presence from "/components/presence.js";
 import { component } from "/components/component.js";
 import { tabs } from "/components/tabs.js";
 import { button } from "/components/button.js";
+import { tags } from "/components/tags.js";
 import { handup } from "/components/handup.js";
 import { react } from "/components/react.js";
 
@@ -10,13 +11,16 @@ export default {
 	templates: () => {
 		return {
 			style: component.template`
-				#head { position: relative; left: calc(0px - var(--spacing)); top: calc(0px - var(--spacing)); width: calc(100% + (var(--spacing) * 2)); height: 140px; }
-				#head { background: var(--paper-2); display: grid; grid-gap: var(--spacing); padding: calc(var(--spacing) * 1.5); }
+				#head { position: relative; left: calc(0px - var(--spacing)); top: calc(0px - var(--spacing)); width: calc(100% + (var(--spacing) * 2)); height: 140px; padding: calc(var(--spacing) * 1.5); background: var(--paper-2); }
+				#head #container { display: grid; grid-gap: calc(var(--spacing) / 2); }
 			`,
 		
 			markup: component.template`
 				<div id="head">
-					<h1 id="name"></h1>
+					<div id="container">
+						<h1></h1>
+						<app-tags fontsize="s" uppercase="true" composition="text" embedded="true"></app-tags>
+					</div>
 				</div>
 
 				<app-tabs id="views"></app-tabs>
@@ -34,8 +38,51 @@ export default {
 		}
 
 		const room = await roomResponse.json();
-		const nameElement = _component.find("#name");
+		const roomOwner = (room.owner === globalThis.session.identity._id);
+		const nameElement = _component.find("h1");
 		nameElement.innerHTML = room.name;
+		
+		const tagsElement = _component.find("app-tags");
+		if (room.tags) room.tags.forEach(_label => {
+			tagsElement.add({ id: `item_${_label}`, text: _label });
+		});
+
+		tagsElement.events.on("activated", async _id => {
+			const search = async () => {
+				console.log("Searching for", _id);
+			}
+
+			const remove = async () => {
+				await globalThis.fetcher(`/api/room/tags/${room._id}/${_id.replace("item_", "")}`, {
+					method: "delete"
+				}, {
+					200: _response => {
+						tagsElement.find(_id).remove();
+					}
+				});
+			}
+
+			if (roomOwner && globalThis.keyboard.control)
+				return remove();
+
+			search();
+		});
+
+		tagsElement.events.on("saved", async _value => {
+			await globalThis.fetcher(`/api/room/tags/${room._id}/${_value}`, {
+				method: "post",
+				body: JSON.stringify({
+
+				})
+			}, {
+				201: _response => {
+					tagsElement.add({ id: `item_${_value}`, text: _value })
+				}
+			});
+		});
+
+		// Enable tag management if user owns the room.
+		tagsElement.addable = roomOwner;
 
 		// Create action button.
 		const additionsElement = document.getElementById("additions");
@@ -167,7 +214,6 @@ export default {
 		tabsElement.add("toolbox", { icon: "toolbox", composition: "icon", tiptext: "Toolbox", tipplacement: "bottom" });
 
 		// Show admin tabs if user owns the room.
-		if (room.owner === globalThis.session.identity._id)
-			tabsElement.add("configurations", { icon: "cog", composition: "icon", tiptext: "Configurations", tipplacement: "bottom" });
+		if (roomOwner) tabsElement.add("configurations", { icon: "cog", composition: "icon", tiptext: "Configurations", tipplacement: "bottom" });
 	}
 };
