@@ -34,7 +34,7 @@ export default {
 		if (roomResponse.status !== 200) {
 			globalThis.notify([{ text: "We can't find the room you're trying to enter." }]).close(3000);
 			globalThis.contents.close();
-			return globalThis.contents.open({ name: "rooms" });
+			return globalThis.contents.open({ name: "rooms/list" });
 		}
 
 		const room = await roomResponse.json();
@@ -49,7 +49,8 @@ export default {
 
 		tagsElement.events.on("activated", async _id => {
 			const search = async () => {
-				console.log("Searching for", _id);
+				globalThis.contents.close();
+				globalThis.contents.open({ name: `rooms/search`, parameters: { name: "", labels: _id.replace("item_", "") } });
 			}
 
 			const remove = async () => {
