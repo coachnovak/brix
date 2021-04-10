@@ -169,7 +169,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 	await globalThis.session.evaluate();
 
 	// Open landing article.
-	globalThis.contents.open({ name: globalThis.session.signedin ? "rooms" : "doormat" });
+	globalThis.contents.open({ name: globalThis.session.signedin ? "rooms/list" : "doormat" });
 
 	// Redirect events.
 	globalThis.events.redirect(document, "mousedown");
@@ -183,7 +183,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 		globalThis.contents.close();
 
 		if (globalThis.session.signedin)
-			globalThis.contents.open({ name: "rooms" });
+			globalThis.contents.open({ name: "rooms/list" });
 		else
 			globalThis.contents.open({ name: "doormat" });
 	});

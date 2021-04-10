@@ -80,7 +80,7 @@ export default {
 					_component.close("signedin");
 
 					globalThis.contents.close();
-					globalThis.contents.open({ name: "rooms" });
+					globalThis.contents.open({ name: "rooms/list" });
 				},
 				401: async (_response) => {
 					globalThis.notify([{ text: "Failed to authenticate with the provided credentials." }]).close(3000);
