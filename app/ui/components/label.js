@@ -49,7 +49,7 @@ export class label extends component {
 			`,
 
 			markup: component.template`
-				${this.initial}
+				<span>${this.initial}</span>
 
 				${markup ? markup() : ""}
 			`
@@ -72,10 +72,10 @@ export class label extends component {
 	render () {
 		if (typeof this.text === "string") {
 			// Strings are used as-is.
-			this.html(this.text);
+			this.find("span").innerHTML = this.text;
 		} else if (typeof this.text === "number") {
 			// Numbers are used as-is.
-			this.html(this.text);
+			this.find("span").innerHTML = this.text;
 		} else if (this.text && typeof this.text === "object") {
 			// Objects are rendered by localize.
 			if (this.text.static) {
@@ -94,7 +94,7 @@ export class label extends component {
 			}
 		} else {
 			// Empty content clears.
-			this.html("");
+			this.find("span").innerHTML = "";
 		}
 	}
 }
