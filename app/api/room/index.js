@@ -1,6 +1,8 @@
 import crypto from "crypto";
 
 export default async (_app, _options) => {
+	_app.register(await import("./invites.js"), { prefix: "invites" });
+
 	_app.get("/:id", {
 		preValidation: [_app.authentication]
 	}, async (_request, _response) => {
