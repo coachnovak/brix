@@ -36,7 +36,7 @@ export default async (_app, _options) => {
 				required: ["name", "expires"],
 				properties: {
 					name: { type: "string" },
-					items: {
+					options: {
 						type: "array",
 						contains: {
 							type: "object",
