@@ -28,7 +28,7 @@ export default {
 		searchFor.labels = _component.parameters.labels.split(" ");
 
 		if (searchFor.name.length > 0) searchDisplay.push(searchFor.name);
-		if (searchFor.labels.length > 0) searchDisplay.push(searchFor.labels.join(" or "));
+		if (searchFor.labels.length > 0) searchDisplay.push(searchFor.labels.map(_label => `#${_label}`).join(" or "));
 
 		const labelElement = _component.find("app-label");
 		labelElement.text = searchDisplay.join(" and ");
