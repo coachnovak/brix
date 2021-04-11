@@ -20,8 +20,7 @@ export class tags extends component {
 		super.conditionsCallback();
 		super.connectedCallback({
 			style: component.template`
-				:host,
-				#items { display: flex; flex-direction: row; flex-wrap: wrap; gap: 3px; }
+				:host { display: flex; flex-direction: row; flex-wrap: wrap; gap: 3px; }
 
 				:host([fontsize="s"]) { font-size: 7pt; --app-textbox-font-size: 7pt; }
 				:host([uppercase="true"]) { text-transform: uppercase; --app-textbox-text-transform: uppercase; }
@@ -34,12 +33,10 @@ export class tags extends component {
 			`,
 
 			markup: component.template`
-				<div id="items">
-
+				<div id="add">
+					<app-textbox placeholder="..." visible="false"></app-textbox>
+					<app-button icon="plus" composition="icon" secondary="${this.secondary}" embedded="${this.embedded}" visible="true"></app-button>
 				</div>
-
-				<app-textbox placeholder="..." visible="false"></app-textbox>
-				<app-button icon="plus" composition="icon" secondary="${this.secondary}" embedded="${this.embedded}" visible="true"></app-button>
 
 				${markup ? markup() : ""}
 			`
@@ -65,15 +62,17 @@ export class tags extends component {
 
 	add (_options) {
 		const { id, text, icon } = _options;
-		const containerElement = super.find("#items");
-		containerElement.append(new tag({
+		const tagElement = new tag({
 			id,
 			text,
 			icon,
 			composition: this.composition,
 			secondary: this.secondary,
 			embedded: this.embedded
-		}));
+		});
+
+		const addElement = super.find("#add");
+		addElement.parentNode.insertBefore(tagElement, addElement);
 
 		this.find(id).events.on("activated", () => {
 			this.events.emit("activated", id);
@@ -83,12 +82,12 @@ export class tags extends component {
 	}
 
 	new () {
+		const buttonElement = super.find("app-button");
+		buttonElement.visible = false;
+
 		const textboxElement = super.find("app-textbox");
 		textboxElement.visible = true;
 		textboxElement.focus();
-
-		const buttonElement = super.find("app-button");
-		buttonElement.visible = false;
 	}
 
 	save () {
