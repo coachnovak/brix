@@ -9,7 +9,7 @@ export default {
 	templates: () => {
 		return {
 			style: component.template`
-				:host([type]) { width: var(--size-m); padding: 0; min-height: 260px; overflow: hidden; }
+				:host([type]) { width: var(--size-s); padding: 0; min-height: 260px; overflow: hidden; }
 		
 				canvas { position: absolute; width: 100%; height: 100%; }
 				.fade { position: absolute; left: -5px; top: -5px; right: -5px; bottom: -5px; background: linear-gradient(180deg, rgba(15,15,25,0) 0%, rgba(15,15,25,1) 100%); }
