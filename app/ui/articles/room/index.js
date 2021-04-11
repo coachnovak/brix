@@ -11,7 +11,7 @@ export default {
 	templates: () => {
 		return {
 			style: component.template`
-				#head { position: relative; left: calc(0px - var(--spacing)); top: calc(0px - var(--spacing)); width: calc(100% + (var(--spacing) * 2)); height: 140px; padding: calc(var(--spacing) * 1.5); background: var(--paper-2); }
+				#head { position: relative; left: calc(0px - var(--spacing)); top: calc(0px - var(--spacing)); width: calc(100% + (var(--spacing) * 2)); padding: calc(var(--spacing) * 1.5); background: var(--paper-2); }
 				#head #container { display: grid; grid-gap: calc(var(--spacing) / 2); }
 			`,
 		
