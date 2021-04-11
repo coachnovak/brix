@@ -10,10 +10,10 @@ export default {
 		
 			markup: component.template`
 				<div id="layout">
-					<h3 class="center">General</h2>
+					<h3>General</h2>
 					<app-list id="general"></app-list>
 		
-					<h3 class="center">Voting</h2>
+					<h3>Voting</h2>
 					<app-list id="voting"></app-list>
 				</div>
 			`
