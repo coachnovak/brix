@@ -18,7 +18,7 @@ export default {
 			`,
 		
 			markup: component.template`
-				<h3 id="head" class="center">Invitations</h3>
+				<h3 id="head">Invitations</h3>
 				<app-list id="list"></app-list>
 				<div id="invitation">
 					<app-button id="invite" text="Invite someone" icon="share-alt" composition="text icon"></app-button>
