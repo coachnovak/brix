@@ -12,9 +12,9 @@ export default {
 		return {
 			style: component.template`
 				#head { position: relative; left: calc(0px - var(--spacing)); top: calc(0px - var(--spacing)); width: calc(100% + (var(--spacing) * 2)); padding: calc(var(--spacing) * 1.5); background: var(--paper-2); }
-				#head #container { display: grid; grid-gap: calc(var(--spacing) / 2); }
+				#head #container { display: grid; grid-gap: var(--spacing); }
 			`,
-		
+
 			markup: component.template`
 				<div id="head">
 					<div id="container">
@@ -44,7 +44,7 @@ export default {
 		
 		const tagsElement = _component.find("app-tags");
 		if (room.tags) room.tags.forEach(_label => {
-			tagsElement.add({ id: `item_${_label}`, text: _label });
+			tagsElement.add({ id: `item_${_label}`, text: `#${_label}` });
 		});
 
 		tagsElement.events.on("activated", async _id => {
@@ -77,7 +77,7 @@ export default {
 				})
 			}, {
 				201: _response => {
-					tagsElement.add({ id: `item_${_value}`, text: _value })
+					tagsElement.add({ id: `item_${_value}`, text: `#${_value}` })
 				}
 			});
 		});
