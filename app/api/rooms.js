@@ -70,6 +70,25 @@ export default async (_app, _options) => {
 				"$match": match
 			}, {
 				"$lookup": {
+					"from": "invites",
+					"let": {
+						"roomid": "$_id"
+					},
+					"pipeline": [{
+						"$match": {
+							"$expr": {
+								"$and": [
+									{ "$eq": ["$room._id", "$$roomid"] },
+									{ "$eq": ["$recipient._id", new _app.mongo.objectid(_request.user.user)] },
+									{ "$eq": ["$deleted", null] }
+								]
+							}
+						}
+					}],
+					"as": "invites"
+				}
+			}, {
+				"$lookup": {
 					"from": "participants",
 					"localField": "_id",
 					"foreignField": "room",
@@ -78,12 +97,34 @@ export default async (_app, _options) => {
 			}, {
 				"$project": {
 					"_id": "$_id",
-					"owner": "$_owner",
 					"name": "$name",
+					"owner": "$owner",
 					"alias": "$alias",
 					"participants": {
 						"$size": "$participants"
+					},
+					"invites": {
+						"$size": "$invites"
 					}
+				}
+			},
+			{
+				"$match": {
+					"$or": [
+						{ "owner": { "$eq": new _app.mongo.objectid(_request.user.user) } },
+						{ "invites": { "$gt": 0 } }
+					]
+				}
+			}, {
+				"$project": {
+					"_id": "$_id",
+					"name": "$name",
+					"alias": "$alias",
+					"participants": "$participants"
+				}
+			}, {
+				"$sort": {
+					"name": 1
 				}
 			}
 		]);
