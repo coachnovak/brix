@@ -13,8 +13,7 @@ export class tabs extends component {
 		super.conditionsCallback();
 		super.connectedCallback({
 			style: component.template`
-				#buttons { text-align: center; }
-				#buttons > app-button { display: inline-grid; margin-right: 10px; }
+				#buttons > app-button { display: inline-grid; margin-right: 10px; padding: 12px; }
 				#buttons > app-button:last-child { margin-right: 0; }
 				#buttons > app-button.selected { border-bottom-color: var(--paper-3); }
 
