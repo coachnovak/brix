@@ -116,7 +116,7 @@ export class button extends component {
 
 	disconnectedCallback () {
 		super.disconnectedCallback();
-		this?.tippy?.destroy();
+		if (this.tippy) this.tippy.destroy();
 	}
 
 	render () {
