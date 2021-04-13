@@ -22,12 +22,15 @@ export class tags extends component {
 			style: component.template`
 				:host { display: flex; flex-direction: row; flex-wrap: wrap; gap: 3px; }
 
-				:host([fontsize="s"]) { font-size: 7pt; --app-textbox-font-size: 7pt; }
+				:host([fontsize="s"]) { font-size: 7pt; --app-textbox-font-size: 7pt; --app-textbox-padding: 9px; }
+				:host([fontsize="n"]) { font-size: 9pt; --app-textbox-font-size: 9pt; --app-textbox-padding: 9px; }
 				:host([uppercase="true"]) { text-transform: uppercase; --app-textbox-text-transform: uppercase; }
 
-				app-textbox { width: 120px; vertical-align: middle; }
-				app-textbox { --app-textbox-padding: 9px; --app-textbox-border-radius: 0; }
-				app-button { padding: 6px; border-radius: 0; min-width: 32px; }
+				app-textbox { width: 130px; vertical-align: middle; }
+				app-textbox { --app-textbox-border-radius: 0; }
+
+				:host([fontsize="s"]) app-button { padding: 6px; border-radius: 0; min-width: 32px; }
+				:host([fontsize="n"]) app-button { padding: 8px; border-radius: 0; min-width: 36px; }
 
 				${style ? style() : ""}
 			`,
