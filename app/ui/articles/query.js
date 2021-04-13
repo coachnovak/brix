@@ -30,7 +30,7 @@ export default {
 					<app-tags id="tags" fontsize="n" uppercase="true" composition="text" secondary="true"></app-tags>
 
 					<div id="actions">
-						<app-button id="continue" text="Go search" icon="share" composition="text icon"></app-button>
+						<app-button id="continue" text="Go search" icon="search" composition="text icon"></app-button>
 					</div>
 				</div>
 			`
@@ -55,6 +55,18 @@ export default {
 
 		tagsElement.events.on("activated", async _id => {
 			tagsElement.find(_id).remove();
+		});
+
+		_component.find("#continue").events.on("activated", async _id => {
+			const labels = tagsElement.list().map(_tag => _tag.replace("item_", ""));
+
+			globalThis.contents.close();
+			globalThis.contents.open({
+				name: `rooms/search`,
+				parameters: { name: nameElement.value, labels: labels.join(" ") }
+			});
+
+			_component.close();
 		});
 	}
 };
