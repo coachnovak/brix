@@ -87,42 +87,27 @@ export default {
 
 		// Create action button.
 		const additionsElement = document.getElementById("additions");
-		const actionElement = additionsElement.appendChild(new button({ id: "room-action", size: "huge", icon: "hand-sparkles", composition: "icon" }));
+		const actionElement = additionsElement.appendChild(new button({ id: "action", size: "large", icon: "hand-sparkles", composition: "icon", round: true }));
 		actionElement.style.position = "fixed";
-		actionElement.style.right = "0";
-		actionElement.style.top = "50vh";
-		actionElement.style.opacity = 0.85;
-		actionElement.style.width = "65px";
-		actionElement.style.height = "65px";
-		actionElement.style.borderRadius = "50%";
-		actionElement.style.transform = "translate(5px, -50%)";
-
-		const actionAnimation = anime({ targets: actionElement, duration: 1200, translateX: () => `${anime.random(-15, -120)}px`, direction: "alternate", easing: "easeInBounce", loop: true });
-		const actionAnimationToggle = anime({ targets: actionElement, duration: 600, translateX: "100px", easing: "easeInBounce", autoplay: false, loop: false });
+		actionElement.style.right = "calc(var(--spacing) / 2)";
+		actionElement.style.bottom = "calc(var(--spacing) / 2)";
+		actionElement.style.width = "60px";
+		actionElement.style.height = "60px";
+		actionElement.style.boxShadow = "var(--paper-s)";
 
 		actionElement.events.on("activated", () => {
-			actionAnimation.pause();
-			actionAnimationToggle.seek(0);
-			actionAnimationToggle.play();
+			actionElement.visible = false;
 
 			globalThis.windows
 				.open({
 					name: "room/actions",
 					parameters: { id: _component.parameters.id }
 				}).events.on("closed", () => {
-					actionAnimationToggle.reverse();
-					actionAnimationToggle.play();
-					setTimeout(() => actionAnimation.seek(0) & actionAnimation.play(), 600);
+					actionElement.visible = true;
 				});
 		});
 
 		_component.events.on("disposed", () => {
-			actionAnimation.pause();
-			actionAnimation.remove(actionElement);
-
-			actionAnimationToggle.pause();
-			actionAnimationToggle.remove(actionElement);
-
 			actionElement.remove();
 		});
 
