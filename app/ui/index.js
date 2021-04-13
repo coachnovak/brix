@@ -189,7 +189,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 	});
 
 	document.getElementById("search").events.on("activated", () => {
-		globalThis.windows.open({ name: "rooms/query" });
+		globalThis.windows.open({ name: "query" });
 	});
 
 	document.getElementById("signin").events.on("activated", () => {
