@@ -63,7 +63,7 @@ export default async (_app, _options) => {
 	}, async (_request, _response) => {
 		let match = { deleted: null };
 		if (_request.body.name && _request.body.name.length > 0) match["$text"] = { "$search": _request.body.name };
-		if (_request.body.labels && _request.body.labels.length > 0) match.tags = { "$all": _request.body.labels };
+		if (_request.body.labels && _request.body.labels.length > 0) match.tags = { "$all": _request.body.labels.map(_label => _label.toLowerCase()) };
 
 		const response = await _app.mongo.db.collection("rooms").aggregate([
 			{
