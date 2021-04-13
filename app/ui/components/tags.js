@@ -109,6 +109,11 @@ export class tags extends component {
 		buttonElement.focus();
 	}
 
+	list () {
+		const tags = Array.from(this.children()).filter(_element => _element.tagName === "APP-TAG");
+		return tags.map(_element => _element.id);
+	}
+
 	find (_id) {
 		return super.find(`#${_id}`);
 	}
