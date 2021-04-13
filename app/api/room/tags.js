@@ -11,6 +11,9 @@ export default async (_app, _options) => {
 			}
 		}
 	}, async (_request, _response) => {
+		// Normalize label.
+		_request.params.label = _request.params.label.toLowerCase();
+
 		const senderResult = await _app.mongo.db.collection("users").findOne({ _id: new _app.mongo.objectid(_request.user.user), deleted: null });
 		if (!senderResult) return _response.status(404).send({ message: "You couldn't be found." });
 
@@ -37,6 +40,9 @@ export default async (_app, _options) => {
 			}
 		}
 	}, async (_request, _response) => {
+		// Normalize label.
+		_request.params.label = _request.params.label.toLowerCase();
+
 		const senderResult = await _app.mongo.db.collection("users").findOne({ _id: new _app.mongo.objectid(_request.user.user), deleted: null });
 		if (!senderResult) return _response.status(404).send({ message: "You couldn't be found." });
 
