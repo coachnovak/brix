@@ -21,6 +21,11 @@
 	--efc: 360, 100%;
 	--efl: 100%;
 
+	/* Logotype */
+	--logoback: hsla(0, 100%, 20%, 1);
+	--logoedge: hsla(0, 100%, 10%, 0.5);
+	--logofore: hsla(360, 100%, 100%, 1);
+
 	/* Components */
 	--spacing: 20px;
 	--background: hsl(var(--pbc), calc(var(--pbl) + calc(var(--step) * 0))); /*linear-gradient(to bottom, hsl(var(--pbc), calc(var(--pbl) + calc(var(--step) * -1))), hsl(var(--pbc), calc(var(--pbl) + calc(var(--step) * 1))));*/
@@ -88,19 +93,24 @@ body > .cover > div > div:nth-child(3) { flex: 1 0 auto; background: hsla(var(--
 	0% { transform: translate3d(-90px, 0, 0); }
 	100% { transform: translate3d(85px, 0, 0); }
 }
- 
+
 @media (orientation: portrait) {
 	body > .cover { display: none; }
 }
 
 /* ------------------ Header */
 
-header { display: grid; grid-template-columns: auto min-content; position: fixed; left: 0; top: 0; right: 0; height: 60px; background: var(--background); }
-header h1 { margin: 0; padding: 18px; }
-header h1 { font-size: 18pt; font-weight: 100; color: var(--pen-1); text-transform: uppercase; }
+header { display: grid; grid-template-columns: auto min-content; position: fixed; left: 0; top: 0; right: 0; height: 60px; }
+header .logotype { position: relative; }
+header .logotype .background { position: absolute; top: 0; bottom: 0; left: -15px; width: 170px; transform: skewX(-25deg); background: var(--logoback); box-shadow: var(--paper-s); border-right: 6px solid var(--logoedge); margin-bottom: -2px; }
+header .logotype .foreground { position: absolute; font-size: 15pt; font-weight: 300; color: var(--logofore); text-transform: uppercase; margin: 0; padding: 19px; }
 header section { display: grid; grid-auto-flow: column; grid-gap: 10px; padding: 8px; }
 header section app-button { background: transparent; }
 header section app-button:hover { background: var(--paper-2); }
+
+@media (orientation: landscape) {
+	header .logotype .background { width: 260px; }
+}
 
 /* ------------------ Contents */
 
