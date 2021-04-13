@@ -111,6 +111,9 @@ export class article extends component {
 				if (this.show === "false")
 					this.timers.once(20, () => this.show = true);
 			});
+		}).catch(() => {
+			globalThis.notify([{ icon: "exclamation-triangle" }, { text: `Article ${this.name} wasn't found.` }]).close(2000);
+			this.close("failed");
 		});
 	}
 
