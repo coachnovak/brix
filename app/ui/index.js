@@ -188,6 +188,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 			globalThis.contents.open({ name: "doormat" });
 	});
 
+	document.getElementById("search").events.on("activated", () => {
+		globalThis.windows.open({ name: "rooms/query" });
+	});
+
 	document.getElementById("signin").events.on("activated", () => {
 		globalThis.windows.open({ name: "signin" });
 	});
