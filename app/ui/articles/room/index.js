@@ -159,6 +159,29 @@ export default {
 					globalThis.notify([{ icon: "hand-point-up" }, { text: "Poke! Poke! 😜" }]).close(3000);
 				}, 300);
 			},
+
+			// Roshambo
+
+			"roshambo begins": _data => {
+				globalThis.windows.list().forEach(_article => {
+					if (_article.name === "roshambo/session/result")
+						_article.close("closed");
+				});
+
+				globalThis.windows.close("room/actions");
+				globalThis.windows.open({ name: "roshambo/session/cast", parameters: { session: _data } });
+			},
+			"roshambo ends": _data => {
+				globalThis.windows.list().forEach(_article => {
+					if (_article.name === "roshambo/session/cast" && _article.parameters.session === _data)
+						_article.close("roshambo ended");
+				});
+
+				globalThis.windows.open({ name: "roshambo/session/result", parameters: { session: _data } });
+			},
+
+			// Voting
+
 			"voting begins": _data => {
 				globalThis.windows.list().forEach(_article => {
 					if (_article.name === "voting/session/result")

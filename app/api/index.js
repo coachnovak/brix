@@ -4,6 +4,7 @@ export default fastifyPlugin (async (_app, _options) => {
 	_app.register(import("./my/index.js"), { prefix: "api/my" });
 	_app.register(import("./user/index.js"), { prefix: "api/user" });
 	_app.register(import("./voting/index.js"), { prefix: "api/voting" });
+	_app.register(import("./roshambo/index.js"), { prefix: "api/roshambo" });
 	_app.register(import("./room/index.js"), { prefix: "api/room" });
 
 	_app.register(import("./db.js"), { prefix: "api/db" });
