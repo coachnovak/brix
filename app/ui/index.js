@@ -202,16 +202,19 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 	// Set initial state on session buttons.
 	document.getElementById("signin").visible = globalThis.session.signedin === false;
+	document.getElementById("search").visible = globalThis.session.signedin === true;
 	document.getElementById("profile").visible = globalThis.session.signedin === true;
 
 	// Handle signedin and signedout events.
 	globalThis.session.events.on("signedin", () => {
 		document.getElementById("signin").visible = false;
+		document.getElementById("search").visible = true;
 		document.getElementById("profile").visible = true;
 	});
 
 	globalThis.session.events.on("signedout", () => {
 		document.getElementById("signin").visible = true;
+		document.getElementById("search").visible = false;
 		document.getElementById("profile").visible = false;
 
 		// Reopen landing article.
