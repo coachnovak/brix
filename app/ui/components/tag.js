@@ -20,7 +20,7 @@ export class tag extends component {
 		super.connectedCallback({
 			style: component.template`
 				:host { user-select: none; touch-action: none; }
-				:host { display: inline-grid; background: var(--action-p-1); color: var(--action-p-f); border: 2px solid transparent; padding: 6px; grid-gap: 6px; align-items: center; justify-content: center; align-content: center; letter-spacing: 1px; cursor: pointer; white-space: nowrap; outline: 0; box-shadow: var(--action-p-s); }
+				:host { display: inline-grid; background: var(--action-p-1); color: var(--action-p-f); border: 2px solid transparent; padding: 8.5px; grid-gap: 6px; align-items: center; justify-content: center; align-content: center; letter-spacing: 1px; cursor: pointer; white-space: nowrap; outline: 0; box-shadow: var(--action-p-s); }
 				:host([secondary="true"]) { background: var(--action-s-1); color: var(--action-s-f); box-shadow: var(--action-s-s); }
 				:host([embedded="true"]) { background: var(--action-e-1); color: var(--action-e-f);  box-shadow: var(--action-e-s); }
 

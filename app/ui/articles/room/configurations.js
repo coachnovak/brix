@@ -10,11 +10,13 @@ export default {
 		
 			markup: component.template`
 				<div id="layout">
-					<h3>General</h2>
+					<h3>General</h3>
 					<app-list id="general"></app-list>
 		
-					<h3>Voting</h2>
+					<h3>Voting</h3>
 					<app-list id="voting"></app-list>
+
+					<app-button id="back" icon="arrow-left" text="Go back" composition="icon text" embedded="true"></app-button>
 				</div>
 			`
 		};
@@ -82,6 +84,13 @@ export default {
 			]
 		})).events.on("activated", async _event => {
 			globalThis.windows.open({ name: "voting/configure/index", parameters: _component.parameters });
+		});
+
+		// Go back.
+		_component.find("#back").events.on("activated", () => {
+			globalThis.contents.cut("room/index");
+			globalThis.contents.open({ name: `room/toolbox`, parameters: _component.parameters });
+			globalThis.contents.open({ name: `room/participants`, parameters: _component.parameters });
 		});
 	}
 };

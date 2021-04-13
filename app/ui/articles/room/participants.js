@@ -6,10 +6,12 @@ export default {
 	templates: () => {
 		return {
 			style: component.template`
+				#list { margin-top: var(--spacing); }
 				#list .empty { padding: 20px; text-align: center; }
 			`,
 		
 			markup: component.template`
+				<h3>Participants</h3>
 				<app-list id="list" break="2"></app-list>
 			`
 		};

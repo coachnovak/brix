@@ -1,7 +1,6 @@
 import anime from "/assets/scripts/anime.es.js";
 import presence from "/components/presence.js";
 import { component } from "/components/component.js";
-import { tabs } from "/components/tabs.js";
 import { button } from "/components/button.js";
 import { tags } from "/components/tags.js";
 import { handup } from "/components/handup.js";
@@ -11,19 +10,20 @@ export default {
 	templates: () => {
 		return {
 			style: component.template`
-				#head { position: relative; left: calc(0px - var(--spacing)); top: calc(0px - var(--spacing)); width: calc(100% + (var(--spacing) * 2)); padding: calc(var(--spacing) * 1.5); background: var(--paper-2); }
-				#head #container { display: grid; grid-gap: var(--spacing); }
+				#head { position: relative; margin: calc(0px - var(--spacing)); margin-bottom: 0; }
+				#head #container { display: grid; grid-gap: calc(var(--spacing) / 2); grid-template-columns: min-content auto; padding: var(--spacing); background: var(--paper-2); }
+				#head #container #configure { padding: calc(var(--spacing) / 4); }
+				#head #container #tags { grid-column: 1 / -1; }
 			`,
 
 			markup: component.template`
 				<div id="head">
 					<div id="container">
+						<app-button id="configure" icon="cog" composition="icon" tiptext="Configure this room" embedded="true"></app-button>
 						<h1></h1>
-						<app-tags fontsize="s" uppercase="true" composition="text" embedded="true"></app-tags>
+						<app-tags id="tags" fontsize="s" uppercase="true" composition="text" embedded="true"></app-tags>
 					</div>
 				</div>
-
-				<app-tabs id="views"></app-tabs>
 			`
 		};
 	},
@@ -202,19 +202,19 @@ export default {
 			unsubscribeFromPersonal();
 
 			// Leave this room.
-			presenceManager.leave()
+			presenceManager.leave();
 		});
 
-		const tabsElement = _component.find("#views");
-		tabsElement.events.on("selected", () => {
+		// Show configure button if user owns the room.
+		const configureElement = _component.find("#configure");
+		configureElement.visible = roomOwner;
+		configureElement.events.on("activated", () => {
 			globalThis.contents.cut("room/index");
-			globalThis.contents.open({ name: `room/${tabsElement.selected}`, parameters: { room } });
+			globalThis.contents.open({ name: `room/configurations`, parameters: { room } });
 		});
 
-		tabsElement.add("participants", { icon: "users", composition: "icon", tiptext: "Participants", tipplacement: "bottom" });
-		tabsElement.add("toolbox", { icon: "toolbox", composition: "icon", tiptext: "Toolbox", tipplacement: "bottom" });
-
-		// Show admin tabs if user owns the room.
-		if (roomOwner) tabsElement.add("configurations", { icon: "cog", composition: "icon", tiptext: "Configurations", tipplacement: "bottom" });
+		// Open initial content.
+		globalThis.contents.open({ name: `room/toolbox`, parameters: { room } });
+		globalThis.contents.open({ name: `room/participants`, parameters: { room } });
 	}
 };
