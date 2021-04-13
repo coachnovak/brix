@@ -20,5 +20,6 @@ export default {
 	documents: [
 	],
 	indexes: [
+		{ keys: { name: "text" } }
 	]
 }
