@@ -25,10 +25,10 @@ export default {
 		let searchDisplay = [];
 
 		searchFor.name = _component.parameters.name;
-		searchFor.labels = _component.parameters.labels.split(" ");
+		searchFor.labels = _component.parameters.labels !== "" ? _component.parameters.labels.split(" ") : [];
 
 		if (searchFor.name.length > 0) searchDisplay.push(searchFor.name);
-		if (searchFor.labels.length > 0) searchDisplay.push(searchFor.labels.map(_label => `#${_label}`).join(" or "));
+		if (searchFor.labels.length > 0) searchDisplay.push(searchFor.labels.map(_label => `#${_label}`).join(" and "));
 
 		const labelElement = _component.find("app-label");
 		labelElement.text = searchDisplay.join(" and ");
