@@ -30,17 +30,17 @@ export default {
 			globalThis.windows.open({ name: "voting/index", parameters: _component.parameters });
 		});
 
-		// const roshamboElement = await toolboxElement.add({
-		// 	id: "roshambo",
-		// 	contents: [
-		// 		{ icon: "hand-scissors" },
-		// 		{ text: "Start a roshambo challenge with someone" },
-		// 		{ arrow: true }
-		// 	]
-		// });
+		const roshamboElement = await toolboxElement.add({
+			id: "roshambo",
+			contents: [
+				{ icon: "hand-scissors" },
+				{ text: "Start a roshambo challenge with someone" },
+				{ arrow: true }
+			]
+		});
 
-		// roshamboElement.events.on("activated", _event => {
-		// 	globalThis.windows.open({ name: "roshambo/index", parameters: _component.parameters });
-		// });
+		roshamboElement.events.on("activated", _event => {
+			globalThis.windows.open({ name: "roshambo/index", parameters: _component.parameters });
+		});
 	}
 };
