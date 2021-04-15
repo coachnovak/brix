@@ -15,7 +15,9 @@ export default async (_app, _options) => {
 				_id: new _app.mongo.objectid(_request.params.user),
 				deleted: null
 			}, {
-				avatar: true
+				projection: {
+					avatar: true
+				}
 			});
 
 		if (!user) return _response.status(401).send({ message: "Failed to obtain the identity, user wasn't found." });

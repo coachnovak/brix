@@ -8,12 +8,14 @@ export default async (_app, _options) => {
 				_id: new _app.mongo.objectid(_request.user.user),
 				deleted: null
 			}, {
-				_id: true,
-				email: true,
-				firstName: true,
-				lastName: true,
-				registered: true,
-				confirmed: true
+				projection: {
+					_id: true,
+					email: true,
+					firstName: true,
+					lastName: true,
+					registered: true,
+					confirmed: true
+				}
 			});
 
 		if (!user)
