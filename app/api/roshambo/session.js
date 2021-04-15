@@ -14,11 +14,11 @@ export default async (_app, _options) => {
 		if (!session) return _response.status(404).send({ message: "Session couldn't be found." });
 
 		// Get initiator.
-		const initiator = await _app.mongo.db.collection("users").findOne({ _id: session.initiator, deleted: null }, { _id: true, firstName: true, lastName: true });
+		const initiator = await _app.mongo.db.collection("users").findOne({ _id: session.initiator, deleted: null });
 		if (!initiator) return _response.status(404).send({ message: "Initiator wasn't found." });
 
 		// Get opponent.
-		const opponent = await _app.mongo.db.collection("users").findOne({ _id: session.opponent, deleted: null }, { _id: true, firstName: true, lastName: true });
+		const opponent = await _app.mongo.db.collection("users").findOne({ _id: session.opponent, deleted: null });
 		if (!opponent) return _response.status(404).send({ message: "Opponent wasn't found." });
 
 		session.initiator = initiator;
@@ -104,92 +104,4 @@ export default async (_app, _options) => {
 
 		return _response.status(200).send({ message: "Success!" });
 	});
-
-	// _app.put("/:id/end/", {
-	// 	preValidation: [_app.authentication],
-	// 	schema: {
-	// 		params: {
-	// 			type: "object",
-	// 			properties: {
-	// 				id: { type: "string", pattern: "^[a-f0-9]{24}$" }
-	// 			}
-	// 		}
-	// 	}
-	// }, async (_request, _response) => {
-	// 	const session = await getSession(_request.params.id, { begun: true });
-	// 	if (!session) return _response.status(404).send({ message: "Ongoing session couldn't be found." });
-	// 	if (session.initiator.toString() !== _request.user.user) return _response.status(401).send({ message: "Session can only be ended by the one who initiated it." });
-
-	// 	let response = await _app.mongo.db.collection("voting.sessions").updateOne({ _id: session._id, ended: null }, { $set: { ended: new Date() } });
-	// 	if (response.result?.ok !== 1) return _response.status(500).send({ message: "Failed to update when the session ended." });
-
-	// 	// Publish event to participants.
-	// 	session.participants.forEach(_participant => {
-	// 		_app.publish(`${_participant._id.toString()}-room-${session.room.toString()}`, {
-	// 			name: "voting ends",
-	// 			data: session._id,
-	// 			when: new Date()
-	// 		});
-	// 	});
-
-	// 	return _response.status(200).send({ message: "Success!" });
-	// });
-
-	// _app.post("/:id/vote/:option", {
-	// 	preValidation: [_app.authentication],
-	// 	schema: {
-	// 		params: {
-	// 			type: "object",
-	// 			properties: {
-	// 				id: { type: "string", pattern: "^[a-f0-9]{24}$" },
-	// 				option: { type: "string", pattern: "^[a-f0-9]{24}$" }
-	// 			}
-	// 		}
-	// 	}
-	// }, async (_request, _response) => {
-	// 	const session = await getSession(_request.params.id, { begun: true });
-	// 	if (!session) return _response.status(404).send({ message: "Ongoing session couldn't be found." });
-
-	// 	const existing = session.votes.find(_vote => _vote.user.toString() === _request.user.user);
-	// 	if (existing) return _response.status(400).send({ message: "You have already placed your vote in this session." });
-
-	// 	const vote = {};
-	// 	vote.user = new _app.mongo.objectid(_request.user.user);
-	// 	vote.option = new _app.mongo.objectid(_request.params.option);
-	// 	vote.registered = new Date();
-
-	// 	let response = await _app.mongo.db.collection("voting.sessions").updateOne({ _id: session._id }, { $push: { votes: vote } });
-	// 	if (response.result?.ok !== 1) return _response.status(500).send({ message: "Failed to update when the session ended." });
-
-	// 	// Publish event to initiator.
-	// 	if (session.initiator.toString() === vote.user.toString())
-	// 		_app.publish(`${session.initiator.toString()}-room-${session.room.toString()}`, {
-	// 			name: "voting progress",
-	// 			data: session._id,
-	// 			when: new Date()
-	// 		});
-
-	// 	return _response.status(200).send({ message: "Success!" });
-	// });
-
-	// _app.delete("/:id", {
-	// 	preValidation: [_app.authentication],
-	// 	schema: {
-	// 		params: {
-	// 			type: "object",
-	// 			properties: {
-	// 				id: { type: "string", pattern: "^[a-f0-9]{24}$" }
-	// 			}
-	// 		}
-	// 	}
-	// }, async (_request, _response) => {
-	// 	const session = await getSession(_request.params.id, { new: true });
-	// 	if (!session) return _response.status(404).send({ message: "Ongoing session couldn't be found." });
-	// 	if (session.initiator.toString() !== _request.user.user) return _response.status(401).send({ message: "Session can only be deleted by the one who initiated it." });
-
-	// 	let response = await _app.mongo.db.collection("voting.sessions").updateOne({ _id: session._id }, { $set: { deleted: new Date() } });
-	// 	if (response.result?.ok !== 1) return _response.status(500).send({ message: "Failed to delete the voting session." });
-
-	// 	return _response.status(200).send({ message: "Success!" });
-	// });
 };

@@ -12,7 +12,7 @@ export default {
 			style: component.template`
 				:host([type]) { width: var(--size-s); }
 		
-				#layout { display: grid; grid-gap: 20px; }
+				#layout { display: grid; grid-gap: calc(var(--spacing) * 2); }
 
 				#participants { display: grid; grid-gap: calc(var(--spacing) * 2); grid-template-columns: auto auto; justify-items: center; justify-content: center; }
 				#initiator div,
@@ -29,7 +29,7 @@ export default {
 
 			markup: component.template`
 				<div id="layout">
-					<h2 class="center">Roshambo result</h2>
+					<h2 class="center">Roshambo</h2>
 
 					<div id="participants">
 						<div id="initiator" class="center">
@@ -49,7 +49,7 @@ export default {
 						</div>
 					</div>
 
-					<h2 id="result" class="center"></h2>
+					<h3 id="result" class="center"></h3>
 				</div>
 			`
 		};
@@ -61,63 +61,69 @@ export default {
 		}, {
 			200: async _response => {
 				const session = await _response.json();
-				const me = session.result.find(_cast => _cast.caster === globalThis.session.identity._id);
-				const opponent = session.result.find(_cast => _cast.caster !== globalThis.session.identity._id);
+				const myResult = session.result.find(_cast => _cast.caster === globalThis.session.identity._id);
+				const opponentResult = session.result.find(_cast => _cast.caster !== globalThis.session.identity._id);
 
 				const initiatorElement = _component.find("#initiator");
 				const opponentElement = _component.find("#opponent");
 
 				const initiatorRockElement = _component.find("#initiatorRock");
-				initiatorRockElement.style.display = me.choice === "rock" ? "block" : "none";
+				initiatorRockElement.style.display = myResult.choice === "rock" ? "block" : "none";
 
 				const initiatorPaperElement = _component.find("#initiatorPaper");
-				initiatorPaperElement.style.display = me.choice === "paper" ? "block" : "none";
+				initiatorPaperElement.style.display = myResult.choice === "paper" ? "block" : "none";
 
 				const initiatorScissorElement = _component.find("#initiatorScissor");
-				initiatorScissorElement.style.display = me.choice === "scissor" ? "block" : "none";
+				initiatorScissorElement.style.display = myResult.choice === "scissor" ? "block" : "none";
 
 				const opponentRockElement = _component.find("#opponentRock");
-				opponentRockElement.style.display = opponent.choice === "rock" ? "block" : "none";
+				opponentRockElement.style.display = opponentResult.choice === "rock" ? "block" : "none";
 
 				const opponentPaperElement = _component.find("#opponentPaper");
-				opponentPaperElement.style.display = opponent.choice === "paper" ? "block" : "none";
+				opponentPaperElement.style.display = opponentResult.choice === "paper" ? "block" : "none";
 
 				const opponentScissorElement = _component.find("#opponentScissor");
-				opponentScissorElement.style.display = opponent.choice === "scissor" ? "block" : "none";
+				opponentScissorElement.style.display = opponentResult.choice === "scissor" ? "block" : "none";
 
 				const resultElement = _component.find("#result");
 
+				let opponent = null;
+				if (session.initiator._id === globalThis.session.identity._id)
+					opponent = session.opponent;
+				else
+					opponent = session.initiator;
+
 				const won = () => {
 					initiatorElement.classList.add("won");
-					resultElement.innerHTML = "You won!";
+					resultElement.innerHTML = `You won against ${opponent.firstName} ${opponent.lastName}!`;
 				};
 
 				const lost = () => {
 					opponentElement.classList.add("won");
-					resultElement.innerHTML = "You've lost.";
+					resultElement.innerHTML = `You've lost against ${opponent.firstName} ${opponent.lastName}!`;
 				};
 
 				const draw = () => {
 					resultElement.innerHTML = "Nobody won, its a draw!";
 				};
 
-				switch (me.choice) {
+				switch (myResult.choice) {
 					case "rock":
-						switch (opponent.choice) {
+						switch (opponentResult.choice) {
 							case "rock": draw(); break;
 							case "paper": lost(); break;
 							case "scissor": won(); break;
 						}; break;
 
 					case "paper":
-						switch (opponent.choice) {
+						switch (opponentResult.choice) {
 							case "rock": won(); break;
 							case "paper": draw(); break;
 							case "scissor": lost(); break;
 						}; break;
 
 					case "scissor":
-						switch (opponent.choice) {
+						switch (opponentResult.choice) {
 							case "rock": lost(); break;
 							case "paper": won(); break;
 							case "scissor": draw(); break;
