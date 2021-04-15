@@ -18,27 +18,7 @@ export default {
 		
 			markup: component.template`
 				<div id="layout">
-					<h2>Roshambo</h2>
-
-					<div id="banner">
-						<div>
-							<app-image icon="hand-rock" size="48px"></app-image>
-							Rock
-						</div>
-
-						<div>
-							<app-image icon="hand-paper" size="48px"></app-image>
-							Paper
-						</div>
-
-						<div>
-							<app-image icon="hand-scissors" size="48px"></app-image>
-							Scissor
-						</div>
-					</div>
-
-					<h3>Select an opponent</h3>
-
+					<h2>Select your opponent</h2>
 					<app-list id="opponents"></app-list>
 				</div>
 			`

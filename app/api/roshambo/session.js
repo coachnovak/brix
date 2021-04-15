@@ -69,35 +69,41 @@ export default async (_app, _options) => {
 		return _response.status(201).send({ _id: session._id });
 	});
 
-	// _app.put("/:session/cast/", {
-	// 	preValidation: [_app.authentication],
-	// 	schema: {
-	// 		params: {
-	// 			type: "object",
-	// 			properties: {
-	// 				session: { type: "string", pattern: "^[a-f0-9]{24}$" }
-	// 			}
-	// 		}
-	// 	}
-	// }, async (_request, _response) => {
-	// 	const session = await getSession(_request.params.id, { new: true });
-	// 	if (!session) return _response.status(404).send({ message: "Session couldn't be found." });
-	// 	if (session.initiator.toString() !== _request.user.user) return _response.status(401).send({ message: "Session can only be started by the one who initiated it." });
+	_app.put("/:session/cast/:choice", {
+		preValidation: [_app.authentication],
+		schema: {
+			params: {
+				type: "object",
+				properties: {
+					session: { type: "string", pattern: "^[a-f0-9]{24}$" },
+					choice: { type: "string", enum: ["rock", "paper", "scissor"] }
+				}
+			}
+		}
+	}, async (_request, _response) => {
+		const session = await _app.mongo.db.collection("roshambo.sessions").findOne({ _id: new _app.mongo.objectid(_request.params.session), deleted: null });
+		if (!session) return _response.status(404).send({ message: "Session couldn't be found." });
+		if (session.initiator.toString() !== _request.user.user && session.opponent.toString() !== _request.user.user) return _response.status(401).send({ message: "A choice can only be cast by the initiator or opponent." });
 
-	// 	let response = await _app.mongo.db.collection("voting.sessions").updateOne({ _id: session._id, begun: null }, { $set: { begun: new Date() } });
-	// 	if (response.result?.ok !== 1) return _response.status(500).send({ message: "Failed to update when the session begun." });
+		const caster = new _app.mongo.objectid(_request.user.user);
+		const choice = { caster, choice: _request.params.choice };
 
-	// 	// Publish event to participants.
-	// 	session.participants.forEach(_participant => {
-	// 		_app.publish(`${_participant._id.toString()}-room-${session.room.toString()}`, {
-	// 			name: "voting begins",
-	// 			data: session._id,
-	// 			when: new Date()
-	// 		});
-	// 	});
+		let response = await _app.mongo.db.collection("roshambo.sessions").updateOne({ _id: session._id, result: { $nin: [choice] } }, { $push: { result: choice } });
+		if (response.result?.ok !== 1) return _response.status(500).send({ message: "Failed to cast the choice, you already casted your choice." });
+		session.result.push(choice);
 
-	// 	return _response.status(200).send({ message: "Success!" });
-	// });
+		// Publish completion event to participants.
+		if (session.result.length === 2)
+			[session.initiator, session.opponent].forEach(_participant => {
+				_app.publish(`${_participant.toString()}-room-${session.room.toString()}`, {
+					name: "roshambo ends",
+					data: session._id,
+					when: new Date()
+				});
+			});
+
+		return _response.status(200).send({ message: "Success!" });
+	});
 
 	// _app.put("/:id/end/", {
 	// 	preValidation: [_app.authentication],

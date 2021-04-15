@@ -19,7 +19,7 @@ export default {
 		
 			markup: component.template`
 				<div id="layout">
-					<h2 class="center">Choose your option wisely</h2>
+					<h2 class="center">Challenge commenced</h2>
 
 					<div id="banner">
 						<app-button id="rock" icon="hand-rock" text="Rock" composition="vertical icon text" size="huge" embedded="true"></app-button>
@@ -32,19 +32,43 @@ export default {
 	},
 
 	script: async _component => {
-		const sessionResponse = await globalThis.fetcher(`/api/roshambo/session/${_component.parameters.session}`, { method: "get" });
-		if (sessionResponse.status !== 200) _component.close("error");
+		await globalThis.fetcher(`/api/roshambo/session/${_component.parameters.session}`, {
+			method: "get"
+		}, {
+			200: async _response => {
+				const session = await _response.json();
+				_component.find("#rock").events.on("activated", async () => {
+					// Cast 'rock' to session.
+					await globalThis.fetcher(`/api/roshambo/session/${session._id}/cast/rock`, {
+						method: "put",
+						body: JSON.stringify({})
+					}, {
+						200: () => _component.close()
+					});
+				});
 
-		_component.find("#rock").events.on("activated", async () => {
-
-		});
-
-		_component.find("#paper").events.on("activated", async () => {
-
-		});
-
-		_component.find("#scissor").events.on("activated", async () => {
-
+				_component.find("#paper").events.on("activated", async () => {
+					// Cast 'paper' to session.
+					await globalThis.fetcher(`/api/roshambo/session/${session._id}/cast/paper`, {
+						method: "put",
+						body: JSON.stringify({})
+					}, {
+						200: () => _component.close()
+					});
+				});
+		
+				_component.find("#scissor").events.on("activated", async () => {
+					// Cast 'scissor' to session.
+					await globalThis.fetcher(`/api/roshambo/session/${session._id}/cast/scissor`, {
+						method: "put",
+						body: JSON.stringify({})
+					}, {
+						200: () => _component.close()
+					});
+				});
+			},
+			404: async _response => _component.close("error"),
+			500: async _response => _component.close("error")
 		});
 	}
 };
