@@ -12,7 +12,8 @@ export default async (_app, _options) => {
 				email: true,
 				firstName: true,
 				lastName: true,
-				registered: true
+				registered: true,
+				confirmed: true
 			});
 
 		if (!user)
